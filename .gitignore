@@ -44,8 +44,8 @@
 # CMake
 cmake-build-*/
 cmake-build-debug/
-CMakeLists.txt
-*.txt
+#CMakeLists.txt
+#*.txt
 
 #I/O
 data/
