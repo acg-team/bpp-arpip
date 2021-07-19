@@ -44,53 +44,53 @@ set(CMAKE_CXX_FLAGS )
 
 
 set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -fopenmp")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -fopenmp")
 
 ## Store the git hash of the current head
-#if(EXISTS "${PROJECT_SOURCE_DIR}/.git/HEAD")
-#    file(READ "${PROJECT_SOURCE_DIR}/.git/HEAD"
-#            PROJECT_SOURCE_VERSION)
-#    if("${PROJECT_SOURCE_VERSION}" MATCHES "^ref:")
-#        string(REGEX REPLACE "^ref: *([^ \n\r]*).*" "\\1"
-#                PROJECT_GIT_REF "${PROJECT_SOURCE_VERSION}")
-#        file(READ "${PROJECT_SOURCE_DIR}/.git/${PROJECT_GIT_REF}"
-#                PROJECT_SOURCE_VERSION)
-#    endif()
-#    string(STRIP "${PROJECT_SOURCE_VERSION}"
-#            PROJECT_SOURCE_VERSION)
-#endif()
+if(EXISTS "${PROJECT_SOURCE_DIR}/.git/HEAD")
+    file(READ "${PROJECT_SOURCE_DIR}/.git/HEAD"
+            PROJECT_SOURCE_VERSION)
+    if("${PROJECT_SOURCE_VERSION}" MATCHES "^ref:")
+        string(REGEX REPLACE "^ref: *([^ \n\r]*).*" "\\1"
+                PROJECT_GIT_REF "${PROJECT_SOURCE_VERSION}")
+        file(READ "${PROJECT_SOURCE_DIR}/.git/${PROJECT_GIT_REF}"
+                PROJECT_SOURCE_VERSION)
+    endif()
+    string(STRIP "${PROJECT_SOURCE_VERSION}"
+            PROJECT_SOURCE_VERSION)
+endif()
 
 # Store the build date
-#if(WIN32)
-#    execute_process(COMMAND "cmd" " /c date /t"
-#            OUTPUT_VARIABLE DATE)
-#    string(REGEX REPLACE "[^0-9]*(..).*" "\\1" MONTH "${DATE}")
-#    set(MONTHS ""
-#            "Jan" "Feb" "Mar" "Apr" "May" "Jun"
-#            "Jul" "Aug" "Sep" "Oct" "Nov" "Dec")
-#    list(GET MONTHS "${MONTH}" MONTH)
-#    string(REGEX REPLACE "[^/]*/(..)/(....).*" "\\1 ${MONTH} \\2"
-#            PROJECT_BUILD_DATE "${DATE}")
-#    execute_process(COMMAND "cmd" " /c echo %TIME%"
-#            OUTPUT_VARIABLE TIME)
-#    string(REGEX REPLACE "[^0-9]*(..:..:..).*" "\\1"
-#            PROJECT_BUILD_TIME "${TIME}")
-#    execute_process(COMMAND git describe --abbrev=0 --tags
-#            WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-#            OUTPUT_VARIABLE GIT_TAG_VERSION)
-#    string(REGEX REPLACE "\n" "" GIT_TAG_VERSION_STRIPPED "${GIT_TAG_VERSION}")
-#else()
-#    execute_process(COMMAND "date" "+%d %b %Y/%H:%M:%S"
-#            OUTPUT_VARIABLE DATE_TIME)
-#    string(REGEX REPLACE "([^/]*)/.*" "\\1"
-#            PROJECT_BUILD_DATE "${DATE_TIME}")
-#    string(REGEX REPLACE "[^/]*/([0-9:]*).*" "\\1"
-#            PROJECT_BUILD_TIME "${DATE_TIME}")
-#    execute_process(COMMAND git describe --abbrev=0 --tags
-#            WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
-#            OUTPUT_VARIABLE GIT_TAG_VERSION)
-#    string(REGEX REPLACE "\n" "" GIT_TAG_VERSION_STRIPPED "${GIT_TAG_VERSION}")
-#endif()
+if(WIN32)
+    execute_process(COMMAND "cmd" " /c date /t"
+            OUTPUT_VARIABLE DATE)
+    string(REGEX REPLACE "[^0-9]*(..).*" "\\1" MONTH "${DATE}")
+    set(MONTHS ""
+            "Jan" "Feb" "Mar" "Apr" "May" "Jun"
+            "Jul" "Aug" "Sep" "Oct" "Nov" "Dec")
+    list(GET MONTHS "${MONTH}" MONTH)
+    string(REGEX REPLACE "[^/]*/(..)/(....).*" "\\1 ${MONTH} \\2"
+            PROJECT_BUILD_DATE "${DATE}")
+    execute_process(COMMAND "cmd" " /c echo %TIME%"
+            OUTPUT_VARIABLE TIME)
+    string(REGEX REPLACE "[^0-9]*(..:..:..).*" "\\1"
+            PROJECT_BUILD_TIME "${TIME}")
+    execute_process(COMMAND git describe --abbrev=0 --tags
+            WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+            OUTPUT_VARIABLE GIT_TAG_VERSION)
+    string(REGEX REPLACE "\n" "" GIT_TAG_VERSION_STRIPPED "${GIT_TAG_VERSION}")
+else()
+    execute_process(COMMAND "date" "+%d %b %Y/%H:%M:%S"
+            OUTPUT_VARIABLE DATE_TIME)
+    string(REGEX REPLACE "([^/]*)/.*" "\\1"
+            PROJECT_BUILD_DATE "${DATE_TIME}")
+    string(REGEX REPLACE "[^/]*/([0-9:]*).*" "\\1"
+            PROJECT_BUILD_TIME "${DATE_TIME}")
+    execute_process(COMMAND git describe --abbrev=0 --tags
+            WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
+            OUTPUT_VARIABLE GIT_TAG_VERSION)
+    string(REGEX REPLACE "\n" "" GIT_TAG_VERSION_STRIPPED "${GIT_TAG_VERSION}")
+endif()
 
 set(ARPIP_RELTIME ${PROJECT_BUILD_TIME})
 set(ARPIP_RELDATE ${PROJECT_BUILD_DATE})
