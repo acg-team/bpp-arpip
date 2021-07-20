@@ -76,9 +76,16 @@
 #include <Bpp/Seq/Alphabet/Alphabet.h>
 #include <Bpp/Seq/Container/VectorSiteContainer.h>
 #include <Bpp/Seq/App/SequenceApplicationTools.h>
+#include <Bpp/Seq/Io/Fasta.h>
+
 
 //From bpp-phyl
 #include <Bpp/Phyl/Model/Nucleotide/K80.h>
+//Sequence evolution models
+#include <Bpp/Phyl/Model/RE08.h>
+#include <Bpp/Phyl/Model/Protein/WAG01.h>
+#include <Bpp/Phyl/Model/FrequenciesSet/ProteinFrequenciesSet.h>
+
 
 //Phylogenetic trees
 
@@ -111,15 +118,17 @@ using namespace bpp;
 
 
 int main(int argc, char *argv[]) {
+//    FLAGS_log_dir = "../test/data/";
+//    google::InitGoogleLogging(software::name.c_str());
+//    google::InstallFailureSignalHandler();
 
-    ARPIPApplication arpipapp
-            (argc,
-             argv,
-             std::string(software::name + " " + software::version),
-             std::string(software::releasegitbranch + " " + software::releasegitref),
-             std::string(software::releasedate + ", " + software::releasetime));
     try {
-
+        ARPIPApplication arpipapp
+                (argc,
+                 argv,
+                 std::string(software::name + " " + software::version),
+                 std::string(software::releasegitbranch + " " + software::releasegitref),
+                 std::string(software::releasedate + ", " + software::releasetime));
 
         if (argc < 2) {
             arpipapp.help();
@@ -131,36 +140,60 @@ int main(int argc, char *argv[]) {
 
         ApplicationTools::displayResult("Random seed set to", arpipapp.getSeed());
         ApplicationTools::displayResult("Log files location", std::string("current execution path"));
-    /************************************************** INPUT *****************************************************/
-    /* ***************************************************
-     * Standard workflow
-     * [INPUT]
-     * 1. tree + alignment => (1.1) just parse everything
-     * 2. alignment  => (2.1) parse alignment => (2.2) generate tree using bioNJ
-     * (For future release!!!)
-     * 3. sequences + tree => (3.1) Perform alignment using ProPIP => (3.2) generate tree using bioNJ
-     */
-    double lambda = 0;
-    double mu = 0;
-    /********************************************* Process the MSA ************************************************/
-    // ALPHABET
-    // The alphabet object contains the not-extended alphabet as requested by the user,
-    // while in computation we use the extended version of the same alphabet.
+        /************************************************** INPUT *****************************************************/
+        /* ***************************************************
+         * Standard workflow
+         * [INPUT]
+         * 1. tree + alignment => (1.1) just parse everything
+         * 2. alignment  => (2.1) parse alignment => (2.2) generate tree using bioNJ
+         * (For future release!!!)
+         * 3. sequences + tree => (3.1) Perform alignment using ProPIP => (3.2) generate tree using bioNJ
+         */
+        double lambda = 0;
+        double mu = 0;
+        bool estimatePIPparameters = false;
+        /********************************************* Process the MSA ************************************************/
+        // ALPHABET
+        // The alphabet object contains the not-extended alphabet as requested by the user,
+        // while in computation we use the extended version of the same alphabet.
         std::string defaultAlphabet = ApplicationTools::getStringParameter("alphabet", arpipapp.getParams(),
                                                                          "DNA", "", true, true);
 
-    // Alphabet without gaps
+        // Alphabet without gaps
         bpp::Alphabet *alphabetNoGaps = SequenceApplicationTools::getAlphabet(arpipapp.getParams(), "", false,
-                                                                                   false);
+                                                                                       false);
 
-    /* Process the tree*/
-    cout << "Testing parsing a directory for multiple trees..." << endl;
-//    Newick tReader;
-//    string treeFileName ="../test/data/input/test_01/sim-0_new.newick";
-//    Tree *tree = tReader.read(treeFileName);
-//    bpp::Fasta seqReader;
+        // Genetic code
+        unique_ptr<GeneticCode> gCode;
 
-    /************************************ Deleting the pointers **********************************************/
+        // Alphabet used for all the computational purpose (it can allows for gap extension)
+//        bpp::Alphabet *alphabet;
+
+
+        cout << "Reading MSA from input file" << endl;
+        Fasta seqReader;
+        SequenceContainer *sequences = seqReader.readSequences("../test/data/input/test_01/sim-0_msa_new.fasta", &AlphabetTools::PROTEIN_ALPHABET);
+        SiteContainer *sites = new VectorSiteContainer(*sequences);
+
+        // process character data
+        const ProteicAlphabet *alphabet = new ProteicAlphabet;
+        cout << alphabet->getAlphabetType() << endl;
+        ReversibleSubstitutionModel *wagModel = new WAG01(alphabet);
+        std::string wag = wagModel->getName();
+        wagModel->setFreqFromData(*sites, 0.01);
+        FrequenciesSet *freqSet = (FrequenciesSet *) wagModel->getFrequenciesSet();
+        //            ReversibleSubstitutionModel *wagModelPlus = new WAG01(alphabet, freqSet,1);
+        double t = 0.1;
+
+
+        /* Process the tree*/
+        cout << "Testing parsing a directory for multiple trees..." << endl;
+    //    Newick tReader;
+    //    string treeFileName ="../test/data/input/test_01/sim-0_new.newick";
+    //    Tree *tree = tReader.read(treeFileName);
+    //    bpp::Fasta seqReader;
+
+        /************************************ Deleting the pointers **********************************************/
 
 
         std::cout << "Hello, ARPIP!" << std::endl;

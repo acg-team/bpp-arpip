@@ -138,7 +138,6 @@ MESSAGE(STATUS "Loading libraries & includes:")
 #set(CMAKE_FIND_LIBRARY_SUFFIXES ".a ${CMAKE_FIND_LIBRARY_SUFFIXES}") # uncomment for static compilation
 
 find_package (glog 0.5.0 REQUIRED)
-#target_link_libraries(${PROJECT_NAME} glog::glog)
 
 MESSAGE(STATUS "Done!")
 
@@ -159,5 +158,7 @@ file(GLOB_RECURSE HEADERS include/*.h include/*.hpp)
 file(GLOB_RECURSE SOURCES src/*.cpp test/*.cpp src/*.hpp)
 add_executable(${EXE} ${SOURCES} ${HEADERS})
 target_link_libraries(${EXE} ${LIBS_BPP})
+target_link_libraries(${EXE} glog::glog)
+
 MESSAGE(STATUS "Targets OK")
 

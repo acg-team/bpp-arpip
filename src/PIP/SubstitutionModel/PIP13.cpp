@@ -67,15 +67,15 @@ using namespace std;
 
 PIP13::PIP13(ReversibleSubstitutionModel *simpleModel, const double mu) :
         AbstractParameterAliasable("PIP13"),
-        AbstractReversibleSubstitutionModel(simpleModel->getAlphabet(), std::shared_ptr<const StateMap>(
-                new CanonicalStateMap(simpleModel->getStateMap(), true)), "PIP13"),
+        AbstractReversibleSubstitutionModel(simpleModel->getAlphabet(),
+                new CanonicalStateMap(simpleModel->getStateMap(), true), "PIP13"),
         simpleModel_(simpleModel),
         simpleGenerator_(),
         simpleExchangeabilities_(),
         exp_(), p_(), mu_(mu),
         nestedPrefix_("model_" + simpleModel->getNamespace()) {
 
-    addParameter_(new Parameter("PIP13.mu", mu, Parameter::R_PLUS));
+    addParameter_(new Parameter("PIP13.mu", mu, &Parameter::R_PLUS));
     simpleModel_->setNamespace("PIP13." + nestedPrefix_);
     addParameters_(simpleModel->getParameters());
 
