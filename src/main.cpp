@@ -58,84 +58,29 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include <iomanip>
-#include <limits>
-#include <map>
-#include <stdio.h>
 
 /*
 * From the BPP library:
 */
 // From bpp-core
-#include <Bpp/Version.h>
-#include <Bpp/App/BppApplication.h>
+
 #include <Bpp/App/ApplicationTools.h>
-#include <Bpp/Numeric/Prob/DiscreteDistribution.h>
 #include <Bpp/Numeric/VectorTools.h>
-#include <Bpp/Numeric/Function/ConjugateGradientMultiDimensions.h>
 #include <Bpp/Numeric/Function/DownhillSimplexMethod.h>
-#include <Bpp/Numeric/Function/BrentOneDimension.h>
 
 // From bpp-seq:
 #include <Bpp/Seq/Alphabet/AlphabetTools.h>
 #include <Bpp/Seq/Alphabet/ProteicAlphabet.h>
 #include <Bpp/Seq/Alphabet/ProteicAlphabetState.h>
 #include <Bpp/Seq/Container/SiteContainerTools.h>//Sequence containers
-#include <Bpp/Seq/Io/Fasta.h>
 #include <Bpp/Seq/Alphabet/Alphabet.h>
-#include <Bpp/Seq/Alphabet/AlphabetTools.h>
 #include <Bpp/Seq/Container/VectorSiteContainer.h>
-#include <Bpp/Seq/Container/SiteContainerTools.h>
-#include <Bpp/Seq/SiteTools.h>
 #include <Bpp/Seq/App/SequenceApplicationTools.h>
-#include <Bpp/Seq/Io/BppOSequenceReaderFormat.h>
-#include <Bpp/Seq/Io/BppOAlignmentReaderFormat.h>
-#include <Bpp/Seq/Io/BppOSequenceWriterFormat.h>
-#include <Bpp/Seq/Io/BppOAlignmentWriterFormat.h>
 
 //From bpp-phyl
-#include <Bpp/Phyl/Model/Protein/WAG01.h>
-//#include <Bpp/Phyl/Model/FrequencySet/ProteinFrequencySet.h>
-//#include <Bpp/Phyl/Model/TwoParameterBinarySubstitutionModel.h>
 #include <Bpp/Phyl/Model/Nucleotide/K80.h>
-#include "Bpp/Phyl/SitePatterns.h"
 
 //Phylogenetic trees
-#include <Bpp/Phyl/Tree.h>
-#include <Bpp/Phyl/Node.h>
-#include <Bpp/Phyl/TreeTemplate.h>
-#include <Bpp/Phyl/TreeTemplateTools.h>
-#include <Bpp/Phyl/Likelihood/RHomogeneousMixedTreeLikelihood.h>
-#include <Bpp/Phyl/Likelihood/DRHomogeneousMixedTreeLikelihood.h>
-#include <Bpp/Phyl/Likelihood/RNonHomogeneousMixedTreeLikelihood.h>
-#include <Bpp/Phyl/Likelihood/DRNonHomogeneousTreeLikelihood.h>
-#include <Bpp/Phyl/Likelihood/RASTools.h>
-#include <Bpp/Phyl/PatternTools.h>
-#include <Bpp/Phyl/App/PhylogeneticsApplicationTools.h>
-#include <Bpp/Phyl/OptimizationTools.h>
-#include <Bpp/Phyl/Model/SubstitutionModelSetTools.h>
-//#include <Bpp/Phyl/Model/TwoParameterBinarySubstitutionModel.h>
-#include <Bpp/Phyl/Model/Protein/CoalaCore.h>
-#include <Bpp/Phyl/Model/RateDistribution/ConstantRateDistribution.h>
-//#include <Bpp/Phyl/Model/FrequencySet/MvaFrequencySet.h>
-//#include <Bpp/Phyl/Model/FrequencySet/FrequencySet.h>
-#include <Bpp/Phyl/Io/Newick.h>
-//#include <Bpp/Phyl/Io/BppOFrequencySetFormat.h>
-//#include <Bpp/Phyl/Mapping/StochasticMapping.h>
-//#include <Bpp/Phyl/Likelihood/JointLikelihoodFunction.h>
-#include <Bpp/Phyl/Io/Newick.h>
-//Sequence evolution models
-#include <Bpp/Phyl/Model/RE08.h>
-#include <Bpp/Phyl//Model/Protein/JTT92.h>
-#include <Bpp/Phyl/Model/RateDistribution/GammaDiscreteRateDistribution.h>
-#include <Bpp/Phyl/Distance/DistanceEstimation.h>
-#include <Bpp/Phyl/Distance/NeighborJoining.h>
-#include <Bpp/Phyl/OptimizationTools.h>
-//Likelihood methods, including ancestral states reconstruction
-#include <Bpp/Phyl/Likelihood/MarginalAncestralStateReconstruction.h>
-#include <Bpp/Numeric/Prob/DiscreteDistribution.h> //Rate distributions
-#include <Bpp/Phyl/Likelihood/RHomogeneousClockTreeLikelihood.h>
-#include <Bpp/Phyl/NodeTemplate.h>
 
 // From bpp-arpip
 #include "PIP/Utils/ARPIPApplication.hpp"
@@ -167,22 +112,21 @@ using namespace bpp;
 
 int main(int argc, char *argv[]) {
 
-    std::cout << "Hello, World!" << std::endl;
-        try {
-            std::cout << "hello" << endl;
+    ARPIPApplication arpipapp
+            (argc,
+             argv,
+             std::string(software::name + " " + software::version),
+             std::string(software::releasegitbranch + " " + software::releasegitref),
+             std::string(software::releasedate + ", " + software::releasetime));
+    try {
 
-        ARPIPApplication arpipapp(argc,
-                              argv,
-                              std::string(software::name + " " + software::version),
-                              std::string(software::releasegitbranch + " " + software::releasegitref),
-                              std::string(software::releasedate + ", " + software::releasetime));
 
         if (argc < 2) {
-//            arpipapp.help();
+            arpipapp.help();
             exit(0);
         } else {
-//            arpipapp.banner();
-//            arpipapp.startTimer();
+            arpipapp.banner();
+            arpipapp.startTimer();
         }
 
         ApplicationTools::displayResult("Random seed set to", arpipapp.getSeed());

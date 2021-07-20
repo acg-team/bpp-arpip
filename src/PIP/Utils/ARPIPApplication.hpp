@@ -75,21 +75,29 @@
 
 #include <boost/asio/ip/host_name.hpp>
 
-
-
 namespace bpp{
     class ARPIPApplication {
+
     private:
-        std::string appName_;
-        std::string appBuild_;
-        std::string appVersion_;
+        std::string appName_{};
+        std::string appBuild_{};
+        std::string appVersion_{};
         mutable std::map<std::string, std::string> params_;
         bool timerStarted_;
         long seed_;
 
     public:
-        ARPIPApplication(int argc, char *argv[], const std::string &name, const std::string &strVersion, const std::string &build_date):
-                appName_(name), appBuild_(appBuild_), appVersion_(strVersion), params_(), timerStarted_(false) {
+        // No arg constructor:
+        ARPIPApplication() {}
+        // Constructor:
+        ARPIPApplication(int argc, char *argv[], const std::string &name, const std::string &strVersion, const std::string &buildDate):
+                appName_(name),
+                appBuild_(buildDate),
+                appVersion_(strVersion),
+                params_(),
+                timerStarted_(false)
+                {
+
             params_ = bpp::AttributesTools::parseOptions(argc, argv);
             bool showversion = bpp::ApplicationTools::getBooleanParameter("version", params_, false, "", true, 3);
             bpp::ApplicationTools::warningLevel = bpp::ApplicationTools::getIntParameter("warning", params_, 0, "",
@@ -107,12 +115,34 @@ namespace bpp{
             }
 
             // Print version header
-
             if (showversion) {
                 this->version();
                 exit(0);
             }
         }
+
+        // Copy constructor:
+        ARPIPApplication(const ARPIPApplication &arpipApp):
+        appName_(arpipApp.appName_),
+        appBuild_(arpipApp.appBuild_),
+        appVersion_(arpipApp.appVersion_),
+        params_(arpipApp.params_),
+        timerStarted_(arpipApp.timerStarted_),
+        seed_(arpipApp.seed_)
+        {}
+
+        // Operator overloading
+        ARPIPApplication &operator=(const ARPIPApplication &arpipApp){
+            appName_ = arpipApp.appName_;
+            appBuild_ = arpipApp.appBuild_;
+            appVersion_ = arpipApp.appVersion_;
+            params_ = arpipApp.params_;
+            timerStarted_ = arpipApp.timerStarted_;
+            seed_ = arpipApp.seed_;
+            return *this;
+        }
+
+        virtual ~ARPIPApplication() {}
 
     public:
 
