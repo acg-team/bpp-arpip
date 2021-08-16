@@ -162,3 +162,11 @@ target_link_libraries(${EXE} glog::glog)
 
 MESSAGE(STATUS "Targets OK")
 
+# Tests
+enable_testing ()
+include (CTest)
+if (BUILD_TESTING)
+    add_subdirectory (test)
+endif (BUILD_TESTING)
+MESSAGE(STATUS "Test OK")
+

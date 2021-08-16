@@ -53,3 +53,4 @@ data/
 *.fasta
 *.newick
 /data/
+/test/log/

@@ -213,9 +213,9 @@ double PIP13::getInitValue(size_t i, int state) const
 /******************************************************************************/
 
 double PIP13::getInitValue(size_t i, int state, double branchLength) const {
-    if (i >= size_) throw IndexOutOfBoundsException("PIP13::getInitValuePupko", i, 0, size_ - 1);
+    if (i >= size_) throw IndexOutOfBoundsException("PIP13::getInitValue", i, 0, size_ - 1);
     if (state < -1 || !getAlphabet()->isIntInAlphabet(state))
-        throw BadIntException(state, "PIP13::getInitValuePupko. Character " + getAlphabet()->intToChar(state) + " is not allowed in model.");
+        throw BadIntException(state, "PIP13::getInitValue. Character " + getAlphabet()->intToChar(state) + " is not allowed in model.");
     if (i == size_ - 1 && state == -1) return 1.;
 
     vector<int> states = getAlphabet()->getAlias(state);

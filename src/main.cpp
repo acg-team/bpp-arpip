@@ -67,6 +67,7 @@
 #include <Bpp/App/ApplicationTools.h>
 #include <Bpp/Numeric/VectorTools.h>
 #include <Bpp/Numeric/Function/DownhillSimplexMethod.h>
+#include <Bpp/Text/KeyvalTools.h>
 
 // From bpp-seq:
 #include <Bpp/Seq/Alphabet/AlphabetTools.h>
@@ -79,19 +80,31 @@
 #include <Bpp/Seq/Io/Fasta.h>
 
 
+
 //From bpp-phyl
-#include <Bpp/Phyl/Model/Nucleotide/K80.h>
 //Sequence evolution models
+#include <Bpp/Phyl/Model/Nucleotide/K80.h>
 #include <Bpp/Phyl/Model/RE08.h>
 #include <Bpp/Phyl/Model/Protein/WAG01.h>
 #include <Bpp/Phyl/Model/FrequenciesSet/ProteinFrequenciesSet.h>
+#include <Bpp/Phyl/Model/RateDistribution/ConstantRateDistribution.h>
 
-
+#include <Bpp/Phyl/Io/Newick.h>
+#include <Bpp/Phyl/App/PhylogeneticsApplicationTools.h>
+#include <Bpp/Phyl/Distance/PGMA.h>
+#include <Bpp/Phyl/Distance/BioNJ.h>
+#include <Bpp/Phyl/Distance/DistanceEstimation.h>
 //Phylogenetic trees
+#include <Bpp/Phyl/Tree.h>
+#include <Bpp/Phyl/Node.h>
+#include <Bpp/Phyl/TreeTemplate.h>
+
+
 
 // From bpp-arpip
 #include "PIP/Utils/ARPIPApplication.hpp"
 #include "PIP/Utils/Version.hpp"
+#include "PIP/Utils/ARPIPTools.hpp"
 
 /*
 * From GSL:
@@ -110,20 +123,33 @@
 */
 #include <boost/log/trivial.hpp>
 
-using namespace bpp;
+/*
+* From Gtest
+*/
+#include <gtest/gtest.h>
 
+//using namespace bpp;
+
+//TEST(PIPLikeLihoodTest, Trivial){
+//    EXPECT_EQ(1, 1);
+//
+//}
 /******************************************************************************/
 /*********************************** Main *************************************/
 /******************************************************************************/
 
-
 int main(int argc, char *argv[]) {
-//    FLAGS_log_dir = "../test/data/";
-//    google::InitGoogleLogging(software::name.c_str());
-//    google::InstallFailureSignalHandler();
+    FLAGS_log_dir = "../test/log/";
+    ::google::InitGoogleLogging(software::name.c_str());
+    ::google::InstallFailureSignalHandler();
+
+
+//    ::testing::InitGoogleTest(&argc, argv);
+//    return RUN_ALL_TESTS();
+
 
     try {
-        ARPIPApplication arpipapp
+        bpp::ARPIPApplication arpipapp
                 (argc,
                  argv,
                  std::string(software::name + " " + software::version),
@@ -138,60 +164,344 @@ int main(int argc, char *argv[]) {
             arpipapp.startTimer();
         }
 
-        ApplicationTools::displayResult("Random seed set to", arpipapp.getSeed());
-        ApplicationTools::displayResult("Log files location", std::string("current execution path"));
+        bool PAR = bpp::ApplicationTools::getBooleanParameter("", arpipapp.getParams(), false);
+
+
+        bpp::ApplicationTools::displayResult("Random seed set to", arpipapp.getSeed());
+        bpp::ApplicationTools::displayResult("Log files location", std::string("current execution path"));
         /************************************************** INPUT *****************************************************/
         /* ***************************************************
          * Standard workflow
          * [INPUT]
          * 1. tree + alignment => (1.1) just parse everything
-         * 2. alignment  => (2.1) parse alignment => (2.2) generate tree using bioNJ
-         * (For future release!!!)
-         * 3. sequences + tree => (3.1) Perform alignment using ProPIP => (3.2) generate tree using bioNJ
+         * 2. alignment  => (2.1) parse alignment => (2.2) generate tree using one of supported methods
+         * 3. sequences + tree => (3.1) Perform alignment using ProPIP => (3.2) generate tree using one of supported methods (For future release!!!)
          */
+
         double lambda = 0;
         double mu = 0;
-        bool estimatePIPparameters = false;
+        bool estimatedPIPParameters = false;
+
+        std::string App_model_substitution = bpp::ApplicationTools::getStringParameter("model", arpipapp.getParams(),
+                                                                                       "JC69", "", true, true);
+
+        std::string modelStringName;
+        std::map<std::string, std::string> modelMap;
+        bpp::KeyvalTools::parseProcedure(App_model_substitution, modelStringName, modelMap);
+        bool App_model_indels = modelStringName == "PIP";
+
+        // AMONG-SITE-RATE-VARIATION
+        // Markov-modulated Markov model: constant!
+        bpp::DiscreteDistribution *rateDist = new bpp::ConstantRateDistribution();
+        bpp::ApplicationTools::displayMessage("This model works with constant rate distribution for DNA/AA.");
+
         /********************************************* Process the MSA ************************************************/
         // ALPHABET
         // The alphabet object contains the not-extended alphabet as requested by the user,
         // while in computation we use the extended version of the same alphabet.
-        std::string defaultAlphabet = ApplicationTools::getStringParameter("alphabet", arpipapp.getParams(),
+        std::string App_alphabet = bpp::ApplicationTools::getStringParameter("alphabet", arpipapp.getParams(),
                                                                          "DNA", "", true, true);
 
         // Alphabet without gaps
-        bpp::Alphabet *alphabetNoGaps = SequenceApplicationTools::getAlphabet(arpipapp.getParams(), "", false,
+        bpp::Alphabet *alphabetNoGaps = bpp::SequenceApplicationTools::getAlphabet(arpipapp.getParams(), "", false,
                                                                                        false);
 
         // Genetic code
-        unique_ptr<GeneticCode> gCode;
+        unique_ptr<bpp::GeneticCode> gCode;
 
         // Alphabet used for all the computational purpose (it can allows for gap extension)
-//        bpp::Alphabet *alphabet;
+        bpp::Alphabet *alphabet;
+        if (App_alphabet.find("DNA") != std::string::npos ) {
+            alphabet = new bpp::DNA();
+        } else if (App_alphabet.find("Protein") != std::string::npos) {
+            alphabet = new bpp::ProteicAlphabet();
+        }
+
+        // Check what is the alphabet:
+        bpp::ApplicationTools::displayResult("The alphabet is", alphabet->getAlphabetType());
+
+        bpp::ApplicationTools::displayMessage("\n[Preparing input Files]");
+        std::string input_sequences = bpp::ApplicationTools::getAFilePath("input.sequence.file", arpipapp.getParams(),
+                                                                         true, true, "", false, "", 1);
+
+        bpp::SequenceContainer *sequences = nullptr;
+        bpp::SiteContainer *sites = nullptr;
+
+        try {
+
+            // Read aligned sequences
+            bpp::Fasta seqReader;
+            sequences = seqReader.readSequences(input_sequences, alphabet);
+            bpp::ApplicationTools::displayResult("Number of sequences",
+                                            sequences->getNumberOfSequences());
 
 
-        cout << "Reading MSA from input file" << endl;
-        Fasta seqReader;
-        SequenceContainer *sequences = seqReader.readSequences("../test/data/input/test_01/sim-0_msa_new.fasta", &AlphabetTools::PROTEIN_ALPHABET);
-        SiteContainer *sites = new VectorSiteContainer(*sequences);
+            bpp::VectorSiteContainer *allSites = bpp::SequenceApplicationTools::getSiteContainer(alphabet, arpipapp.getParams());
 
-        // process character data
-        const ProteicAlphabet *alphabet = new ProteicAlphabet;
-        cout << alphabet->getAlphabetType() << endl;
-        ReversibleSubstitutionModel *wagModel = new WAG01(alphabet);
-        std::string wag = wagModel->getName();
-        wagModel->setFreqFromData(*sites, 0.01);
-        FrequenciesSet *freqSet = (FrequenciesSet *) wagModel->getFrequenciesSet();
+            sites = bpp::SequenceApplicationTools::getSitesToAnalyse(*allSites, arpipapp.getParams(), "", true,
+                                                                0, true, 1);
+
+            // Removing gap within sites:
+            //sites = SequenceApplicationTools::getSitesToAnalyse(*allSites, arpipapp.getParams(), "", true,
+            //                                                    1, true, 1);
+
+            delete allSites;
+
+            bpp::ApplicationTools::displayResult("Number of sequences", sites->getNumberOfSequences());
+            bpp::ApplicationTools::displayResult("Number of sites", sites->getNumberOfSites());
+
+
+        } catch (bpp::Exception &e) {
+            LOG(FATAL) << "Error when reading sequence file due to: " << e.message();
+        }
+
+
+
+        /**************************************** Process the tree ****************************************************/
+        // TREE
+        bpp::ApplicationTools::displayMessage("\n[Preparing initial tree]");
+        try {
+
+            bpp::Tree *tree = nullptr;
+            string initTreeOpt = bpp::ApplicationTools::getStringParameter("init.tree", arpipapp.getParams(),
+                                                                           "user", "", false, 1);
+            bpp::ApplicationTools::displayResult("Initial tree", initTreeOpt);
+            if (initTreeOpt == "user") {
+
+                DLOG(INFO) << "Tree Description:\n";
+                DLOG(INFO) << "[input tree parser] Provided by User:\n";
+                tree = bpp::PhylogeneticsApplicationTools::getTree(arpipapp.getParams());
+                DLOG(INFO) << "[Input tree parser] Number of Nodes" << tree->getNumberOfNodes() << std::endl;
+            } else {
+                // If there is no tree as input
+                std::string App_distance_method = bpp::ApplicationTools::getStringParameter("init.tree.method",
+                                                                                            arpipapp.getParams(), "nj");
+                bpp::ApplicationTools::displayResult("Initial tree reconstruction method", App_distance_method);
+                DLOG(INFO) << "[input tree parser] Reconstruction Method: " << App_distance_method;
+
+                bpp::AgglomerativeDistanceMethod *distMethod = nullptr;
+
+                std::string token = App_distance_method.substr(0, App_distance_method.find("-"));
+
+                if (token == "wpgma") {
+                    auto *wpgma = new bpp::PGMA(true);
+                    distMethod = wpgma;
+                } else if (token == "upgma") {
+                    auto *upgma = new bpp::PGMA(false);
+                    distMethod = upgma;
+                } else if (token == "nj") {
+                    auto *nj = new bpp::NeighborJoining();
+                    nj->outputPositiveLengths(true);
+                    distMethod = nj;
+                } else if (token == "bionj") {
+                    auto *bionj = new bpp::BioNJ();
+                    bionj->outputPositiveLengths(true);
+                    distMethod = bionj;
+                } else throw bpp::Exception("Tree reconstruction method is not supported.");
+
+                // Building tree using one of the mentioned methods
+                /* ***************************************************
+                 * Standard workflow
+                 * 1. (1.1) Build temporary substitution model (1.2) build a distance matrix using the model (1.3) tree reconstruction.
+                */
+
+                // PIP parameter is computed using known tree and for computing the tree we have to assume that the PIP param is given
+
+                std::string tmpBaseModel;
+
+                std::map<std::string, std::string> tmpBaseModelMap;
+                bpp::KeyvalTools::parseProcedure(modelMap["model"], tmpBaseModel, tmpBaseModelMap);
+
+                bpp::SubstitutionModel *tmpSModel = bpp::PhylogeneticsApplicationTools::getSubstitutionModel(alphabetNoGaps,
+                                                                                                          gCode.get(),
+                                                                                                          sites,
+                                                                                                          modelMap, "",
+                                                                                                          true, false,
+                                                                                                          0);
+                bpp::ApplicationTools::displayResult(
+                        "Default model without gap is used", tmpSModel->getName());
+
+                // Cloning the site for building the tree
+                bpp::SiteContainer *tmpSites = sites->clone();
+
+                // Removing gappy regions
+                bpp::ApplicationTools::displayTask("Removing gap only sites");
+                bpp::SiteContainerTools::removeGapOnlySites(*tmpSites);
+                std::cout << endl;
+
+                bpp::ApplicationTools::displayTask("Changing gaps to unknown characters");
+                bpp::SiteContainerTools::changeGapsToUnknownCharacters(*tmpSites);
+
+                // Computing distance matrix
+                bpp::DistanceEstimation distanceMethod(tmpSModel, rateDist, tmpSites);
+
+
+                // Retrieve the computed distances
+                bpp::DistanceMatrix *distances = distanceMethod.getMatrix();
+
+                distMethod->setDistanceMatrix(*distances);
+                distMethod->computeTree();
+                tree = distMethod->getTree();
+                DLOG(INFO) << "[input tree parser] Reconstructed by: " << distMethod->getName() << std::endl;
+
+                delete tmpSites;
+                delete distances;
+                delete distMethod;
+//                delete tmpSModel;
+                std::cout << endl;
+            }
+
+
+            bpp::TreeTemplate<bpp::Node> *ttree_ = new bpp::TreeTemplate<bpp::Node>(*tree);
+
+            // If tree is mulifurcation, then resolve it with midpoint rooting
+            if (ttree_->isMultifurcating()) {
+                try{
+                    bpp::ApplicationTools::displayMessage("Tree is multifuracted.");
+                    bpp::TreeTemplateTools::midRoot(*(ttree_), bpp::TreeTemplateTools::MIDROOT_VARIANCE, false);
+                    DLOG(INFO) << "Tree is now binary by Midpoint rooting method." << std::endl;
+
+                } catch (bpp::Exception e){
+                    bpp::ApplicationTools::displayError("Error when multifuracting the tree");
+                    LOG(FATAL) << "Error when multifuracting the tree" << e.message();
+                }
+            }
+
+            // If tree is not rooted, resolve it by picking a random node
+            if (ttree_->isRooted()) {
+                int root = tree->getRootId();
+                cout << "Root is found!!!!" << "(" << root << "=root)" << endl;
+                DLOG(INFO) << "Tree is rooted.";
+            } else {
+                bpp::ApplicationTools::displayMessage("Tree is not rooted: the tree must have a root in PIP model!!!!");
+                DLOG(INFO) << "The input tree is not rooted, the tree must have a root in PIP model!!!!" << endl;
+                int root = ttree_->getRootId();
+                int newRoot = rand() % tree->getNumberOfNodes() + 1;
+                ttree_->newOutGroup(newRoot);// it should be a random node!
+                if(ttree_->isRooted()){
+                    bpp::ApplicationTools::displayResult("New random root is", root);
+                    DLOG(INFO) << "Now, the tree is rooted....." << "(node " << root << " is the new root)" << endl;
+                } else throw bpp::Exception("Tree is not rooted yet.");
+            }
+
+            DLOG(INFO) << "[Input tree parser] Number of Nodes" << tree->getNumberOfNodes() << std::endl;
+
+
+
+            // Tree description
+            bpp::ApplicationTools::displayResult("Number of nodes", ttree_->getNumberOfNodes());
+            bpp::ApplicationTools::displayResult("Number of leaves", ttree_->getNumberOfLeaves());
+            bpp::ApplicationTools::displayResult("Total tree length, aka tau", ttree_->getTotalLength());
+
+
+            // Rename internal nodes with standard Vxx * where xx is a progressive number
+            ttree_->setNodeName(tree->getRootId(), "root");
+            ARPIPTreeTools::renameInternalNodes(ttree_);
+
+            // Write down the reconstructed tree
+            bpp::PhylogeneticsApplicationTools::writeTree(*ttree_, arpipapp.getParams());
+            DLOG(INFO) << "[Initial Tree Topology] " << bpp::TreeTools::treeToParenthesis(*tree, true);
+
+            // Write down the relation between nodes
+            vector<string> strTreeFileAncestor;
+            strTreeFileAncestor.resize(ttree_->getNumberOfNodes());
+            // Store relation between node in a string vector
+            ARPIPTreeTools::TreeAncestorRelation(ttree_->getRootNode(), strTreeFileAncestor);
+            ARPIPIOTools::WriteNodeRelationToFile(strTreeFileAncestor, arpipapp.getParam("output.noderel.file"));
+
+
+        } catch (bpp::Exception e) {
+            LOG(FATAL) << "Error when processing tree file due to: " << e.message();
+        }
+
+        /*********************************** Process the substitution model ********************************************/
+
+        // SUBSTITUTION MODEL
+        bpp::ApplicationTools::displayMessage("\n[Setting up substitution model]");
+
+        bpp::SubstitutionModel *sModel = nullptr;
+        bpp::TransitionModel *tModel = nullptr;
+
+
+        // Instantiate a substitution model and extend it with PIP
+        bool computeFreqFromData = false;
+        std::string baseModel{};
+
+        std::map<std::string, std::string> baseModelMap;
+        bpp::KeyvalTools::parseProcedure(modelMap["model"], baseModel, baseModelMap);
+
+        std::vector<std::string> modelKeys{};
+        for (auto k = baseModelMap.begin(); k != baseModelMap.end(); ++k)modelKeys.push_back(k->first);
+
+        if (!modelKeys.empty()) {
+            baseModel += "(";
+            for (auto &key:modelKeys) {
+                if (key != "initFreqs") {
+                    baseModel += key + "=" + baseModelMap[key];
+                } else {
+                    if (baseModelMap[key] == "observed") {
+                        computeFreqFromData = true;
+                    }
+                }
+                baseModel += ",";
+            }
+            baseModel.pop_back();
+            baseModel += ")";
+            modelMap["model"] = baseModel;
+        }
+
+        if (App_alphabet.find("Protein") != std::string::npos || App_alphabet.find("DNA") != std::string::npos) {
+            sModel = bpp::PhylogeneticsApplicationTools::getSubstitutionModel(alphabetNoGaps, gCode.get(), sites,
+                                                                              modelMap, "",
+                                                                              true, false, 0);
+        }else{
+            sModel = bpp::PhylogeneticsApplicationTools::getSubstitutionModel(alphabet, gCode.get(), sites, modelMap,
+                                                                              "", true, false, 0);
+        }
+
+        if (modelMap.find("initFreqs") != modelMap.end()) {
+            if (modelMap["initFreqs"] == "observed") {
+                estimatedPIPParameters = true;
+            }
+        } else if (modelMap.find("lambda") == modelMap.end() ||
+                   modelMap.find("mu") == modelMap.end()) {
+            // One of the PIP parameters is missing
+            estimatedPIPParameters = true;
+        }
+
+        /************************************** Inference Indel rates *************************************************/
+        // Estimate PIP Parameters: inference of Indel rates
+        if (estimatedPIPParameters) {
+//            PIPInferenceIndelRates *PIPModelParam = new PIPInferenceIndelRates(*sites, *tree);
+
+        } else {
+            lambda = (modelMap.find("lambda") == modelMap.end()) ? 0.1 : std::stod(modelMap["lambda"]);
+            mu = (modelMap.find("mu") == modelMap.end()) ? 0.2 : std::stod(modelMap["mu"]);
+
+            //sim-0 True:
+            // lambda = 10 ;
+            // mu = 0.1
+
+            // prank
+            //mu = 0.080935;
+            //lambda = 107.767746;
+
+            // ProPIP
+            //mu = 0.086234;
+            //lambda = 116.866821;
+        }
+        DLOG(INFO) << "[PIP model] Fixed PIP parameters to (lambda=" << lambda << ",mu=" << mu << "," "I="
+                   << lambda * mu << ")";
+
+
+        //        ReversibleSubstitutionModel *wagModel = new WAG01(alphabet);
+//        std::string wag = wagModel->getName();
+//        wagModel->setFreqFromData(*sites, 0.01);
+//        FrequenciesSet *freqSet = (FrequenciesSet *) wagModel->getFrequenciesSet();
         //            ReversibleSubstitutionModel *wagModelPlus = new WAG01(alphabet, freqSet,1);
-        double t = 0.1;
+//        double t = 0.1;
 
 
-        /* Process the tree*/
-        cout << "Testing parsing a directory for multiple trees..." << endl;
-    //    Newick tReader;
-    //    string treeFileName ="../test/data/input/test_01/sim-0_new.newick";
-    //    Tree *tree = tReader.read(treeFileName);
-    //    bpp::Fasta seqReader;
 
         /************************************ Deleting the pointers **********************************************/
 
