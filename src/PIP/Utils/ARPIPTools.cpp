@@ -55,7 +55,7 @@
 
 
 #include <Bpp/Phyl/TreeTemplate.h>
-#include "ARPIPTools.hpp"
+#include "ARPIPTools.h"
 #include <iostream>
 #include <iterator>
 
@@ -113,7 +113,7 @@ void ARPIPTreeTools::renameInternalNodes(bpp::TreeTemplate<Node> *ttree, std::st
 
 
 /******************************************************************************/
-/****************************** ARPIPIOTools ********************************/
+/******************************* ARPIPIOTools *********************************/
 /******************************************************************************/
 
 void ARPIPIOTools::WriteNodeRelationToFile(std::vector<std::string> &params, std::string path) {

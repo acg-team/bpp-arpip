@@ -52,8 +52,8 @@
  *
  * @see For more information visit:
  */
-#ifndef ARPIP_ARPIPAPPLICATION_HPP
-#define ARPIP_ARPIPAPPLICATION_HPP
+#ifndef ARPIP_ARPIPAPPLICATION_H
+#define ARPIP_ARPIPAPPLICATION_H
 
 // From the STL:
 #include <iostream>
@@ -206,4 +206,4 @@ namespace bpp{
 
 }// end of namespace bpp.
 
-#endif //ARPIP_ARPIPAPPLICATION_HPP
+#endif //ARPIP_ARPIPAPPLICATION_H

@@ -53,11 +53,19 @@
  * @see For more information visit:
  */
 
-#ifndef ARPIP_ARPIPTOOLS_HPP
-#define ARPIP_ARPIPTOOLS_HPP
+#ifndef ARPIP_ARPIPTOOLS_H
+#define ARPIP_ARPIPTOOLS_H
 
 
 #include <Bpp/Phyl/Node.h>
+
+
+namespace PIPVectorTools {
+    typedef std::vector<std::string> Vstring;
+    typedef std::vector<Vstring> VVstring;
+    typedef std::vector<VVstring> VVVstring;
+    typedef std::vector<VVVstring> VVVVVstring;
+}
 
 
 
@@ -66,14 +74,23 @@ namespace ARPIPIOTools {
 
 }
 
+
+
 namespace ARPIPTreeTools {
 
+    /**
+    * @brief Father-child relation is extracted.
+    * NB: This method is recursive.
+    */
     void TreeAncestorRelation(bpp::Node *node, std::vector <std::string> &relation);
 
+    /**
+    * @brief Rename internal nodes with standard Vxx * where xx is a progressive number during post-order traverse of the tree.
+    */
     void renameInternalNodes(bpp::TreeTemplate<bpp::Node> *ttree, std::string prefix = "V");
 
 
 
 }
 
-#endif //ARPIP_ARPIPTOOLS_HPP
+#endif //ARPIP_ARPIPTOOLS_H

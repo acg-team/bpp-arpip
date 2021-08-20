@@ -102,9 +102,10 @@
 
 
 // From bpp-arpip
-#include "PIP/Utils/ARPIPApplication.hpp"
-#include "PIP/Utils/Version.hpp"
-#include "PIP/Utils/ARPIPTools.hpp"
+#include "PIP/Utils/ARPIPApplication.h"
+#include "PIP/Utils/ARPIPVersion.h"
+#include "PIP/Utils/ARPIPTools.h"
+#include "PIP/Likelihood/PIPDRHomogeneousTreeLikelihood.h"
 
 /*
 * From GSL:
@@ -260,159 +261,154 @@ int main(int argc, char *argv[]) {
         /**************************************** Process the tree ****************************************************/
         // TREE
         bpp::ApplicationTools::displayMessage("\n[Preparing initial tree]");
-        try {
+        bpp::Tree *tree = nullptr;
+        string initTreeOpt = bpp::ApplicationTools::getStringParameter("init.tree", arpipapp.getParams(),
+                                                                       "user", "", false, 1);
+        bpp::ApplicationTools::displayResult("Initial tree", initTreeOpt);
+        if (initTreeOpt == "user") {
 
-            bpp::Tree *tree = nullptr;
-            string initTreeOpt = bpp::ApplicationTools::getStringParameter("init.tree", arpipapp.getParams(),
-                                                                           "user", "", false, 1);
-            bpp::ApplicationTools::displayResult("Initial tree", initTreeOpt);
-            if (initTreeOpt == "user") {
-
-                DLOG(INFO) << "Tree Description:\n";
-                DLOG(INFO) << "[input tree parser] Provided by User:\n";
-                tree = bpp::PhylogeneticsApplicationTools::getTree(arpipapp.getParams());
-                DLOG(INFO) << "[Input tree parser] Number of Nodes" << tree->getNumberOfNodes() << std::endl;
-            } else {
-                // If there is no tree as input
-                std::string App_distance_method = bpp::ApplicationTools::getStringParameter("init.tree.method",
-                                                                                            arpipapp.getParams(), "nj");
-                bpp::ApplicationTools::displayResult("Initial tree reconstruction method", App_distance_method);
-                DLOG(INFO) << "[input tree parser] Reconstruction Method: " << App_distance_method;
-
-                bpp::AgglomerativeDistanceMethod *distMethod = nullptr;
-
-                std::string token = App_distance_method.substr(0, App_distance_method.find("-"));
-
-                if (token == "wpgma") {
-                    auto *wpgma = new bpp::PGMA(true);
-                    distMethod = wpgma;
-                } else if (token == "upgma") {
-                    auto *upgma = new bpp::PGMA(false);
-                    distMethod = upgma;
-                } else if (token == "nj") {
-                    auto *nj = new bpp::NeighborJoining();
-                    nj->outputPositiveLengths(true);
-                    distMethod = nj;
-                } else if (token == "bionj") {
-                    auto *bionj = new bpp::BioNJ();
-                    bionj->outputPositiveLengths(true);
-                    distMethod = bionj;
-                } else throw bpp::Exception("Tree reconstruction method is not supported.");
-
-                // Building tree using one of the mentioned methods
-                /* ***************************************************
-                 * Standard workflow
-                 * 1. (1.1) Build temporary substitution model (1.2) build a distance matrix using the model (1.3) tree reconstruction.
-                */
-
-                // PIP parameter is computed using known tree and for computing the tree we have to assume that the PIP param is given
-
-                std::string tmpBaseModel;
-
-                std::map<std::string, std::string> tmpBaseModelMap;
-                bpp::KeyvalTools::parseProcedure(modelMap["model"], tmpBaseModel, tmpBaseModelMap);
-
-                bpp::SubstitutionModel *tmpSModel = bpp::PhylogeneticsApplicationTools::getSubstitutionModel(alphabetNoGaps,
-                                                                                                          gCode.get(),
-                                                                                                          sites,
-                                                                                                          modelMap, "",
-                                                                                                          true, false,
-                                                                                                          0);
-                bpp::ApplicationTools::displayResult(
-                        "Default model without gap is used", tmpSModel->getName());
-
-                // Cloning the site for building the tree
-                bpp::SiteContainer *tmpSites = sites->clone();
-
-                // Removing gappy regions
-                bpp::ApplicationTools::displayTask("Removing gap only sites");
-                bpp::SiteContainerTools::removeGapOnlySites(*tmpSites);
-                std::cout << endl;
-
-                bpp::ApplicationTools::displayTask("Changing gaps to unknown characters");
-                bpp::SiteContainerTools::changeGapsToUnknownCharacters(*tmpSites);
-
-                // Computing distance matrix
-                bpp::DistanceEstimation distanceMethod(tmpSModel, rateDist, tmpSites);
-
-
-                // Retrieve the computed distances
-                bpp::DistanceMatrix *distances = distanceMethod.getMatrix();
-
-                distMethod->setDistanceMatrix(*distances);
-                distMethod->computeTree();
-                tree = distMethod->getTree();
-                DLOG(INFO) << "[input tree parser] Reconstructed by: " << distMethod->getName() << std::endl;
-
-                delete tmpSites;
-                delete distances;
-                delete distMethod;
-//                delete tmpSModel;
-                std::cout << endl;
-            }
-
-
-            bpp::TreeTemplate<bpp::Node> *ttree_ = new bpp::TreeTemplate<bpp::Node>(*tree);
-
-            // If tree is mulifurcation, then resolve it with midpoint rooting
-            if (ttree_->isMultifurcating()) {
-                try{
-                    bpp::ApplicationTools::displayMessage("Tree is multifuracted.");
-                    bpp::TreeTemplateTools::midRoot(*(ttree_), bpp::TreeTemplateTools::MIDROOT_VARIANCE, false);
-                    DLOG(INFO) << "Tree is now binary by Midpoint rooting method." << std::endl;
-
-                } catch (bpp::Exception e){
-                    bpp::ApplicationTools::displayError("Error when multifuracting the tree");
-                    LOG(FATAL) << "Error when multifuracting the tree" << e.message();
-                }
-            }
-
-            // If tree is not rooted, resolve it by picking a random node
-            if (ttree_->isRooted()) {
-                int root = tree->getRootId();
-                cout << "Root is found!!!!" << "(" << root << "=root)" << endl;
-                DLOG(INFO) << "Tree is rooted.";
-            } else {
-                bpp::ApplicationTools::displayMessage("Tree is not rooted: the tree must have a root in PIP model!!!!");
-                DLOG(INFO) << "The input tree is not rooted, the tree must have a root in PIP model!!!!" << endl;
-                int root = ttree_->getRootId();
-                int newRoot = rand() % tree->getNumberOfNodes() + 1;
-                ttree_->newOutGroup(newRoot);// it should be a random node!
-                if(ttree_->isRooted()){
-                    bpp::ApplicationTools::displayResult("New random root is", root);
-                    DLOG(INFO) << "Now, the tree is rooted....." << "(node " << root << " is the new root)" << endl;
-                } else throw bpp::Exception("Tree is not rooted yet.");
-            }
-
+            DLOG(INFO) << "Tree Description:\n";
+            DLOG(INFO) << "[input tree parser] Provided by User:\n";
+            tree = bpp::PhylogeneticsApplicationTools::getTree(arpipapp.getParams());
             DLOG(INFO) << "[Input tree parser] Number of Nodes" << tree->getNumberOfNodes() << std::endl;
+        } else {
+            // If there is no tree as input
+            std::string App_distance_method = bpp::ApplicationTools::getStringParameter("init.tree.method",
+                                                                                        arpipapp.getParams(), "nj");
+            bpp::ApplicationTools::displayResult("Initial tree reconstruction method", App_distance_method);
+            DLOG(INFO) << "[input tree parser] Reconstruction Method: " << App_distance_method;
+
+            bpp::AgglomerativeDistanceMethod *distMethod = nullptr;
+
+            std::string token = App_distance_method.substr(0, App_distance_method.find("-"));
+
+            if (token == "wpgma") {
+                auto *wpgma = new bpp::PGMA(true);
+                distMethod = wpgma;
+            } else if (token == "upgma") {
+                auto *upgma = new bpp::PGMA(false);
+                distMethod = upgma;
+            } else if (token == "nj") {
+                auto *nj = new bpp::NeighborJoining();
+                nj->outputPositiveLengths(true);
+                distMethod = nj;
+            } else if (token == "bionj") {
+                auto *bionj = new bpp::BioNJ();
+                bionj->outputPositiveLengths(true);
+                distMethod = bionj;
+            } else throw bpp::Exception("Tree reconstruction method is not supported.");
+
+            // Building tree using one of the mentioned methods
+            /* ***************************************************
+             * Standard workflow
+             * 1. (1.1) Build temporary substitution model (1.2) build a distance matrix using the model (1.3) tree reconstruction.
+            */
+
+            // PIP parameter is computed using known tree and for computing the tree we have to assume that the PIP param is given
+
+            std::string tmpBaseModel;
+
+            std::map<std::string, std::string> tmpBaseModelMap;
+            bpp::KeyvalTools::parseProcedure(modelMap["model"], tmpBaseModel, tmpBaseModelMap);
+
+            bpp::SubstitutionModel *tmpSModel = bpp::PhylogeneticsApplicationTools::getSubstitutionModel(alphabetNoGaps,
+                                                                                                      gCode.get(),
+                                                                                                      sites,
+                                                                                                      modelMap, "",
+                                                                                                      true, false,
+                                                                                                      0);
+            bpp::ApplicationTools::displayResult(
+                    "Default model without gap is used", tmpSModel->getName());
+
+            // Cloning the site for building the tree
+            bpp::SiteContainer *tmpSites = sites->clone();
+
+            // Removing gappy regions
+            bpp::ApplicationTools::displayTask("Removing gap only sites");
+            bpp::SiteContainerTools::removeGapOnlySites(*tmpSites);
+            std::cout << endl;
+
+            bpp::ApplicationTools::displayTask("Changing gaps to unknown characters");
+            bpp::SiteContainerTools::changeGapsToUnknownCharacters(*tmpSites);
+
+            // Computing distance matrix
+            bpp::DistanceEstimation distanceMethod(tmpSModel, rateDist, tmpSites);
 
 
+            // Retrieve the computed distances
+            bpp::DistanceMatrix *distances = distanceMethod.getMatrix();
 
-            // Tree description
-            bpp::ApplicationTools::displayResult("Number of nodes", ttree_->getNumberOfNodes());
-            bpp::ApplicationTools::displayResult("Number of leaves", ttree_->getNumberOfLeaves());
-            bpp::ApplicationTools::displayResult("Total tree length, aka tau", ttree_->getTotalLength());
+            distMethod->setDistanceMatrix(*distances);
+            distMethod->computeTree();
+            tree = distMethod->getTree();
+            DLOG(INFO) << "[input tree parser] Reconstructed by: " << distMethod->getName() << std::endl;
 
-
-            // Rename internal nodes with standard Vxx * where xx is a progressive number
-            ttree_->setNodeName(tree->getRootId(), "root");
-            ARPIPTreeTools::renameInternalNodes(ttree_);
-
-            // Write down the reconstructed tree
-            bpp::PhylogeneticsApplicationTools::writeTree(*ttree_, arpipapp.getParams());
-            DLOG(INFO) << "[Initial Tree Topology] " << bpp::TreeTools::treeToParenthesis(*tree, true);
-
-            // Write down the relation between nodes
-            vector<string> strTreeFileAncestor;
-            strTreeFileAncestor.resize(ttree_->getNumberOfNodes());
-            // Store relation between node in a string vector
-            ARPIPTreeTools::TreeAncestorRelation(ttree_->getRootNode(), strTreeFileAncestor);
-            ARPIPIOTools::WriteNodeRelationToFile(strTreeFileAncestor, arpipapp.getParam("output.noderel.file"));
-
-
-        } catch (bpp::Exception e) {
-            LOG(FATAL) << "Error when processing tree file due to: " << e.message();
+            delete tmpSites;
+            delete distances;
+            delete distMethod;
+//                delete tmpSModel;
+            std::cout << endl;
         }
+
+
+        bpp::TreeTemplate<bpp::Node> *ttree_ = new bpp::TreeTemplate<bpp::Node>(*tree);
+
+        // If tree is mulifurcation, then resolve it with midpoint rooting
+        if (ttree_->isMultifurcating()) {
+            try{
+                bpp::ApplicationTools::displayMessage("Tree is multifuracted.");
+                bpp::TreeTemplateTools::midRoot(*(ttree_), bpp::TreeTemplateTools::MIDROOT_VARIANCE, false);
+                DLOG(INFO) << "Tree is now binary by Midpoint rooting method." << std::endl;
+
+            } catch (bpp::Exception e){
+                bpp::ApplicationTools::displayError("Error when multifuracting the tree");
+                LOG(FATAL) << "Error when multifuracting the tree" << e.message();
+            }
+        }
+
+        // If tree is not rooted, resolve it by picking a random node
+        if (ttree_->isRooted()) {
+            int root = tree->getRootId();
+            cout << "Root is found!!!!" << "(" << root << "=root)" << endl;
+            DLOG(INFO) << "Tree is rooted.";
+        } else {
+            bpp::ApplicationTools::displayMessage("Tree is not rooted: the tree must have a root in PIP model!!!!");
+            DLOG(INFO) << "The input tree is not rooted, the tree must have a root in PIP model!!!!" << endl;
+            int root = ttree_->getRootId();
+            int newRoot = rand() % tree->getNumberOfNodes() + 1;
+            ttree_->newOutGroup(newRoot);// it should be a random node!
+            if(ttree_->isRooted()){
+                bpp::ApplicationTools::displayResult("New random root is", root);
+                DLOG(INFO) << "Now, the tree is rooted....." << "(node " << root << " is the new root)" << endl;
+            } else throw bpp::Exception("Tree is not rooted yet.");
+        }
+
+        DLOG(INFO) << "[Input tree parser] Number of Nodes" << tree->getNumberOfNodes() << std::endl;
+
+
+
+        // Tree description
+        bpp::ApplicationTools::displayResult("Number of nodes", ttree_->getNumberOfNodes());
+        bpp::ApplicationTools::displayResult("Number of leaves", ttree_->getNumberOfLeaves());
+        bpp::ApplicationTools::displayResult("Total tree length, aka tau", ttree_->getTotalLength());
+
+
+        // Rename internal nodes with standard Vxx * where xx is a progressive number
+        ttree_->setNodeName(tree->getRootId(), "root");
+        ARPIPTreeTools::renameInternalNodes(ttree_);
+
+        // Write down the reconstructed tree
+        bpp::PhylogeneticsApplicationTools::writeTree(*ttree_, arpipapp.getParams());
+        DLOG(INFO) << "[Initial Tree Topology] " << bpp::TreeTools::treeToParenthesis(*tree, true);
+
+        // Write down the relation between nodes
+        vector<string> strTreeFileAncestor;
+        strTreeFileAncestor.resize(ttree_->getNumberOfNodes());
+        // Store relation between node in a string vector
+        ARPIPTreeTools::TreeAncestorRelation(ttree_->getRootNode(), strTreeFileAncestor);
+        ARPIPIOTools::WriteNodeRelationToFile(strTreeFileAncestor, arpipapp.getParam("output.node_rel.file"));
+
+
 
         /*********************************** Process the substitution model ********************************************/
 
@@ -472,7 +468,7 @@ int main(int argc, char *argv[]) {
         /************************************** Inference Indel rates *************************************************/
         // Estimate PIP Parameters: inference of Indel rates
         if (estimatedPIPParameters) {
-//            PIPInferenceIndelRates *PIPModelParam = new PIPInferenceIndelRates(*sites, *tree);
+//            PIPInferenceIndelRates *PIPIndelParam = new PIPInferenceIndelRates(*sites, *tree);
 
         } else {
             lambda = (modelMap.find("lambda") == modelMap.end()) ? 0.1 : std::stod(modelMap["lambda"]);
@@ -500,6 +496,17 @@ int main(int argc, char *argv[]) {
 //        FrequenciesSet *freqSet = (FrequenciesSet *) wagModel->getFrequenciesSet();
         //            ReversibleSubstitutionModel *wagModelPlus = new WAG01(alphabet, freqSet,1);
 //        double t = 0.1;
+
+        /*********************************** Tree Likelihood Computation ******************************************/
+
+
+        bpp::PIPDRHomogeneousTreeLikelihood *likFunctionPIP20 = new bpp::PIPDRHomogeneousTreeLikelihood(*ttree_, *sites,
+                                                                                                        rDist,
+                                                                                                        mu, lambda,
+                                                                                                        false);
+
+
+
 
 
 
