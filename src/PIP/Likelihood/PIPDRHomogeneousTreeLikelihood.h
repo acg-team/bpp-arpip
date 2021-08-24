@@ -63,7 +63,6 @@
 // From bpp-arpip
 #include "PIPDRTreeLikelihood.h"
 #include "PIPDRTreeLikelihoodData.h"
-#include "PIPParameterData.h"
 
 
 // From bpp-core
@@ -237,8 +236,8 @@ namespace bpp {
                 const SiteContainer &data,
                 TransitionModel *model,
                 DiscreteDistribution *rDist,
-                const double mu,
                 const double lambda,
+                const double mu,
                 bool checkRooted = true,
                 bool verbose = true
         );
@@ -253,7 +252,7 @@ namespace bpp {
         PIPDRHomogeneousTreeLikelihood &operator=(const PIPDRHomogeneousTreeLikelihood &lik);
 
         /**
-          * @brief destructor.
+          * @brief Destructor.
           */
         virtual ~PIPDRHomogeneousTreeLikelihood(){ delete likelihoodData_; };
 
@@ -334,24 +333,24 @@ namespace bpp {
         double getSecondOrderDerivative(const std::string& variable1, const std::string& variable2) const { return 0; } // Not implemented for now.
         /** @} */
 
-        virtual void computeTreeDLikelihoodAtNode(const Node* node) { std::cout << "not implemented yet!"; }
+        virtual void computeTreeDLikelihoodAtNode(const Node* node) { std::cout << "For node "<< node->getName()<<" not implemented yet!"; }
         virtual void computeTreeDLikelihoods() { std::cout << "not implemented yet!"; }
 
-        virtual void computeTreeD2LikelihoodAtNode(const Node* node) { std::cout << "not implemented yet!"; }
+        virtual void computeTreeD2LikelihoodAtNode(const Node* node) { std::cout << "For node "<< node->getName()<<" not implemented yet!"; }
         virtual void computeTreeD2Likelihoods() { std::cout << "not implemented yet!"; }
 
 
 
-        virtual void fireParameterChanged(const ParameterList& params);
+        virtual void fireParameterChanged(const ParameterList &params);
 
-        virtual void resetLikelihoodArrays(const Node* node);
+        virtual void resetLikelihoodArrays(const Node *node);
 
         /**
          * @brief This method is mainly for debugging purpose.
          *
          * @param node The node at which likelihood values must be displayed.
          */
-        virtual void displayLikelihood(const Node* node);
+        virtual void displayLikelihood(const Node *node);
 
 
         /**
@@ -368,7 +367,7 @@ namespace bpp {
         *
         * @{
         */
-        virtual long double computePIPTreeLikelihood_(const double lambda, const double mu);
+        virtual long double computePIPTreeLikelihood(const double lambda, const double mu);
         void firePIPParameterChanged_(const double lambda, const double mu);
 
         /** @} */
@@ -439,7 +438,7 @@ namespace bpp {
                 const int newRootId,
                 const Node *sonNode = 0) const;
 
-        virtual void computeLikelihoodAtNode_(const Node* node, VVVdouble& likelihoodArray, const Node* sonNode = 0) const;
+//        virtual void computeLikelihoodAtNode_(const Node *node, VVVdouble &likelihoodArray, const Node *sonNode = 0) const;
 
 
         /**

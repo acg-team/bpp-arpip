@@ -93,6 +93,7 @@ PIPDRTreeLikelihoodLeafData::PIPDRTreeLikelihoodLeafData(const PIPDRTreeLikeliho
 PIPDRTreeLikelihoodLeafData &PIPDRTreeLikelihoodLeafData::operator=(const PIPDRTreeLikelihoodLeafData &data) {
     leafLikelihood_ = data.leafLikelihood_;
     leaf_ = data.leaf_;
+
     return *this;
 }
 

@@ -106,6 +106,7 @@
 #include "PIP/Utils/ARPIPVersion.h"
 #include "PIP/Utils/ARPIPTools.h"
 #include "PIP/Likelihood/PIPDRHomogeneousTreeLikelihood.h"
+#include "PIP/Utils/PIPIndelRateInference.h"
 
 /*
 * From GSL:
@@ -180,7 +181,7 @@ int main(int argc, char *argv[]) {
          */
 
         double lambda = 0;
-        double mu = 0;
+        double mu = 0.01;
         bool estimatedPIPParameters = false;
 
         std::string App_model_substitution = bpp::ApplicationTools::getStringParameter("model", arpipapp.getParams(),
@@ -369,8 +370,8 @@ int main(int argc, char *argv[]) {
         // If tree is not rooted, resolve it by picking a random node
         if (ttree_->isRooted()) {
             int root = tree->getRootId();
-            cout << "Root is found!!!!" << "(" << root << "=root)" << endl;
-            DLOG(INFO) << "Tree is rooted.";
+            bpp::ApplicationTools::displayResult("The tree root is node number", root);
+            DLOG(INFO) << "Tree is rooted."<< "(" << root << "=root)" << endl;
         } else {
             bpp::ApplicationTools::displayMessage("Tree is not rooted: the tree must have a root in PIP model!!!!");
             DLOG(INFO) << "The input tree is not rooted, the tree must have a root in PIP model!!!!" << endl;
@@ -455,7 +456,12 @@ int main(int argc, char *argv[]) {
                                                                               "", true, false, 0);
         }
 
-        if (modelMap.find("initFreqs") != modelMap.end()) {
+        // If PIP, then check if lambda/mu initial values are estimated from the data
+        if (modelMap.find("estimated") != modelMap.end()) {
+            bpp::ApplicationTools::displayError(
+                    "The use of the tag [observed] is obsolete. Use the tag [initFreqs] instead.");
+            exit(1);
+        } else if (modelMap.find("initFreqs") != modelMap.end()) {
             if (modelMap["initFreqs"] == "observed") {
                 estimatedPIPParameters = true;
             }
@@ -465,10 +471,19 @@ int main(int argc, char *argv[]) {
             estimatedPIPParameters = true;
         }
 
+
+
         /************************************** Inference Indel rates *************************************************/
         // Estimate PIP Parameters: inference of Indel rates
         if (estimatedPIPParameters) {
-//            PIPInferenceIndelRates *PIPIndelParam = new PIPInferenceIndelRates(*sites, *tree);
+            bpp::PIPIndelRateInference *PIPIndelParam = new bpp::PIPIndelRateInference(*sites, *tree, modelMap, &lambda,
+                                                                                       &mu);
+            lambda = PIPIndelParam->getLambda();
+            mu = PIPIndelParam->getMu();
+
+            DLOG(INFO) << "[PIP model] Estimated PIP parameters from data using input sequences (lambda=" <<
+                       lambda << ",mu=" << mu << "," "I=" << lambda * mu << ")";
+
 
         } else {
             lambda = (modelMap.find("lambda") == modelMap.end()) ? 0.1 : std::stod(modelMap["lambda"]);
@@ -490,20 +505,16 @@ int main(int argc, char *argv[]) {
                    << lambda * mu << ")";
 
 
-        //        ReversibleSubstitutionModel *wagModel = new WAG01(alphabet);
-//        std::string wag = wagModel->getName();
-//        wagModel->setFreqFromData(*sites, 0.01);
-//        FrequenciesSet *freqSet = (FrequenciesSet *) wagModel->getFrequenciesSet();
-        //            ReversibleSubstitutionModel *wagModelPlus = new WAG01(alphabet, freqSet,1);
-//        double t = 0.1;
 
         /*********************************** Tree Likelihood Computation ******************************************/
 
+        // Among site rate variation (ASVR)
+        bpp::DiscreteDistribution *rDist = new bpp::ConstantRateDistribution();
 
-        bpp::PIPDRHomogeneousTreeLikelihood *likFunctionPIP20 = new bpp::PIPDRHomogeneousTreeLikelihood(*ttree_, *sites,
-                                                                                                        rDist,
-                                                                                                        mu, lambda,
-                                                                                                        false);
+//        bpp::PIPDRHomogeneousTreeLikelihood *likFunctionPIP20 = new bpp::PIPDRHomogeneousTreeLikelihood(*ttree_, *sites,
+//                                                                                                        rDist,
+//                                                                                                        mu, lambda,
+//                                                                                                        false);
 
 
 
@@ -513,11 +524,15 @@ int main(int argc, char *argv[]) {
         /************************************ Deleting the pointers **********************************************/
 
 
-        std::cout << "Hello, ARPIP!" << std::endl;
-        return 0;
+
+        arpipapp.done();
+        google::ShutdownGoogleLogging();
+        exit(0);
+
     } catch (exception &exception) {
         cout << "ARPIP exception:" << endl;
         std::cout << exception.what() << std::endl;
+        google::ShutdownGoogleLogging();
         exit(1);
     }
     return 0;

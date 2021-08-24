@@ -85,6 +85,7 @@ PIPDRHomogeneousTreeLikelihood::PIPDRHomogeneousTreeLikelihood(
         AbstractHomogeneousTreeLikelihood(tree, model, rDist, false, verbose),
         // checkRooted is override with "false" to prevent a twice deletion of last node.
         likelihoodData_(0), shrunkData_(0), isPIP_(1), p_c_0_(0), p_c_(0), phi_(0),
+        nodeFTildeValues_(), nodeFValues_(), nodeSumFTilde_(),
         minusLogLik_(-1.)
 {
     init_();
@@ -103,6 +104,7 @@ PIPDRHomogeneousTreeLikelihood::PIPDRHomogeneousTreeLikelihood(
         AbstractHomogeneousTreeLikelihood(tree, model, rDist, false, verbose),
         // checkRooted is override with "false" to prevent a twice deletion of last node.
         likelihoodData_(0), shrunkData_(0), isPIP_(1), p_c_0_(0), p_c_(0), phi_(0),
+        nodeFTildeValues_(), nodeFValues_(), nodeSumFTilde_(),
         minusLogLik_(-1.) {
     init_();
     setData(data);
@@ -115,15 +117,38 @@ PIPDRHomogeneousTreeLikelihood::PIPDRHomogeneousTreeLikelihood(
         const SiteContainer &data,
         TransitionModel *model,
         DiscreteDistribution *rDist,
-        const double mu, const double lambda,
+        const double lambda, const double mu,
         bool checkRooted,
         bool verbose) :
         AbstractHomogeneousTreeLikelihood(tree, model, rDist, false, verbose),
         // checkRooted is override with "false" to prevent a twice deletion of last node.
         likelihoodData_(0), shrunkData_(0), isPIP_(1), p_c_0_(0), p_c_(0), phi_(0),
+        nodeFTildeValues_(), nodeFValues_(), nodeSumFTilde_(),
         minusLogLik_(-1.) {
-    init_(mu,lambda);
+    init_(lambda, mu);
     setData(data);
+    computePIPTreeLikelihood(lambda, mu);
+}
+
+/***************************** Copy Constructor ************************************************/
+
+PIPDRHomogeneousTreeLikelihood::PIPDRHomogeneousTreeLikelihood(const PIPDRHomogeneousTreeLikelihood &lik) :
+        AbstractHomogeneousTreeLikelihood(lik),
+        likelihoodData_(0), shrunkData_(0),
+        nodeFTildeValues_(lik.nodeFTildeValues_),
+        nodeFValues_(lik.nodeFValues_),
+        nodeSumFTilde_(lik.nodeSumFTilde_),
+        minusLogLik_(-1.)
+{
+    likelihoodData_ = dynamic_cast<PIPDRTreeLikelihoodData *>(lik.likelihoodData_->clone());
+    likelihoodData_->setTree(tree_);
+
+    if (shrunkData_)
+        delete shrunkData_;
+    shrunkData_       = PatternTools::shrinkSiteSet(*data_);
+
+    minusLogLik_ = lik.minusLogLik_;
+
 }
 
 /******************************* Operator Overloading ***********************************************/
@@ -164,7 +189,7 @@ void PIPDRHomogeneousTreeLikelihood::init_() {
 }
 /************************************* init_ *****************************************/
 
-void PIPDRHomogeneousTreeLikelihood::init_(const double mu, const double lambda) {
+void PIPDRHomogeneousTreeLikelihood::init_(const double lambda, const double mu) {
 
     //Check again if the tree is rooted (Tree should be rooted in PIP model):
     if (!tree_->isRooted()) throw Exception("PIPDRHomogeneousTreeLikelihood::init_(). Tree is unrooted!");
@@ -174,7 +199,7 @@ void PIPDRHomogeneousTreeLikelihood::init_(const double mu, const double lambda)
     // init data structure ( Allocate the DS)
     likelihoodData_ = new PIPDRTreeLikelihoodData(
             tree_,
-            mu, lambda);
+            lambda, mu);
     initialize();// from AbstractHomogeneousTreeLikelihood to fill the pxy_, dpxy_ and d2pxy_ arrays for all nodes by computeAllTransitionProbabilities();
 
 }
@@ -459,7 +484,7 @@ void PIPDRHomogeneousTreeLikelihood::resetFVArrays_(const Node *node)
 
 /*********************************** computePIPTreeLikelihood *************************************/
 
-long double PIPDRHomogeneousTreeLikelihood::computePIPTreeLikelihood_(const double lambda, const double mu) {
+long double PIPDRHomogeneousTreeLikelihood::computePIPTreeLikelihood(const double lambda, const double mu) {
 
     // Initialise lk
     long double logLK;
@@ -671,21 +696,34 @@ double PIPDRHomogeneousTreeLikelihood::getLogLikelihoodForASite(size_t site) con
 /***********************************************************************************************/
 double PIPDRHomogeneousTreeLikelihood::getLikelihoodForASiteForARateClass(size_t site, size_t rateClass) const
 {
+    ApplicationTools::displayMessage(
+            "getLikelihoodForASiteForARateClass for site " + to_string(site) + " and " + to_string(rateClass) +
+            " is not implemented.");
+
     return 1;
 }
 /******************************************************************************/
 double PIPDRHomogeneousTreeLikelihood::getLogLikelihoodForASiteForARateClass(size_t site, size_t rateClass) const
 {
+    ApplicationTools::displayMessage(
+            "getLogLikelihoodForASiteForARateClass for site " + to_string(site) + " and " + to_string(rateClass) +
+            " is not implemented.");
     return 1;
 }
 /******************************************************************************/
 double PIPDRHomogeneousTreeLikelihood::getLikelihoodForASiteForARateClassForAState(size_t site, size_t rateClass, int state) const
 {
+    ApplicationTools::displayMessage(
+            "getLikelihoodForASiteForARateClassForAState for site " + to_string(site) + " and " + to_string(rateClass) +
+            " is not implemented.");
     return 1;
 }
 /******************************************************************************/
 double PIPDRHomogeneousTreeLikelihood::getLogLikelihoodForASiteForARateClassForAState(size_t site, size_t rateClass, int state) const
 {
+    ApplicationTools::displayMessage(
+            "getLogLikelihoodForASiteForARateClassForAState for site " + to_string(site) + " and " + to_string(rateClass) +
+            " is not implemented.");
     return 1;
 }
 /******************************************************************************/
@@ -736,12 +774,327 @@ double PIPDRHomogeneousTreeLikelihood::getValue() const {
     return minusLogLik_;
 }
 /******************************************************************************/
+void PIPDRHomogeneousTreeLikelihood::displayLikelihood(const Node* node)
+{
+    DVLOG(2) << "Likelihoods at node " << node->getName() << ": ";
+    displayLikelihoodArray(likelihoodData_->getLikelihoodArray(node->getFatherId(), node->getId()));
+    DVLOG(2) << "                                         ***";
+}
+
+/******************************************************************************/
+
+void PIPDRHomogeneousTreeLikelihood::resetLikelihoodArrays(const Node* node)
+{
+    for (size_t n = 0; n < node->getNumberOfSons(); n++)
+    {
+        const Node* subNode = node->getSon(n);
+        resetLikelihoodArray(likelihoodData_->getLikelihoodArray(node->getId(), subNode->getId()));
+    }
+    if (node->hasFather())
+    {
+        const Node* father = node->getFather();
+        resetLikelihoodArray(likelihoodData_->getLikelihoodArray(node->getId(), father->getId()));
+    }
+}
+
+
 
 /***************************************************************************************/
 /************************* ASR using Pupko DP algorithm with indel **********************/
 /***************************************************************************************/
 
+/******************************************************************************/
+
+void PIPDRHomogeneousTreeLikelihood::computeLikelihoodAtSite_(const Node *node,
+                                                                   VVdouble &likelihoodArray,
+                                                                   VVdouble &characterArray, std::size_t siteNumber,
+                                                                   const int newRootId, const Node *sonNode) const {
+
+    int nodeId = node->getId();
+    likelihoodArray.resize(nbNodes_+1);
+    characterArray.resize(nbNodes_+1);
+
+    map<int, VVVdouble> *likelihoods_node = &likelihoodData_->getLikelihoodArrays(nodeId);
+
+    Vdouble *pupko_candidate_ancestor_node = &characterArray[nodeId];
+    Vdouble *pupko_likelihood_node = &likelihoodArray[nodeId];
+
+    pupko_candidate_ancestor_node->resize(nbStates_);
+    pupko_likelihood_node->resize(nbStates_);
+
+    // Initialize likelihood array:
+    if (node->isLeaf()) {
+        vector<int> InnerNodes = tree_->getInnerNodesId();
+//        VVdouble *leavesLikelihoods_node;
+        if(std::find(InnerNodes.begin(), InnerNodes.end(), nodeId) != InnerNodes.end()) {
+            //1.Set all likelihoods to 1 and Clikelihood -1 for a start:
+//            for (size_t x = 0; x < nbStates_; x++) {
+//                (*pupko_likelihood_node)[x] = 1.;
+//                (*pupko_candidate_ancestor_node)[x] = -1;
+//            }
+
+            //2. Gap as additional char to backpropagate
+            Vdouble tmpLikelihood;
+            tmpLikelihood.resize(nbStates_);
+            for (int tmpi = 0; tmpi < nbStates_; ++tmpi) {
+                tmpLikelihood[tmpi] = 0;
+            }
+            tmpLikelihood[nbStates_-1] = 1;
+            VVVdouble *pxy_n_i = &pxy_[nodeId];
+
+
+            pupko_candidate_ancestor_node->resize(nbStates_);
+            pupko_likelihood_node->resize(nbStates_);
+            VVdouble *pxy_n_c = &(*pxy_n_i)[0];// in this simple case we only have one class
+            size_t jj = VectorTools::whichMax(tmpLikelihood);
+            for (size_t x = 0; x < nbStates_; x++) {
+                (*pupko_likelihood_node)[x] = (*pxy_n_c)[x][jj];
+                (*pupko_candidate_ancestor_node)[x] = VectorTools::whichMax(tmpLikelihood);
+            }
+
+        } else {
+            VVdouble *leavesLikelihoods_node = &likelihoodData_->getLeafLikelihoods(nodeId);
+            VVVdouble *pxy_n_i = &pxy_[nodeId];
+
+            Vdouble *leavesLikelihoods_node_i = &(*leavesLikelihoods_node)[siteNumber];
+            pupko_candidate_ancestor_node->resize(nbStates_);
+            pupko_likelihood_node->resize(nbStates_);
+            VVdouble *pxy_n_c = &(*pxy_n_i)[0];// in this simple case we only have one class
+            size_t jj = VectorTools::whichMax(*leavesLikelihoods_node_i);
+            for (size_t x = 0; x < nbStates_; x++) {
+                (*pupko_likelihood_node)[x] = (*pxy_n_c)[x][jj];
+                (*pupko_candidate_ancestor_node)[x] = VectorTools::whichMax(*leavesLikelihoods_node_i);
+            }
+        }
+
+    } else {
+        // Otherwise:
+        // Set all likelihoods to 1 for a start:
+
+        Vdouble *likelihoodArray_i = &likelihoodArray[nodeId];
+        Vdouble *characterArray_i = &characterArray[nodeId];
+        likelihoodArray_i->resize(nbStates_);
+        characterArray_i->resize(nbStates_);
+        for (size_t x = 0; x < nbStates_; x++) {
+            (*likelihoodArray_i)[x] = 1.;
+            (*characterArray_i)[x] = 1.;
+        }
+
+        size_t nbNodes = node->getNumberOfSons();
+
+        if (sonNode) {
+            throw ("PIPDRHomogeneousTreeLikelihood::computePupkoLikelihoodAtNode_(...). 'sonNode' not found as a son of 'node'.");
+        }
+        vector<const Vdouble *> iLik;
+        vector<const VVVdouble *> tProb;
+        vector<const Vdouble *> cLik;
+//        vector<vector<size_t>> *candidate_ancestor_node = &candidateAncestral[nodeId];
+        for (size_t n = 0; n < nbNodes; n++) {
+            const Node *son = node->getSon(n);
+            cLik.push_back(&characterArray[son->getId()]);
+            tProb.push_back(
+                    &pxy_[son->getId()]);// all zero AbstractHomogeneousTreeLikelihood-> solved in PIPDRHomogeneousTreeLikelihood::init
+            iLik.push_back(&likelihoodArray[son->getId()]);
+
+        }
+
+//        if (node->hasFather()) {
+        if (node->getId() != newRootId) {
+            const Node *father = node->getFather();
+            computeLikelihoodFromArrays(iLik, tProb, cLik,
+                                             &(*likelihoods_node)[father->getId()], &pxy_[nodeId],
+                                             *likelihoodArray_i, *characterArray_i, siteNumber,
+                                             nbNodes, nbDistinctSites_, nbClasses_, nbStates_);
+
+
+        } else {
+            const Vdouble *p = &model_->getFrequencies();
+            computeLikelihoodFromArraysForRoot(iLik, tProb, cLik, p, //&(*likelihoods_node)[nodeId],
+                                                    *likelihoodArray_i, *characterArray_i, siteNumber, nbNodes,
+                                                    nbDistinctSites_, nbClasses_, nbStates_);
+
+        }
+    }
+}
+
+/*******************************************************************************/
+
+void PIPDRHomogeneousTreeLikelihood::computeLikelihoodFromArraysForRoot(const vector<const Vdouble *> &iLik,
+                                                                             const vector<const VVVdouble *> &tProb,
+                                                                             const vector<const Vdouble *> &cLik,
+                                                                             const Vdouble *p, Vdouble &oLik, Vdouble &oCLik,
+                                                                             size_t siteNb, size_t nbNodes, size_t nbDistinctSites,
+                                                                             size_t nbClasses,size_t nbStates) {
+
+    Vdouble *oLik_i = &(oLik);
+    Vdouble *oCLik_i = &(oCLik);
+    // For each initial state
+//    Vdouble likelihood {1};
+    for (size_t n = 0; n < nbNodes; n++) {
+        const Vdouble *iLik_n = iLik[n];
+        const Vdouble *cLik_n = cLik[n];
+        for (size_t x = 0; x < nbStates; x++) {
+//            cout << n << x << (*iLik_n)[x] << endl;
+            (*oLik_i)[x] *= (*iLik_n)[x];
+//            cout << (*oLik_i)[x] << endl;
+        }
+    }
+    for (size_t y = 0; y < nbStates; y++) {
+//        cout << "2." << (*oLik_i)[y] << endl;
+//        cout << "3." << (*p)[y] << endl;
+        // We store this conditional likelihood into the corresponding array
+        (*oLik_i)[y] *= (*p)[y];
+//        cout << y << "\t" << (*oLik_i)[y] << endl;
+
+//        (*oLik_i)[y] *= likelihood[y];
+    }
+    // We pick the argmax corresponding to the root
+    (*oCLik_i)[0] = VectorTools::whichMax(*oLik_i);
+}
+
+/*******************************************************************************/
+void PIPDRHomogeneousTreeLikelihood::computeLikelihoodFromArrays(
+        const std::vector<const Vdouble*> &iLik,
+        const std::vector<const VVVdouble*> &tProb,
+        const std::vector<const Vdouble*> &cLik,
+        const VVVdouble *iLikR,
+        const VVVdouble *tProbR,
+        Vdouble &oLik,
+        Vdouble &oCLik,
+        size_t siteNb,
+        size_t nbNodes,
+        size_t nbDistinctSites,
+        size_t nbClasses,
+        size_t nbStates) {
+
+    Vdouble *oLik_i = &(oLik);
+    Vdouble *oCLike_i = &(oCLik);
+    const VVdouble *pxy_fa_c = &(*tProbR)[0];
+
+
+    for (size_t x = 0; x < nbStates-1; x++) {
+        Vdouble likelihood;
+        likelihood.resize(nbStates);
+        // Set all likelihoods to 1 for a start:
+        for (size_t i = 0; i < nbStates; i++) {
+            likelihood[i] = 1;
+        }
+
+        for (size_t n = 0; n < nbNodes; n++) {
+            const Vdouble *iLik_n = iLik[n];
+            const Vdouble *cLik_n = cLik[n];
+//            const VVVdouble *pxy_n = tProb[n];
+
+            for (size_t y = 0; y < nbStates; y++) {
+//                cout << "1:" << (*iLik_n)[y] << endl;
+//                cout << "2:" << (*cLik_n)[y] << endl;
+                likelihood[y] *= (*iLik_n)[y];// left and right child multiplication
+//                likelihood += (*pxy_n_c_x)[y] * (*iLik_n)[y];
+//                cout << i << "\t" << c << "\t" << x << "\t" << y << "\t" <<  (* pxy__son_c_x)[y] << "\t" << (* likelihoods_root_son_i_c)[y] << endl;
+            }
+        }
+
+        Vdouble lar;
+        lar.resize(nbStates);
+        for (size_t z = 0; z < nbStates; z++) {
+            // We store this conditional likelihood into the corresponding array:
+            lar[z] = (*pxy_fa_c)[x][z] * likelihood[z];
+        }
+        double winL = VectorTools::max(lar);
+        (*oLik_i)[x] = winL;
+        unsigned long winC = VectorTools::whichMax(lar);
+        (*oCLike_i)[x] = winC;
+    }
+    //Gap state:
+    (*oLik_i)[nbStates-1] = 0;
+    (*oCLike_i)[nbStates-1] = nbStates-1;
 
 
 
+
+
+}
+/*******************************************************************************/
+/**
+void PIPDRHomogeneousTreeLikelihood::computeLikelihoodAtNode_(const Node *node, VVVdouble &likelihoodArray, const Node *sonNode) const {
+    // const Node* node = tree_->getId();
+    int nodeId = node->getId();
+    likelihoodArray.resize(nbDistinctSites_);
+    map<int, VVVdouble> *likelihoods_node = &likelihoodData_->getLikelihoodArrays(nodeId);
+
+    // Initialize likelihood array:
+    if (node->isLeaf()) {
+        VVdouble *leavesLikelihoods_node = &likelihoodData_->getLeafLikelihoods(nodeId);
+        for (size_t i = 0; i < nbDistinctSites_; i++) {
+            VVdouble *likelihoodArray_i = &likelihoodArray[i];
+            Vdouble *leavesLikelihoods_node_i = &(*leavesLikelihoods_node)[i];
+            likelihoodArray_i->resize(nbClasses_);
+            for (size_t c = 0; c < nbClasses_; c++) {
+                Vdouble *likelihoodArray_i_c = &(*likelihoodArray_i)[c];
+                likelihoodArray_i_c->resize(nbStates_);
+                for (size_t x = 0; x < nbStates_; x++) {
+                    (*likelihoodArray_i_c)[x] = (*leavesLikelihoods_node_i)[x];
+                }
+            }
+        }
+
+    } else {
+        // Otherwise:
+        // Set all likelihoods to 1 for a start:
+        for (size_t i = 0; i < nbDistinctSites_; i++) {
+            VVdouble *likelihoodArray_i = &likelihoodArray[i];
+            likelihoodArray_i->resize(nbClasses_);
+            for (size_t c = 0; c < nbClasses_; c++) {
+                Vdouble *likelihoodArray_i_c = &(*likelihoodArray_i)[c];
+                likelihoodArray_i_c->resize(nbStates_);
+                for (size_t x = 0; x < nbStates_; x++) {
+                    (*likelihoodArray_i_c)[x] = 1.;
+                }
+            }
+        }
+    }
+    size_t nbNodes = node->getNumberOfSons();
+
+    vector<const VVVdouble *> iLik;
+    vector<const VVVdouble *> tProb;
+    bool test = false;
+    for (size_t n = 0; n < nbNodes; n++) {
+        const Node *son = node->getSon(n);
+        if (son != sonNode) {
+            tProb.push_back(&pxy_[son->getId()]);// all zero AbstractHomogeneousTreeLikelihood-> solved in PIPDRHomogeneousTreeLikelihood::init
+            iLik.push_back(&(*likelihoods_node)[son->getId()]);// all one
+        } else {
+            test = true;
+        }
+    }
+    if (sonNode) {
+        if(test)
+            nbNodes--;
+        else
+            throw ("PIPDRHomogeneousTreeLikelihood::computeLikelihoodAtNode_(...). 'sonNode' not found as a son of 'node'.");
+    }
+
+    if (node->hasFather()) {
+        const Node *father = node->getFather();
+        computeLikelihoodFromArrays(iLik, tProb, &(*likelihoods_node)[father->getId()], &pxy_[nodeId], likelihoodArray,
+                                    nbNodes, nbDistinctSites_, nbClasses_, nbStates_,
+                                    false);
+
+    } else {
+        computeLikelihoodFromArrays(iLik, tProb, likelihoodArray, nbNodes, nbDistinctSites_, nbClasses_, nbStates_,
+                                    false);
+        // We have to account for the equilibrium frequencies:
+        for (size_t i = 0; i < nbDistinctSites_; i++) {
+            VVdouble *likelihoodArray_i = &likelihoodArray[i];
+            for (size_t c = 0; c < nbClasses_; c++) {
+                Vdouble *likelihoodArray_i_c = &(*likelihoodArray_i)[c];
+                for (size_t x = 0; x < nbStates_; x++) {
+                    (*likelihoodArray_i_c)[x] *= rootFreqs_[x];
+                }
+            }
+        }
+    }
+}
+**/
+/******************************************************************************/
 

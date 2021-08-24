@@ -109,7 +109,7 @@ namespace bpp {
         /**
         * @brief Destructor.
         */
-        ~PIPDRTreeLikelihoodLeafData();
+//        virtual ~PIPDRTreeLikelihoodLeafData();
 
         PIPDRTreeLikelihoodLeafData *clone() const { return new PIPDRTreeLikelihoodLeafData(*this); }
 

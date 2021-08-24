@@ -114,21 +114,53 @@ void PIP13::updateMatrices() {
             exchangeability_(i, j) = simpleExchangeabilities_(i, j);
             if (i == j) {
                 generator_(i, j) -= mu_;
-//                exchangeability_(i, j) = mu_ / simpleModel_->freq(i);
+                exchangeability_(i, j) = simpleExchangeabilities_(i, j) - mu_;
             }
         }
         generator_(i, size_ - 1) = mu_;
         generator_(size_ - 1, i) = 0;
-//        exchangeability_(i, size_ - 1) = mu_;
+        exchangeability_(i, size_ - 1) = mu_;
 //        exchangeability_(size_ - 1, i) = mu_;
     }
     generator_(size_-1, size_-1) = 0;
 //    exchangeability_(size_ - 1, size_ - 1) = -0;
 
+    // Normalization:
+//    setDiagonal();
+
+    // Compute eigen values and vectors:
+    // In this version of bpp AbstractSubstitutionModel::updateMatrices() is not working.
+    if (enableEigenDecomposition()) {
+        EigenValue<double> ev(generator_);
+        rightEigenVectors_ = ev.getV();
+        eigenValues_ = ev.getRealEigenValues();
+        iEigenValues_ = ev.getImagEigenValues();
+        try {
+            MatrixTools::inv(rightEigenVectors_, leftEigenVectors_);
+            isNonSingular_ = true;
+            isDiagonalizable_ = true;
+            for (size_t i = 0; i < size_ && isDiagonalizable_; i++) {
+                if (abs(iEigenValues_[i]) > NumConstants::TINY())
+                    isDiagonalizable_ = false;
+            }
+        }
+        catch (ZeroDivisionException &e) {
+            ApplicationTools::displayMessage("Singularity during diagonalization. Taylor series used instead.");
+
+            isNonSingular_ = false;
+            isDiagonalizable_ = false;
+            MatrixTools::Taylor(generator_, 30, vPowGen_);
+        }
+    }
+
+
     //It is very likely that we are able to compute the eigen values and vector from the one of the simple model.
     //For now however, we will use a numerical diagonalization:
-    AbstractSubstitutionModel::updateMatrices();
+//    AbstractSubstitutionModel::updateMatrices();
     //We do not use the one from  AbstractReversibleSubstitutionModel, since we already computed the generator.
+    // With this version of bpp lib, the AbstractSubstitutionModel::updateMatrices() is not working correctly,
+    // since it is unable to find eigenvector for eigenvalue 0. Taylor series used instead.
+
 }
 
 /******************************************************************************/
