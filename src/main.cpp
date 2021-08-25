@@ -481,7 +481,7 @@ int main(int argc, char *argv[]) {
         if (computeFreqFromData) {
             sModel->setFreqFromData(*sites, 0.01);
             DLOG(INFO) << "[Base substitution model] used frequency from data" ;
-            bpp::ApplicationTools::displayResult("Set the frequency from data", "Yes");
+            bpp::ApplicationTools::displayMessage("Set the frequency from data");
         }
 
 
@@ -532,7 +532,7 @@ int main(int argc, char *argv[]) {
             bpp::ApplicationTools::displayResult(parameters[i].getName(), bpp::TextTools::toString(parameters[i].getValue()));
         }
 
-        double pip_intensity = lambda * parameters.getParameter("PIP.mu").getValue();
+        double pip_intensity = lambda * parameters.getParameter("PIP13.mu").getValue();
         bpp::ApplicationTools::displayResult("PIP13.intensity", bpp::TextTools::toString(pip_intensity));
 
         for (size_t i = 0; i < sModel->getFrequencies().size(); i++) {
@@ -552,6 +552,7 @@ int main(int argc, char *argv[]) {
 
         /************************************* Tree Likelihood Computation ********************************************/
 
+        bpp::ApplicationTools::displayMessage("\n[Setting up TreeLikelihood]");
 
         bpp::PIPDRHomogeneousTreeLikelihood *likFunctionPIP20 = new bpp::PIPDRHomogeneousTreeLikelihood(*ttree_, *sites,
                                                                                                         sModel, rDist,
