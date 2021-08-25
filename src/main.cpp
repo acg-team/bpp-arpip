@@ -136,9 +136,9 @@
 //    EXPECT_EQ(1, 1);
 //
 //}
-/******************************************************************************/
-/*********************************** Main *************************************/
-/******************************************************************************/
+/**********************************************************************************************************************/
+/****************************************************** Main **********************************************************/
+/**********************************************************************************************************************/
 
 int main(int argc, char *argv[]) {
     FLAGS_log_dir = "../test/log/";
@@ -185,7 +185,8 @@ int main(int argc, char *argv[]) {
         bool estimatedPIPParameters = false;
 
         std::string App_model_substitution = bpp::ApplicationTools::getStringParameter("model", arpipapp.getParams(),
-                                                                                       "JC69", "", true, true);
+                                                                                       "JC69", "",
+                                                                                       true, true);
 
         std::string modelStringName;
         std::map<std::string, std::string> modelMap;
@@ -224,7 +225,8 @@ int main(int argc, char *argv[]) {
 
         bpp::ApplicationTools::displayMessage("\n[Preparing input Files]");
         std::string input_sequences = bpp::ApplicationTools::getAFilePath("input.sequence.file", arpipapp.getParams(),
-                                                                         true, true, "", false, "", 1);
+                                                                         true, true, "",
+                                                                         false, "", 1);
 
         bpp::SequenceContainer *sequences = nullptr;
         bpp::SiteContainer *sites = nullptr;
@@ -313,11 +315,13 @@ int main(int argc, char *argv[]) {
             bpp::KeyvalTools::parseProcedure(modelMap["model"], tmpBaseModel, tmpBaseModelMap);
 
             bpp::SubstitutionModel *tmpSModel = bpp::PhylogeneticsApplicationTools::getSubstitutionModel(alphabetNoGaps,
-                                                                                                      gCode.get(),
-                                                                                                      sites,
-                                                                                                      modelMap, "",
-                                                                                                      true, false,
-                                                                                                      0);
+                                                                                                         gCode.get(),
+                                                                                                         sites,
+                                                                                                         modelMap,
+                                                                                                         "",
+                                                                                                         true,
+                                                                                                         false,
+                                                                                                         0);
             bpp::ApplicationTools::displayResult(
                     "Default model without gap is used", tmpSModel->getName());
 
@@ -411,12 +415,12 @@ int main(int argc, char *argv[]) {
 
 
 
-        /*********************************** Process the substitution model ********************************************/
+        /*********************************** Process the substitution model *******************************************/
 
         // SUBSTITUTION MODEL
         bpp::ApplicationTools::displayMessage("\n[Setting up substitution model]");
 
-        bpp::SubstitutionModel *sModel = nullptr;
+        bpp::ReversibleSubstitutionModel *sModel = nullptr;
         bpp::TransitionModel *tModel = nullptr;
 
 
@@ -448,13 +452,16 @@ int main(int argc, char *argv[]) {
         }
 
         if (App_alphabet.find("Protein") != std::string::npos || App_alphabet.find("DNA") != std::string::npos) {
-            sModel = bpp::PhylogeneticsApplicationTools::getSubstitutionModel(alphabetNoGaps, gCode.get(), sites,
-                                                                              modelMap, "",
-                                                                              true, false, 0);
+            sModel = dynamic_cast<bpp::ReversibleSubstitutionModel *> (bpp::PhylogeneticsApplicationTools::getSubstitutionModel(
+                    alphabetNoGaps, gCode.get(), sites, modelMap, "", true, false, 0));
         }else{
-            sModel = bpp::PhylogeneticsApplicationTools::getSubstitutionModel(alphabet, gCode.get(), sites, modelMap,
-                                                                              "", true, false, 0);
+            sModel = dynamic_cast<bpp::ReversibleSubstitutionModel *>(bpp::PhylogeneticsApplicationTools::getSubstitutionModel(
+                    alphabet, gCode.get(), sites, modelMap,
+                    "", true, false, 0));
         }
+        DLOG(INFO) << "[Base substitution model] is " << sModel->getName()<< " and number of states: " << (int) sModel->getNumberOfStates();
+        bpp::ApplicationTools::displayResult("Base substitution model", sModel->getName());
+
 
         // If PIP, then check if lambda/mu initial values are estimated from the data
         if (modelMap.find("estimated") != modelMap.end()) {
@@ -471,9 +478,14 @@ int main(int argc, char *argv[]) {
             estimatedPIPParameters = true;
         }
 
+        if (computeFreqFromData) {
+            sModel->setFreqFromData(*sites, 0.01);
+            DLOG(INFO) << "[Base substitution model] used frequency from data" ;
+            bpp::ApplicationTools::displayResult("Set the frequency from data", "Yes");
+        }
 
 
-        /************************************** Inference Indel rates *************************************************/
+        /////////////////////////////
         // Estimate PIP Parameters: inference of Indel rates
         if (estimatedPIPParameters) {
             bpp::PIPIndelRateInference *PIPIndelParam = new bpp::PIPIndelRateInference(*sites, *tree, modelMap, &lambda,
@@ -483,7 +495,6 @@ int main(int argc, char *argv[]) {
 
             DLOG(INFO) << "[PIP model] Estimated PIP parameters from data using input sequences (lambda=" <<
                        lambda << ",mu=" << mu << "," "I=" << lambda * mu << ")";
-
 
         } else {
             lambda = (modelMap.find("lambda") == modelMap.end()) ? 0.1 : std::stod(modelMap["lambda"]);
@@ -506,22 +517,56 @@ int main(int argc, char *argv[]) {
 
 
 
-        /*********************************** Tree Likelihood Computation ******************************************/
+        // New PIP substitution model:
+        sModel = new bpp::PIP13(sModel, mu);
 
+        DLOG(INFO) << "[Substitution model] Number of states: " << (int) sModel->getNumberOfStates();
+        bpp::ApplicationTools::displayResult("Substitution model", sModel->getName());
+
+        if (App_model_indels)
+            bpp::ApplicationTools::displayResult("Indel parameter initial value",
+                                            (estimatedPIPParameters) ? "estimated" : "fixed");
+
+        bpp::ParameterList parameters = sModel->getParameters();
+        for (size_t i = 0; i < parameters.size(); i++) {
+            bpp::ApplicationTools::displayResult(parameters[i].getName(), bpp::TextTools::toString(parameters[i].getValue()));
+        }
+
+        double pip_intensity = lambda * parameters.getParameter("PIP.mu").getValue();
+        bpp::ApplicationTools::displayResult("PIP13.intensity", bpp::TextTools::toString(pip_intensity));
+
+        for (size_t i = 0; i < sModel->getFrequencies().size(); i++) {
+
+            bpp::ApplicationTools::displayResult("eq.freq(" + sModel->getAlphabet()->getName(i) + ")",
+                                            bpp::TextTools::toString(sModel->getFrequencies()[i], 4));
+        }
+
+        bpp::StdStr s1;
+        bpp::PhylogeneticsApplicationTools::printParameters(sModel, s1, 1, true);
+        DLOG(INFO) << s1.str();
+
+        /////////////////////////
         // Among site rate variation (ASVR)
         bpp::DiscreteDistribution *rDist = new bpp::ConstantRateDistribution();
+        DLOG(INFO) << "Constant distribution rate is used in this model.";
 
-//        bpp::PIPDRHomogeneousTreeLikelihood *likFunctionPIP20 = new bpp::PIPDRHomogeneousTreeLikelihood(*ttree_, *sites,
-//                                                                                                        rDist,
-//                                                                                                        mu, lambda,
-//                                                                                                        false);
+        /************************************* Tree Likelihood Computation ********************************************/
 
 
+        bpp::PIPDRHomogeneousTreeLikelihood *likFunctionPIP20 = new bpp::PIPDRHomogeneousTreeLikelihood(*ttree_, *sites,
+                                                                                                        sModel, rDist,
+                                                                                                        lambda, mu,
+                                                                                                        false);
+        /////////////////////////
+        // Maximum Likelihood Indel Points
 
 
 
+        /************************************** Tree Likelihood Computation *******************************************/
 
-        /************************************ Deleting the pointers **********************************************/
+
+
+        /**************************************** Deleting the pointers ***********************************************/
 
 
 
