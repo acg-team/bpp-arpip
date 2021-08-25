@@ -157,9 +157,16 @@ PIPIndelRateInference::PIPIndelRateInference(const SiteContainer &sites,
 
 /******************************** Copy constructor *********************************/
 
-
+PIPIndelRateInference::PIPIndelRateInference(const PIPIndelRateInference &inf) :
+        likelihood_(inf.likelihood_), lambda_(inf.lambda_), mu_(inf.mu_) {}
 
 /******************************* Operator overloading *******************************/
+
+PIPIndelRateInference &PIPIndelRateInference::operator=(const PIPIndelRateInference &inference) {
+    likelihood_     = inference.likelihood_;
+    lambda_         = inference.lambda_;
+    mu_             = inference.mu_;
+}
 
 /************************************** init_ ******************************************/
 

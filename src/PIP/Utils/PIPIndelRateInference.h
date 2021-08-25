@@ -151,7 +151,7 @@ namespace bpp {
         /**
          * @brief Copy constructor.
          */
-        PIPIndelRateInference(PIPIndelRateInference &inference);
+        PIPIndelRateInference(const PIPIndelRateInference &inf);
 
         /**
          * @brief Operator overloading.
