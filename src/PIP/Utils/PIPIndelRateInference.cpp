@@ -87,7 +87,6 @@ OptimizationFunction::OptimizationFunction(PIPDRHomogeneousTreeLikelihood *likeF
         {
 
         //We declare parameters here:
-
         addParameter_(new Parameter("lambda",1));
         addParameter_(new Parameter("mu", 0.02));
 
@@ -137,7 +136,7 @@ void OptimizationFunction::fireParameterChanged(const ParameterList &pl) {
 
 PIPIndelRateInference::PIPIndelRateInference(PIPDRHomogeneousTreeLikelihood &likeFunObj, int MaxIteration,
                                              double tolerance) :
-        likelihood_(&likeFunObj), lambda_(0.1), mu_(0.1) {
+        likelihood_(&likeFunObj), lambda_(0), mu_(0) {
     inferIndelRateFromSequences(*likelihood_, MaxIteration, tolerance);
 }
 
@@ -206,14 +205,15 @@ void PIPIndelRateInference::init_(const SiteContainer &sites,
         modelMap["model"] = baseModelName;
     }
 
-    const ProteicAlphabet *alphabet = new ProteicAlphabet;
-    ReversibleSubstitutionModel *wagModel = new WAG01(alphabet);
+//    const ProteicAlphabet *alphabet = new ProteicAlphabet;
+//    ReversibleSubstitutionModel *wagModel = new WAG01(alphabet);
 
 //    if (alphabetType == "Proteic") {
         // The substitution model should be ReversibleSubstitutionModel.
-//        baseModel = dynamic_cast<ReversibleSubstitutionModel *>(PhylogeneticsApplicationTools::getSubstitutionModel(
-//                alphabet, gCode.get(), &sites,
-//                modelMap, "", true, false, 0));
+
+        baseModel = dynamic_cast<ReversibleSubstitutionModel *>(PhylogeneticsApplicationTools::getSubstitutionModel(
+                inputAlphabet, gCode.get(), &sites,
+                modelMap, "", true, false, 0));
 
 
 //        if (baseModelName == "WAG01") {
@@ -239,13 +239,14 @@ void PIPIndelRateInference::init_(const SiteContainer &sites,
 //
 //    }
 
-    TransitionModel *TrModel = new PIP13(wagModel, mu_);
+    TransitionModel *TrModel = new PIP13(baseModel, mu_);
 
     DiscreteDistribution *rDist = new ConstantRateDistribution();
 
 
     // Create joint likelihood function instance
-    likelihood_ = new PIPDRHomogeneousTreeLikelihood(ttree, sites, TrModel, rDist, lambda_, mu_, false);
+    likelihood_ = new PIPDRHomogeneousTreeLikelihood(ttree, sites, TrModel, rDist, lambda_, mu_,
+                                                     false, false);
 
 }
 
@@ -256,7 +257,7 @@ void PIPIndelRateInference::inferIndelRateFromSequences(PIPDRHomogeneousTreeLike
                                                         double tolerance) {
     OptimizationFunction func(&likelihood);
 
-    ApplicationTools::displayResult("Starting value", func.getValue());
+    ApplicationTools::displayResult("Starting -log Likelihood value", func.getValue());
 
     // Brent method:
     SimpleMultiDimensions optimizer(&func);
@@ -266,10 +267,14 @@ void PIPIndelRateInference::inferIndelRateFromSequences(PIPDRHomogeneousTreeLike
     optimizer.init(func.getParameters());
     optimizer.optimize();
 
+    ApplicationTools::displayResult("The optimization method", "Brent Multidimensional optimization");
+
     double minf = func.getValue();
 
     mu_ = func.getParameterValue("mu");
     lambda_ = func.getParameterValue("lambda");
+
+    DLOG(INFO) << "The Brent Multi-Dimensional optimization method inferred the indel parameters.";
 
     cout << "mu=" << mu_ << endl;
     cout << "lambda=" << lambda_ << endl;

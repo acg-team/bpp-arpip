@@ -108,6 +108,8 @@ PIPDRHomogeneousTreeLikelihood::PIPDRHomogeneousTreeLikelihood(
         minusLogLik_(-1.) {
     init_();
     setData(data);
+    initialize();// from AbstractHomogeneousTreeLikelihood to fill the pxy_, dpxy_ and d2pxy_ arrays for all nodes by computeAllTransitionProbabilities();
+
 }
 
 /******************************** Constructor Full PIP version **********************************************/
@@ -127,7 +129,8 @@ PIPDRHomogeneousTreeLikelihood::PIPDRHomogeneousTreeLikelihood(
         minusLogLik_(-1.) {
     init_(lambda, mu);
     setData(data);
-    computePIPTreeLikelihood(lambda, mu);
+    initialize();// from AbstractHomogeneousTreeLikelihood to fill the pxy_, dpxy_ and d2pxy_ arrays for all nodes by computeAllTransitionProbabilities();
+//    computePIPTreeLikelihood(lambda, mu);
 }
 
 /***************************** Copy Constructor ************************************************/
@@ -184,8 +187,9 @@ void PIPDRHomogeneousTreeLikelihood::init_() {
 
     // init data structure ( Allocate the DS)
     likelihoodData_ = new PIPDRTreeLikelihoodData(tree_);
-    initialize();// from AbstractHomogeneousTreeLikelihood to fill the pxy_, dpxy_ and d2pxy_ arrays for all nodes by computeAllTransitionProbabilities();
 
+    computeFirstOrderDerivatives_ = false;
+    computeSecondOrderDerivatives_ = false;
 }
 /************************************* init_ *****************************************/
 
@@ -200,7 +204,9 @@ void PIPDRHomogeneousTreeLikelihood::init_(const double lambda, const double mu)
     likelihoodData_ = new PIPDRTreeLikelihoodData(
             tree_,
             lambda, mu);
-    initialize();// from AbstractHomogeneousTreeLikelihood to fill the pxy_, dpxy_ and d2pxy_ arrays for all nodes by computeAllTransitionProbabilities();
+    //Not implemented yet.  todo: implementing the derivatives.
+    computeFirstOrderDerivatives_ = false;
+    computeSecondOrderDerivatives_ = false;
 
 }
 /***************************************************************************************/
@@ -541,7 +547,7 @@ long double PIPDRHomogeneousTreeLikelihood::computePIPTreeLikelihood(const doubl
 
 void PIPDRHomogeneousTreeLikelihood::firePIPParameterChanged_(const double lambda, const double mu) {
 
-    if (mu == std::string::npos || lambda == std::string::npos) {
+    if (lambda == std::string::npos || mu == std::string::npos) {
         //need to call estimator, but right now throw exception:
         throw Exception("PIPDRHomogeneousTreeLikelihood::initPIPParameter_(). Lambda or Mu is missing!");
     }
@@ -552,9 +558,9 @@ void PIPDRHomogeneousTreeLikelihood::firePIPParameterChanged_(const double lambd
     if (!hasParameter("mu"))
         addParameter_(new Parameter("mu", mu));
     else {
-        deleteParameter_(0);
+        std::string parName = "mu";
+        deleteParameter_(parName);
         addParameter_(new Parameter("mu", mu));
-//        addParameter_(new Parameter("mu", mu));
     }
 
     model_->setParametersValues(getParameters());
@@ -590,11 +596,11 @@ void PIPDRHomogeneousTreeLikelihood::setData(const SiteContainer& sites) {
         ApplicationTools::displayTask("Initializing data structure");
     likelihoodData_->initLikelihoods(*data_, *model_);
 
-    if(isPIP_)// compute the SetA and SetG if true
-        likelihoodData_->setPIPTopologicalFlags();
-
     if(verbose_)
         ApplicationTools::displayTaskDone();
+
+    if(isPIP_)// compute the SetA and SetG if true
+        likelihoodData_->setPIPTopologicalFlags();
 
     // We need shrunk data:
     shrunkData_ = PatternTools::shrinkSiteSet(*data_);
@@ -756,7 +762,23 @@ void PIPDRHomogeneousTreeLikelihood::fireParameterChanged(const ParameterList &p
         }
     }
 
-    computeTreeLikelihood();
+    // Check if we are using the pip model or not.
+    if(isPIP_) {
+        const double tmpLambda = likelihoodData_->getPipParam().getLambda();
+        const double tmpMu = likelihoodData_->getPipParam().getMu();
+
+        // To handle when one of the lambda or mu is zero!
+        if (tmpLambda == 0 || tmpMu == 0) {
+            computePIPTreeLikelihood();// call the default values.
+        } else {
+            computePIPTreeLikelihood(likelihoodData_->getPipParam().getLambda(),
+                                     likelihoodData_->getPipParam().getMu());
+        }
+    } else{
+            computeTreeLikelihood();
+    }
+
+    // todo: implementing these two methods.
     if (computeFirstOrderDerivatives_)
     {
         computeTreeDLikelihoods();

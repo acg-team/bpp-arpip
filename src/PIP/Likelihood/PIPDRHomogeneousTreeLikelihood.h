@@ -359,7 +359,6 @@ namespace bpp {
         void computeTreeLikelihood();
 
 
-
         /**
         * @name PIP specific likelihood functions.
         * @author Gholamhossein Jowkar
@@ -367,7 +366,7 @@ namespace bpp {
         *
         * @{
         */
-        virtual long double computePIPTreeLikelihood(const double lambda, const double mu);
+        virtual long double computePIPTreeLikelihood(const double lambda = 1, const double mu = 0.1);
         void firePIPParameterChanged_(const double lambda, const double mu);
 
         /** @} */
