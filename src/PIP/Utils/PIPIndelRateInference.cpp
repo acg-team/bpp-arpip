@@ -274,7 +274,7 @@ void PIPIndelRateInference::inferIndelRateFromSequences(PIPDRHomogeneousTreeLike
     optimizer.init(func.getParameters());
     optimizer.optimize();
 
-    ApplicationTools::displayResult("The optimization method", "Brent Multidimensional optimization");
+    ApplicationTools::displayMessage("The Brent Multidimensional optimization used.");
 
     double minf = func.getValue();
 
@@ -283,9 +283,9 @@ void PIPIndelRateInference::inferIndelRateFromSequences(PIPDRHomogeneousTreeLike
 
     DLOG(INFO) << "The Brent Multi-Dimensional optimization method inferred the indel parameters.";
 
-    cout << "mu=" << mu_ << endl;
-    cout << "lambda=" << lambda_ << endl;
-    cout << "-logLiklihood=" << minf << endl;
+    ApplicationTools::displayResult("The new Mu", mu_);
+    ApplicationTools::displayResult("The new lambda", lambda_);
+    ApplicationTools::displayResult("-logLikelihood value", minf);
 
 //    cout << setprecision(20) << (abs(minf) + abs(x - 5) + abs(y + 2) + abs(z - 3)) << endl;
 //    bool test = abs(minf) + abs(x - 5) + abs(y + 2) + abs(z - 3) < optimizer.getStopCondition()->getTolerance();
