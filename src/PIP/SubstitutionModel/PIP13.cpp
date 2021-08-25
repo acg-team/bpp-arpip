@@ -126,7 +126,7 @@ void PIP13::updateMatrices() {
 //    exchangeability_(size_ - 1, size_ - 1) = -0;
 
     // Normalization:
-//    setDiagonal();
+    setDiagonal();
 
     // Compute eigen values and vectors:
     // In this version of bpp AbstractSubstitutionModel::updateMatrices() is not working.
@@ -157,6 +157,7 @@ void PIP13::updateMatrices() {
     //It is very likely that we are able to compute the eigen values and vector from the one of the simple model.
     //For now however, we will use a numerical diagonalization:
 //    AbstractSubstitutionModel::updateMatrices();
+
     //We do not use the one from  AbstractReversibleSubstitutionModel, since we already computed the generator.
     // With this version of bpp lib, the AbstractSubstitutionModel::updateMatrices() is not working correctly,
     // since it is unable to find eigenvector for eigenvalue 0. Taylor series used instead.
