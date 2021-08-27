@@ -274,7 +274,7 @@ void PIPIndelRateInference::inferIndelRateFromSequences(PIPDRHomogeneousTreeLike
     optimizer.init(func.getParameters());
     optimizer.optimize();
 
-    ApplicationTools::displayMessage("The Brent Multidimensional optimization used.");
+    ApplicationTools::displayMessage("\nThe Brent Multidimensional optimization used.");
 
     double minf = func.getValue();
 
