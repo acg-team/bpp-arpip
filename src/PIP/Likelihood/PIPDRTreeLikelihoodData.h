@@ -407,6 +407,8 @@ namespace bpp {
 
         void setNodeBetaData(const Vdouble &nodeBetaData) { nodeBetaData_ = nodeBetaData; }
 
+
+
     };
 
 
@@ -632,6 +634,14 @@ namespace bpp {
         const  std::vector<bool> &getNodeSetG(int nodeId) const { return nodeSetG_[nodeId]; };
 
         const std::vector<bool> &getNodeSetA( int nodeId) const { return nodeSetA_[nodeId]; };
+
+        const std::map<size_t, std::vector<bool>> &getNodeSetG() const { return nodeSetG_; }
+
+        void setNodeSetG(const std::map<size_t, std::vector<bool>> &nodeSetG) { nodeSetG_ = nodeSetG; }
+
+        const std::map<size_t, std::vector<bool>> &getNodeSetA() const { return nodeSetA_; }
+
+        void setNodeSetA(const std::map<size_t, std::vector<bool>> &nodeSetA) { nodeSetA_ = nodeSetA; }
 
         PIPDRTreeLikelihoodNodeData &getNodeData(int nodeId) { return nodeData_[nodeId]; }
 
