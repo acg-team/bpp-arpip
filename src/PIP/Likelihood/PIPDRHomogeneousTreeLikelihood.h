@@ -269,7 +269,12 @@ namespace bpp {
         */
         void init_(const double mu, const double lambda);
 
+
     public:
+        // Setters and Getters:
+        bool isPip() const {return isPIP_; }
+
+        void setIsPip(bool isPip) { isPIP_ = isPip; }
 
         /**
          * @name The TreeLikelihood interface.
