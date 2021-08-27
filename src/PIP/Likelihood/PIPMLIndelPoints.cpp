@@ -83,14 +83,18 @@ PIPMLIndelPoints::PIPMLIndelPoints(const PIPDRHomogeneousTreeLikelihood *lik) :
         nodeIota_ = &(lik->getLikelihoodData()->getPipParam().getNodeIotaData());
         nodeBeta_ = &(lik->getLikelihoodData()->getPipParam().getNodeBetaData());
         nodeSetG_ = (lik->getLikelihoodData()->getNodeSetG());
+        nodeSetA_ = (lik->getLikelihoodData()->getNodeSetA());
+        DLOG(INFO) << "PIPMLIndelPoints::PIPMLIndelPoints constructor: The PIP parameter is copied from the likelihood object.";
     }
     else {
         ApplicationTools::displayError(
                 "PIPMLIndelPoints::PIPMLIndelPoints. This class only supports PIP based models.");
+        DLOG(INFO) << "PIPMLIndePoints::PIPMLIndelPoints. The likelihood object is not PIP-based.";
     }
 
     // Initializing the algorithm
     initMaximumLikelihoodIndelPoints_(tree_->getRootNode());
+    DLOG(INFO) << "PIPMLIndelPoints::initMaximumLikelihoodIndelPoints_. is initialized successfully.";
 
 }
 
@@ -168,10 +172,11 @@ void PIPMLIndelPoints::initMaximumLikelihoodIndelPoints_(const Node *node)  {
      */
 
 
-    std::cout << std::endl << "-------------|" << "extractIndelPoint" << "|--------------" << std::endl;
-    extractIndelPoint(tree_->getRootNode(), mu);
-    std::cout << std::endl << "-------------|" << "Indel Points" << "|--------------" << std::endl;
-//    MLHomoPath(nodeText_[tree_->getRootId()]);
+    std::cout << std::endl << "-------------|" << "extractIndelPoints" << "|--------------" << std::endl;
+    ApplicationTools::displayTask("Extracting the Indel Points");
+    extractIndelPoint(node, mu);
+    ApplicationTools::displayTaskDone();
+    //    MLHomoPath(nodeText_[tree_->getRootId()]);
 
 
 }
