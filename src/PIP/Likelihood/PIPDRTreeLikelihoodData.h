@@ -451,7 +451,7 @@ namespace bpp {
          */
         mutable std::map<size_t, std::vector<bool>> nodeSetA_;
 
-        SiteContainer* shrunkData_;
+        SiteContainer *shrunkData_;
         size_t nbSites_;
         size_t nbStates_;
         size_t nbClasses_;
@@ -461,7 +461,7 @@ namespace bpp {
         /**
         * @brief Constructor with PIP.
         */
-        PIPDRTreeLikelihoodData(const TreeTemplate<Node> *tree, const double mu, const double lambda);
+        PIPDRTreeLikelihoodData(const TreeTemplate<Node> *tree, const double lambda, const double mu);
 
         /**
         * @brief Constructor without PIP.
@@ -476,7 +476,7 @@ namespace bpp {
         /**
         * @brief Operator overloading.
         */
-        PIPDRTreeLikelihoodData &operator=(const PIPDRTreeLikelihoodData& data);
+        PIPDRTreeLikelihoodData &operator=(const PIPDRTreeLikelihoodData &data);
 
         /**
         * @brief Destructor.
