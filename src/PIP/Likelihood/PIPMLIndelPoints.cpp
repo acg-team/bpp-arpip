@@ -59,7 +59,7 @@ using namespace bpp;
 /************************************************* Constructor ********************************************************/
 PIPMLIndelPoints::PIPMLIndelPoints(const PIPDRHomogeneousTreeLikelihood *lik) :
         likelihood_(lik),
-        tree_(),
+        tree_(0),
         shrunkData_(0),
         model_(0),
         nbSites_(lik->getNumberOfSites()),
@@ -175,8 +175,10 @@ void PIPMLIndelPoints::initMaximumLikelihoodIndelPoints_(const Node *node)  {
     std::cout << std::endl << "-------------|" << "extractIndelPoints" << "|--------------" << std::endl;
     ApplicationTools::displayTask("Extracting the Indel Points");
     extractIndelPoint(node, mu);
+    DLOG(INFO)<< "extractIndelPoint::done. indel points were extracted.";
     ApplicationTools::displayTaskDone();
     //    MLHomoPath(nodeText_[tree_->getRootId()]);
+    MLHomoPath(nodeText_[tree_->getRootId()]);
 
 
 }
@@ -572,7 +574,6 @@ void PIPMLIndelPoints::NeitherChildIsGapOnlySubtreeHomologyPath_(
         (*node_text_n_)[siteNumber] = "";
     }
 }
-
 
 /**************************************** BothChildrenLeavesOrOneLeafSubtreeHomologyPath_ ******************************/
 

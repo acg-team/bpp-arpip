@@ -344,6 +344,26 @@ namespace bpp {
         /************************************* PIP getters and setters *************************************************/
     public:
 
+        const PIPDRTreeLikelihood *getLikelihood() const { return likelihood_; }
+
+        void setLikelihood(const PIPDRTreeLikelihood *likelihood) { likelihood_ = likelihood; }
+
+        const TreeTemplate<Node> *getTree() const { return tree_; }
+
+        void setTree(const TreeTemplate<Node> *tree) { tree_ = tree; }
+
+        const SiteContainer *getShrunkData() const { return shrunkData_; }
+
+        void setShrunkData(const SiteContainer *shrunkData) { shrunkData_ = shrunkData; }
+
+        const TransitionModel *getModel() const { return model_; }
+
+        void setModel(const TransitionModel *model) { model_ = model; }
+
+        size_t getNbSites() const { return nbSites_; }
+
+        void setNbSites(size_t nbSites) { nbSites_ = nbSites; }
+
         const std::map<size_t, std::vector<bool>> &getNodeSetG() const;
 
         void setNodeSetG(const std::map<size_t, std::vector<bool>> &nodeSetG);
