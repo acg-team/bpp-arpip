@@ -65,13 +65,13 @@ using namespace bpp;
 /******************************************************************************/
 /****************************** ARPIPTreeTools ********************************/
 /******************************************************************************/
- void ARPIPTreeTools::TreeAncestorRelation(Node *node, std::vector<std::string> &relation){
+ void ARPIPTreeTools::treeAncestorRelation(Node *node, std::vector<std::string> &relation){
 
     int nodeId = node->getId();
     if (!node->isLeaf()) {
         int nbSons = node->getNumberOfSons();
         for (int i = 0; i < nbSons; ++i) {
-            TreeAncestorRelation(node->getSon(i), relation);
+            treeAncestorRelation(node->getSon(i), relation);
         }
     }
     std::string *relation_n = &relation[nodeId];
@@ -116,7 +116,7 @@ void ARPIPTreeTools::renameInternalNodes(bpp::TreeTemplate<Node> *ttree, std::st
 /******************************* ARPIPIOTools *********************************/
 /******************************************************************************/
 
-void ARPIPIOTools::WriteNodeRelationToFile(std::vector<std::string> &params, std::string path) {
+void ARPIPIOTools::writeNodeRelationToFile(std::vector<std::string> &params, std::string path) {
     std::ofstream outTreeAncestorFile;
     outTreeAncestorFile.open(path);
     outTreeAncestorFile << "Name \t Parent \t Child \n";
@@ -126,5 +126,52 @@ void ARPIPIOTools::WriteNodeRelationToFile(std::vector<std::string> &params, std
     bpp::ApplicationTools::displayResult("Output node relation name file", path);
 
 }
+/******************************************************************************/
 
+void ARPIPIOTools::writeMLIndelPointsToFile(bpp::PIPMLIndelPoints *mlindelpoint,  const std::string &path,  bool overwrite) {
+    try {
+        // Open file in specified mode
+        std::ofstream output(path.c_str(), overwrite ? (std::ios::out) : (std::ios::out | std::ios::app));
+
+        size_t nbSite = mlindelpoint->getNbSites();
+        std::vector<std::string> homoPathPtr;
+        homoPathPtr.resize(nbSite);
+        bpp::SitePatterns shrunkData = mlindelpoint->getShrunkData();
+
+        // Print the Shrunk sequences:
+        SiteContainer *columnSite = shrunkData.getSites();
+        for (size_t i = 0; i < columnSite->getNumberOfSequences(); i++) {
+            std::cout << "Seq " << i << "= " << columnSite->getName(i) << " is:" << columnSite->toString(i)
+                      << " ****** " << std::endl;
+        }
+
+
+        std::vector<size_t> index = shrunkData.getIndices();
+        for (int i = 0; i < nbSite; ++i) {
+            // Extracting the position of the site in the shrunkData
+            size_t rootPosition = mlindelpoint->getLikelihood()->getLikelihoodData()->getRootArrayPosition(i);
+//            std::cout << rootPosition << std::endl;
+            std::vector<unsigned int> arrayWeights = mlindelpoint->getLikelihood()->getLikelihoodData()->getWeights();
+            std::vector<unsigned int> weight_pos = mlindelpoint->getLikelihood()->getLikelihoodData()->getWeights();
+            homoPathPtr.at(i) = mlindelpoint->getHomoPath()[rootPosition];
+        }
+
+        size_t homSize = homoPathPtr.size();
+        for (size_t i = 0; i < homSize; i++) {
+            std::cout << i << ":" << homoPathPtr[i] << std::endl;
+            output << homoPathPtr.at(i) << std::endl;
+        }
+        output << std::endl;
+        output.close();
+
+
+
+    }catch (IOException &e) {
+        std::stringstream ss;
+        ss << e.what() << "\nProblem writing mlIndels to file " << path
+           << "\n Is the file path correct and do you have the proper authorizations? ";
+        throw (IOException(ss.str()));
+    }
+
+}
 

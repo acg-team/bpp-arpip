@@ -59,6 +59,8 @@
 
 #include <Bpp/Phyl/Node.h>
 
+#include "../Likelihood/PIPMLIndelPoints.h"
+
 
 namespace PIPVectorTools {
     typedef std::vector<std::string> Vstring;
@@ -70,7 +72,10 @@ namespace PIPVectorTools {
 
 
 namespace ARPIPIOTools {
-    void WriteNodeRelationToFile(std::vector< std::string>& params, std::string path);
+    void writeNodeRelationToFile(std::vector< std::string>& params, std::string path);
+
+    void writeMLIndelPointsToFile(bpp::PIPMLIndelPoints *mlindelpoint, const std::string &path, bool overwrite = true);
+
 
 }
 
@@ -82,7 +87,7 @@ namespace ARPIPTreeTools {
     * @brief Father-child relation is extracted.
     * NB: This method is recursive.
     */
-    void TreeAncestorRelation(bpp::Node *node, std::vector <std::string> &relation);
+    void treeAncestorRelation(bpp::Node *node, std::vector <std::string> &relation);
 
     /**
     * @brief Rename internal nodes with standard Vxx * where xx is a progressive number during post-order traverse of the tree.
