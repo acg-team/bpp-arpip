@@ -189,7 +189,7 @@ namespace bpp {
          */
         virtual ~PIPMLIndelPoints() {delete shrunkData_;}
 
-        PIPMLIndelPoints* clone() const { return new PIPMLIndelPoints(*this); }
+        PIPMLIndelPoints *clone() const { return new PIPMLIndelPoints(*this); }
 
         /******************************************* PIP specific functions ***************************************************/
 

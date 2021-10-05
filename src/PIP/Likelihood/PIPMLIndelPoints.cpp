@@ -172,15 +172,13 @@ void PIPMLIndelPoints::initMaximumLikelihoodIndelPoints_(const Node *node)  {
      */
 
 
-    std::cout << std::endl << "-------------|" << "extractIndelPoints" << "|--------------" << std::endl;
+//    std::cout << std::endl << "-------------|" << "extractIndelPoints" << "|--------------" << std::endl;
     ApplicationTools::displayTask("Extracting the Indel Points");
     extractIndelPoint(node, mu);
-    DLOG(INFO)<< "extractIndelPoint::done. indel points were extracted.";
+    DLOG(INFO)<< "extractIndelPoint::done. Indel points were extracted.";
     ApplicationTools::displayTaskDone();
     //    MLHomoPath(nodeText_[tree_->getRootId()]);
     MLHomoPath(nodeText_[tree_->getRootId()]);
-
-
 }
 
 /******************************************** extractIndelPoint ********************************************/
