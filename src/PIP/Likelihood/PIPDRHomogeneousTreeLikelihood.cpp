@@ -652,7 +652,7 @@ double PIPDRHomogeneousTreeLikelihood::getLogLikelihood() const {
         logLik += log(p_c_[i]) * rootWeights->at(i);
     }
 
-    // Add log phi to site likelihood
+    // Add logs phi to site likelihood
     logLik += phi_;
 
 
@@ -905,7 +905,7 @@ void PIPDRHomogeneousTreeLikelihood::computeLikelihoodAtSite_(const Node *node,
         size_t nbNodes = node->getNumberOfSons();
 
         if (sonNode) {
-            throw ("PIPDRHomogeneousTreeLikelihood::computePupkoLikelihoodAtNode_(...). 'sonNode' not found as a son of 'node'.");
+            throw ("PIPDRHomogeneousTreeLikelihood::computeLikelihoodAtSite_(...). 'sonNode' not found as a son of 'node'.");
         }
         vector<const Vdouble *> iLik;
         vector<const VVVdouble *> tProb;
