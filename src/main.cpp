@@ -107,6 +107,8 @@
 #include "PIP/Utils/ARPIPTools.h"
 #include "PIP/Likelihood/PIPDRHomogeneousTreeLikelihood.h"
 #include "PIP/Utils/PIPIndelRateInference.h"
+#include "PIP/Likelihood/PIPMLIndelPoints.h"
+#include "PIP/AncestralStateReconstruction/PIPAncestralStateReconstruction.h"
 
 /*
 * From GSL:
@@ -141,7 +143,7 @@
 /**********************************************************************************************************************/
 
 int main(int argc, char *argv[]) {
-    FLAGS_log_dir = "../test/log/";
+    FLAGS_log_dir = "../test/logs/";
     ::google::InitGoogleLogging(software::name.c_str());
     ::google::InstallFailureSignalHandler();
 
@@ -166,7 +168,7 @@ int main(int argc, char *argv[]) {
             arpipapp.startTimer();
         }
 
-        bool PAR = bpp::ApplicationTools::getBooleanParameter("", arpipapp.getParams(), false);
+//        bool PAR = bpp::ApplicationTools::getBooleanParameter("", arpipapp.getParams(), false);
 
 
         bpp::ApplicationTools::displayResult("Random seed set to", arpipapp.getSeed());
@@ -180,7 +182,7 @@ int main(int argc, char *argv[]) {
          * 3. sequences + tree => (3.1) Perform alignment using ProPIP => (3.2) generate tree using one of supported methods (For future release!!!)
          */
 
-        double lambda = 0;
+        double lambda = 0.01;
         double mu = 0.01;
         bool estimatedPIPParameters = false;
 
@@ -236,8 +238,6 @@ int main(int argc, char *argv[]) {
             // Read aligned sequences
             bpp::Fasta seqReader;
             sequences = seqReader.readSequences(input_sequences, alphabet);
-            bpp::ApplicationTools::displayResult("Number of sequences",
-                                            sequences->getNumberOfSequences());
 
 
             bpp::VectorSiteContainer *allSites = bpp::SequenceApplicationTools::getSiteContainer(alphabet, arpipapp.getParams());
@@ -410,8 +410,8 @@ int main(int argc, char *argv[]) {
         vector<string> strTreeFileAncestor;
         strTreeFileAncestor.resize(ttree_->getNumberOfNodes());
         // Store relation between node in a string vector
-        ARPIPTreeTools::TreeAncestorRelation(ttree_->getRootNode(), strTreeFileAncestor);
-        ARPIPIOTools::WriteNodeRelationToFile(strTreeFileAncestor, arpipapp.getParam("output.node_rel.file"));
+        ARPIPTreeTools::treeAncestorRelation(ttree_->getRootNode(), strTreeFileAncestor);
+        ARPIPIOTools::writeNodeRelationToFile(strTreeFileAncestor, arpipapp.getParam("output.node_rel.file"));
 
 
 
@@ -548,7 +548,7 @@ int main(int argc, char *argv[]) {
         /////////////////////////
         // Among site rate variation (ASVR)
         bpp::DiscreteDistribution *rDist = new bpp::ConstantRateDistribution();
-        DLOG(INFO) << "Constant distribution rate is used in this model.";
+        DLOG(INFO) << "[Substitution model] Constant distribution rate is used in this model.";
 
         /************************************* Tree Likelihood Computation ********************************************/
 
@@ -558,14 +558,56 @@ int main(int argc, char *argv[]) {
                                                                                                         sModel, rDist,
                                                                                                         lambda, mu,
                                                                                                         false);
+        DLOG(INFO) << "[TreeLikelihood] Likelihood object under PIP is constructed successfully.";
+
         /////////////////////////
+        bpp::ApplicationTools::displayMessage("\n[Extracting Maximum Likelihood Indel Points]");
+
         // Maximum Likelihood Indel Points
+        bpp::PIPMLIndelPoints *mlIndePoints = new bpp::PIPMLIndelPoints(likFunctionPIP20);
+        DLOG(INFO) << "[Maximum Likelihood Indel Points] Indel points using Maximum Likelihood are inferred successfully.";
+
+        // Write down the output of the algorithm to a single file
+//        ARPIPTreeTools::treeAncestorRelation(ttree_->getRootNode(), strTreeFileAncestor);
+        ARPIPIOTools::writeMLIndelPointsToFile(mlIndePoints, arpipapp.getParam("output.mlindelpoints.file"));
+        DLOG(INFO) << "[Maximum Likelihood Indel Points] File is written successfully.";
 
 
+        /************************************* Ancestral Sequence Reconstruction **************************************/
 
-        /************************************** Tree Likelihood Computation *******************************************/
+        bpp::ApplicationTools::displayMessage("\n[Computing Ancestral Sequences Reconstruction]");
 
 
+        bpp::PIPAncestralStateReconstruction jarPIP(likFunctionPIP20, mlIndePoints);
+
+        bpp::ApplicationTools::displayTask("Ancestral sequence reconstruction");
+        bpp::AlignedSequenceContainer *asr = jarPIP.JointAncestralSequencesReconstruction();
+        bpp::ApplicationTools::displayTaskDone();
+        DLOG(INFO) << "[Ancestral Sequence Reconstruction] Ancestral sequence were successfully reconstructed.";
+
+        cout << "This sequence is coded with a " << asr->getAlphabet()->getAlphabetType() << endl;
+        for (size_t nbseq = 0; nbseq < asr->getNumberOfSequences(); nbseq++) {
+
+            for (size_t i = 0; i < asr->getSequence(nbseq).size(); i++)
+            {
+                cout << asr->getSequence(nbseq).getChar(i) << "\t" << asr->getSequence(nbseq).getValue(i) << "\t" << (asr->getSequence(nbseq))[i] << endl;
+            }
+
+            // To change the Alphabet of a sequence, we need to decode and recode it:
+            try {
+                bpp::Sequence *sequence = new bpp::BasicSequence(asr->getSequence(nbseq).getName(), asr->getSequence(nbseq).toString(), alphabet);
+                cout << "This sequence is now coded with a " << sequence->getAlphabet()->getAlphabetType() << endl;
+                delete sequence;
+            } catch (bpp::Exception &ex) {
+                cerr << ex.what() << endl;
+            }
+        }
+
+        /************************************ Writing the result **********************************************/
+
+        bpp::Fasta fastaWtiter;
+        fastaWtiter.writeSequences(arpipapp.getParam("output.ancestral.file"), *asr);
+        cout << "Printed in file!!!" << endl;
 
         /**************************************** Deleting the pointers ***********************************************/
 
