@@ -104,8 +104,8 @@ namespace bpp{
          *
          * @{
          */
-//        virtual PIPDRTreeLikelihoodData *getLikelihoodData() = 0;
-//        virtual const PIPDRTreeLikelihoodData *getLikelihoodData() const = 0;
+        virtual PIPDRTreeLikelihoodData *getLikelihoodData() = 0;
+        virtual const PIPDRTreeLikelihoodData *getLikelihoodData() const = 0;
         /** @} */
 
 
