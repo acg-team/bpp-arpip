@@ -74,7 +74,8 @@ namespace PIPVectorTools {
 namespace ARPIPIOTools {
     void writeNodeRelationToFile(std::vector< std::string>& params, std::string path);
 
-    void writeMLIndelPointsToFile(bpp::PIPMLIndelPoints *mlindelpoint, const std::string &path, bool overwrite = true);
+    void writeMLIndelPointsToFile(bpp::PIPMLIndelPoints *mlindelpoint, const std::string &path, bool overwrite = true,
+                                  bool verbose = 0);
 
 
 }

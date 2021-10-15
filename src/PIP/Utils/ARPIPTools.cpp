@@ -126,28 +126,34 @@ void ARPIPIOTools::writeNodeRelationToFile(std::vector<std::string> &params, std
     bpp::ApplicationTools::displayResult("Output node relation name file", path);
 
 }
+
 /******************************************************************************/
 
-void ARPIPIOTools::writeMLIndelPointsToFile(bpp::PIPMLIndelPoints *mlindelpoint,  const std::string &path,  bool overwrite) {
-    try {
-        // Open file in specified mode
-        std::ofstream output(path.c_str(), overwrite ? (std::ios::out) : (std::ios::out | std::ios::app));
+void
+ARPIPIOTools::writeMLIndelPointsToFile(bpp::PIPMLIndelPoints *mlindelpoint, const std::string &path, bool overwrite,
+                                       bool verbose) {
 
-        size_t nbSite = mlindelpoint->getNbSites();
+    try {
+        std::cout << "Display the progress...................: " << std::boolalpha << verbose << "." << std::endl;
+        size_t nbSites = mlindelpoint->getNbSites();
         std::vector<std::string> homoPathPtr;
-        homoPathPtr.resize(nbSite);
+        homoPathPtr.resize(nbSites);
         bpp::SitePatterns shrunkData = mlindelpoint->getShrunkData();
 
         // Print the Shrunk sequences:
-        SiteContainer *columnSite = shrunkData.getSites();
-        for (size_t i = 0; i < columnSite->getNumberOfSequences(); i++) {
-            std::cout << "Seq " << i << "= " << columnSite->getName(i) << " is:" << columnSite->toString(i)
-                      << " ****** " << std::endl;
+        if (verbose) {
+            SiteContainer *columnSite = shrunkData.getSites();
+            bpp::ApplicationTools::displayMessage("The input MSA:");
+            for (size_t i = 0; i < columnSite->getNumberOfSequences(); i++) {
+                std::cout << "Seq " << i << "= " << columnSite->getName(i) << " is:" << columnSite->toString(i)
+                          << " ****** " << std::endl;
+            }
+            std::cout << std::endl;
         }
 
-
+        // Mapping the shrunk data to the normal one:
         std::vector<size_t> index = shrunkData.getIndices();
-        for (int i = 0; i < nbSite; ++i) {
+        for (int i = 0; i < nbSites; ++i) {
             // Extracting the position of the site in the shrunkData
             size_t rootPosition = mlindelpoint->getLikelihood()->getLikelihoodData()->getRootArrayPosition(i);
 //            std::cout << rootPosition << std::endl;
@@ -156,17 +162,21 @@ void ARPIPIOTools::writeMLIndelPointsToFile(bpp::PIPMLIndelPoints *mlindelpoint,
             homoPathPtr.at(i) = mlindelpoint->getHomoPath()[rootPosition];
         }
 
+        // Open file and writing the content
+        std::ofstream output(path.c_str(), overwrite ? (std::ios::out) : (std::ios::out | std::ios::app));
+
         size_t homSize = homoPathPtr.size();
         for (size_t i = 0; i < homSize; i++) {
-            std::cout << i << ":" << homoPathPtr[i] << std::endl;
+            if(verbose)
+                std::cout << "Site " << i << ":" << homoPathPtr[i] << std::endl;
             output << homoPathPtr.at(i) << std::endl;
         }
         output << std::endl;
         output.close();
+        bpp::ApplicationTools::displayResult("Output MLIndelPoint file", path);
 
 
-
-    }catch (IOException &e) {
+    } catch (IOException &e) {
         std::stringstream ss;
         ss << e.what() << "\nProblem writing mlIndels to file " << path
            << "\n Is the file path correct and do you have the proper authorizations? ";
