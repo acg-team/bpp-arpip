@@ -95,6 +95,10 @@ namespace ARPIPTreeTools {
     */
     void renameInternalNodes(bpp::TreeTemplate<bpp::Node> *ttree, std::string prefix = "V");
 
+    /**
+     * @brief For outgrouping we aimed for finding the node with longest branch, this function would help us.
+     */
+    size_t getLongestBranchesNodeId(bpp::TreeTemplate<bpp::Node> *ttree);
 
 
 }
