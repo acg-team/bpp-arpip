@@ -20,8 +20,11 @@ You can find tutorial, examples and guides on our [Wikipages]()
      *
      * This software is based and extends the following libraries:
      *
-     * - the Bio++ libraries
-     *   developed by the Bio++ Development Team <http://biopp.univ-montp2.fr>
+     * - Bio++ libraries
+     *   developed by the Bio++ development team <http://biopp.univ-montp2.fr>
+     *
+     * - Google's C++ test framework
+     *   developed by the google development team <https://github.com/google/googletest>
      *
      *
      * ARPIP is distributed in the hope that it will be useful, but WITHOUT
