@@ -1,0 +1,17 @@
+alphabet=Protein
+seed=1
+alignment=true
+alignment.version=ram
+input.sequence.file=../test/data/input/test_01/sim-0_msa_new.fasta
+input.sequence.sites_to_use=all
+init.tree=user
+input.tree.file=../test/data/input/test_01/sim-0_new.newick
+model=PIP(model=WAG01,lambda=10,mu=0.1)
+pip_param_estimate=0
+output.msa.file=../test/data/output/test_01/msa.fasta
+output.tree.file=../test/data/output/test_01/tree.nwk
+output.ancestral.file=../test/data/output/test_01/anc.fasta
+output.node_rel.file=../test/data/output/test_01/node_rel.txt
+output.mlindelpoints.file = ../test/data/output/test_01/mlindelpoints
+output.param.file=./test/data/output/test_01/param.txt
+output.estimates.file=../test/data/output/test_01/estimates.log

@@ -1,0 +1,181 @@
+{leaf_1=L, leaf_6=L}
+{leaf_1=F, leaf_6=F}
+{leaf_1=G, leaf_6=G}
+{leaf_1=Q, leaf_6=L}
+{leaf_1=H, leaf_6=A}
+{leaf_1=Q, leaf_6=Q}
+{leaf_1=W, leaf_6=Y}
+{leaf_6=L}
+{leaf_6=P}
+{leaf_6=K}
+{leaf_6=I}
+{leaf_6=N}
+{leaf_6=Y}
+{leaf_6=S}
+{leaf_6=V}
+{leaf_6=C}
+{leaf_6=D}
+{leaf_3=H}
+{leaf_5=A, leaf_7=S}
+{leaf_7=V}
+{leaf_5=L, leaf_7=V}
+{leaf_5=D, leaf_7=D}
+{leaf_5=G}
+{leaf_5=I}
+{leaf_5=N}
+{leaf_5=I}
+{leaf_5=G}
+{leaf_5=L}
+{leaf_5=K}
+{leaf_5=R}
+{leaf_5=D}
+{leaf_5=Q}
+{leaf_5=K}
+{leaf_7=L}
+{leaf_3=P}
+{leaf_3=L}
+{leaf_3=R}
+{leaf_3=T}
+{leaf_3=N}
+{leaf_3=E}
+{leaf_3=D}
+{leaf_3=G}
+{leaf_3=E}
+{leaf_2=H}
+{leaf_2=P}
+{leaf_0=F, leaf_4=F}
+{leaf_0=Y, leaf_4=N}
+{leaf_0=P, leaf_4=P}
+{leaf_4=S}
+{leaf_0=N, leaf_4=E}
+{leaf_0=E, leaf_4=T}
+{leaf_0=Q, leaf_4=E}
+{leaf_0=S, leaf_4=S}
+{leaf_0=A, leaf_4=A}
+{leaf_0=L}
+{leaf_0=R}
+{leaf_0=V}
+{leaf_0=V}
+{leaf_0=K}
+{leaf_0=L}
+{leaf_0=H}
+{leaf_0=T}
+{leaf_0=V}
+{leaf_0=V}
+{leaf_0=P}
+{leaf_0=V}
+{leaf_0=K}
+{leaf_0=L}
+{leaf_0=D}
+{leaf_0=G}
+{leaf_0=F}
+{leaf_4=R}
+{leaf_4=G}
+{leaf_4=R}
+{leaf_4=D}
+{leaf_4=K}
+{leaf_0=N, leaf_1=D, leaf_2=D, leaf_3=D, leaf_4=D, leaf_6=D, leaf_7=D}
+{leaf_1=L, leaf_2=E, leaf_3=K, leaf_4=A, leaf_5=R, leaf_6=E, leaf_7=K}
+{leaf_0=R, leaf_1=S, leaf_3=R, leaf_4=R, leaf_5=R, leaf_6=S, leaf_7=K}
+{leaf_0=N, leaf_1=T, leaf_2=V, leaf_3=E, leaf_4=V, leaf_5=L, leaf_6=S, leaf_7=V}
+{leaf_0=D, leaf_1=V, leaf_2=Q, leaf_3=K, leaf_4=E, leaf_5=N, leaf_6=V, leaf_7=Q}
+{leaf_0=S, leaf_1=E, leaf_2=D, leaf_3=E, leaf_4=D, leaf_5=R, leaf_7=R}
+{leaf_0=K, leaf_1=N, leaf_3=I, leaf_4=V, leaf_6=G}
+{leaf_0=A, leaf_1=I, leaf_2=V, leaf_3=I, leaf_4=T, leaf_5=V, leaf_6=L, leaf_7=V}
+{leaf_0=A, leaf_1=K, leaf_2=I, leaf_3=S, leaf_4=K, leaf_5=E, leaf_6=G, leaf_7=G}
+{leaf_0=G, leaf_1=G, leaf_2=G, leaf_3=S, leaf_4=G, leaf_5=G, leaf_6=G, leaf_7=G}
+{leaf_0=Q, leaf_1=T, leaf_2=W, leaf_3=S, leaf_4=Q, leaf_5=C, leaf_6=V, leaf_7=C}
+{leaf_1=N, leaf_2=R, leaf_3=T, leaf_4=K, leaf_5=H, leaf_6=R, leaf_7=A}
+{leaf_0=Y, leaf_1=A, leaf_2=V, leaf_3=I, leaf_4=R, leaf_5=T, leaf_6=C, leaf_7=V}
+{leaf_0=A, leaf_2=A, leaf_3=Q, leaf_4=V, leaf_5=S, leaf_7=A}
+{leaf_0=I, leaf_1=I, leaf_2=V, leaf_3=L, leaf_4=V, leaf_5=R, leaf_6=I, leaf_7=L}
+{leaf_0=P, leaf_1=L, leaf_2=N, leaf_3=K, leaf_4=K, leaf_5=R, leaf_6=T, leaf_7=S}
+{leaf_0=A, leaf_1=K, leaf_2=R, leaf_3=R, leaf_4=A, leaf_5=L, leaf_6=K, leaf_7=R}
+{leaf_0=D, leaf_1=Q, leaf_2=D, leaf_3=V, leaf_5=E, leaf_6=K, leaf_7=D}
+{leaf_0=I, leaf_1=M, leaf_2=L, leaf_3=L, leaf_4=L, leaf_5=L, leaf_7=L}
+{leaf_0=D, leaf_1=S, leaf_2=D, leaf_3=A, leaf_4=D, leaf_5=D, leaf_6=T, leaf_7=D}
+{leaf_1=F, leaf_2=F, leaf_3=F, leaf_4=F, leaf_5=L, leaf_6=I, leaf_7=F}
+{leaf_0=K, leaf_1=R, leaf_2=K, leaf_3=M, leaf_4=K, leaf_6=L}
+{leaf_0=V, leaf_1=L, leaf_2=L, leaf_4=L, leaf_6=T}
+{leaf_1=G, leaf_2=G, leaf_3=G, leaf_4=G, leaf_5=N, leaf_6=A, leaf_7=G}
+{leaf_0=S, leaf_1=N, leaf_2=S, leaf_3=G, leaf_4=S, leaf_5=S, leaf_6=N, leaf_7=S}
+{leaf_1=M, leaf_2=M, leaf_3=V, leaf_4=W, leaf_5=F, leaf_6=M, leaf_7=N}
+{leaf_1=G, leaf_2=G, leaf_3=G, leaf_4=G, leaf_5=G, leaf_6=G, leaf_7=G}
+{leaf_0=D, leaf_1=D, leaf_2=A, leaf_3=D, leaf_4=N, leaf_5=D, leaf_6=E, leaf_7=E}
+{leaf_0=L, leaf_2=L, leaf_3=L, leaf_4=L, leaf_5=E, leaf_7=D}
+{leaf_0=F, leaf_1=I, leaf_2=I, leaf_3=L, leaf_4=A, leaf_5=L, leaf_7=V}
+{leaf_1=E, leaf_2=A, leaf_3=P, leaf_4=Q, leaf_6=K, leaf_7=A}
+{leaf_0=Q, leaf_1=T, leaf_2=K, leaf_3=E, leaf_4=L, leaf_5=A, leaf_7=T}
+{leaf_0=S, leaf_1=G, leaf_2=A, leaf_3=G, leaf_4=R, leaf_6=G}
+{leaf_0=G, leaf_1=L, leaf_2=K, leaf_3=N, leaf_4=K, leaf_5=H, leaf_6=I, leaf_7=N}
+{leaf_0=H, leaf_1=E, leaf_2=D, leaf_3=D, leaf_4=D, leaf_5=D, leaf_6=E, leaf_7=D}
+{leaf_1=E, leaf_2=K, leaf_3=S, leaf_4=E, leaf_5=E, leaf_6=Q, leaf_7=E}
+{leaf_0=S, leaf_1=L, leaf_2=L, leaf_3=I, leaf_4=L, leaf_5=L, leaf_6=L, leaf_7=L}
+{leaf_0=Q, leaf_1=R, leaf_2=R, leaf_3=R, leaf_4=R, leaf_6=L}
+{leaf_1=T, leaf_2=S, leaf_3=S, leaf_7=A}
+{leaf_0=N, leaf_1=L, leaf_2=L, leaf_3=L, leaf_4=V, leaf_5=Y, leaf_6=A, leaf_7=I}
+{leaf_0=H, leaf_1=S, leaf_2=E, leaf_3=H, leaf_4=Q, leaf_5=L, leaf_6=S, leaf_7=H}
+{leaf_0=Y, leaf_1=Y, leaf_2=Y, leaf_3=F, leaf_4=Y, leaf_5=R, leaf_6=Y, leaf_7=Y}
+{leaf_1=P, leaf_2=P, leaf_3=P, leaf_4=R, leaf_5=P, leaf_6=P, leaf_7=P}
+{leaf_0=E, leaf_1=S, leaf_2=D, leaf_3=G, leaf_4=E, leaf_5=Q, leaf_6=A, leaf_7=D}
+{leaf_0=N, leaf_1=N, leaf_2=N, leaf_3=H, leaf_4=A, leaf_5=D, leaf_6=N, leaf_7=N}
+{leaf_0=G, leaf_1=G, leaf_2=A, leaf_3=G, leaf_4=G, leaf_5=G, leaf_6=A, leaf_7=G}
+{leaf_0=V, leaf_1=Y, leaf_2=E, leaf_3=E, leaf_4=D, leaf_5=Q, leaf_6=Y, leaf_7=E}
+{leaf_0=P, leaf_1=P, leaf_2=P, leaf_3=P, leaf_4=T, leaf_5=V, leaf_6=L, leaf_7=L}
+{leaf_1=I, leaf_2=T, leaf_5=I, leaf_6=L, leaf_7=T}
+{leaf_0=L, leaf_2=V, leaf_3=V, leaf_4=V, leaf_5=I, leaf_7=I}
+{leaf_0=K, leaf_1=F, leaf_2=W, leaf_3=W, leaf_4=F, leaf_6=L, leaf_7=W}
+{leaf_0=S, leaf_1=A, leaf_2=A, leaf_3=H, leaf_4=R, leaf_5=D, leaf_6=A, leaf_7=D}
+{leaf_1=H, leaf_2=S, leaf_4=H, leaf_6=Q}
+{leaf_0=K, leaf_1=I, leaf_2=K, leaf_3=G, leaf_4=K, leaf_6=V}
+{leaf_0=Q, leaf_2=A, leaf_3=G, leaf_4=A, leaf_7=S}
+{leaf_0=A, leaf_2=P, leaf_3=E, leaf_4=V, leaf_5=R, leaf_7=E}
+{leaf_0=P, leaf_1=P, leaf_2=P, leaf_3=N, leaf_4=P, leaf_5=E, leaf_6=P, leaf_7=P}
+{leaf_0=P, leaf_1=L, leaf_2=L, leaf_3=M, leaf_5=L, leaf_6=L, leaf_7=L}
+{leaf_0=E, leaf_1=L, leaf_2=R, leaf_3=R, leaf_4=S, leaf_5=K, leaf_6=V, leaf_7=D}
+{leaf_1=E, leaf_2=R, leaf_3=D, leaf_4=A, leaf_6=Q, leaf_7=S}
+{leaf_1=G, leaf_2=E, leaf_3=T, leaf_5=S, leaf_6=E, leaf_7=E}
+{leaf_0=I, leaf_1=T, leaf_2=I, leaf_3=T, leaf_4=V, leaf_5=Q, leaf_6=T, leaf_7=I}
+{leaf_0=F, leaf_1=D, leaf_2=Q, leaf_3=K, leaf_4=Q, leaf_5=D, leaf_6=D, leaf_7=Q}
+{leaf_0=S, leaf_1=K, leaf_2=S, leaf_3=A, leaf_4=G, leaf_5=G, leaf_6=P, leaf_7=S}
+{leaf_0=D, leaf_1=E, leaf_2=K, leaf_3=K, leaf_4=K, leaf_5=R, leaf_6=S, leaf_7=K}
+{leaf_0=V, leaf_1=A, leaf_2=I, leaf_4=I, leaf_6=M}
+{leaf_1=Q, leaf_2=R, leaf_3=V, leaf_4=G, leaf_6=Y}
+{leaf_1=P, leaf_2=H, leaf_3=P, leaf_4=G, leaf_5=K, leaf_6=K}
+{leaf_0=A, leaf_1=Q, leaf_2=V, leaf_3=P, leaf_4=A, leaf_5=T, leaf_6=Q, leaf_7=A}
+{leaf_1=C, leaf_2=C, leaf_3=C, leaf_6=Y}
+{leaf_0=E, leaf_1=T, leaf_2=A, leaf_3=S, leaf_4=N, leaf_5=A, leaf_6=T, leaf_7=S}
+{leaf_0=V, leaf_1=M, leaf_2=I, leaf_3=I, leaf_4=C, leaf_5=I, leaf_6=H, leaf_7=I}
+{leaf_1=L, leaf_2=L, leaf_3=I, leaf_4=A, leaf_5=L, leaf_6=M, leaf_7=L}
+{leaf_0=D, leaf_1=E, leaf_2=G, leaf_3=D, leaf_4=N, leaf_5=G, leaf_7=G}
+{leaf_0=S, leaf_1=G, leaf_2=A, leaf_3=G, leaf_6=G, leaf_7=S}
+{leaf_0=W, leaf_1=F, leaf_2=W, leaf_3=W, leaf_4=W, leaf_6=Y, leaf_7=W}
+{leaf_0=V, leaf_1=A, leaf_2=S, leaf_3=A, leaf_4=V, leaf_5=S, leaf_6=T, leaf_7=R}
+{leaf_0=R, leaf_1=G, leaf_2=R, leaf_3=R, leaf_4=K, leaf_5=H, leaf_6=N, leaf_7=Q}
+{leaf_0=T, leaf_1=V, leaf_2=V, leaf_3=V, leaf_4=Y, leaf_5=V, leaf_6=V, leaf_7=V}
+{leaf_0=R, leaf_1=G, leaf_2=G, leaf_3=G, leaf_4=G, leaf_5=G, leaf_6=K, leaf_7=G}
+{leaf_0=D, leaf_1=P, leaf_2=P, leaf_3=P, leaf_4=P, leaf_5=C, leaf_6=P, leaf_7=A}
+{leaf_0=P, leaf_1=P, leaf_2=P, leaf_3=A, leaf_4=P, leaf_5=P, leaf_7=P}
+{leaf_1=E, leaf_2=A, leaf_3=V, leaf_4=Y, leaf_5=V, leaf_6=D, leaf_7=A}
+{leaf_0=L, leaf_1=V, leaf_2=V, leaf_3=M, leaf_4=V, leaf_6=L}
+{leaf_0=L, leaf_1=D, leaf_2=D, leaf_3=Q, leaf_4=S, leaf_5=A, leaf_6=D, leaf_7=D}
+{leaf_0=K, leaf_1=T, leaf_3=T, leaf_4=T, leaf_6=Q, leaf_7=T}
+{leaf_0=V, leaf_2=F, leaf_3=L, leaf_4=V, leaf_5=V, leaf_7=I}
+{leaf_0=R, leaf_2=S, leaf_3=S, leaf_4=R, leaf_5=E, leaf_7=P}
+{leaf_1=L, leaf_2=I, leaf_3=V, leaf_4=I, leaf_5=L, leaf_6=L}
+{leaf_0=Q, leaf_1=E, leaf_2=Q, leaf_3=T, leaf_4=Q, leaf_5=K, leaf_6=E, leaf_7=E}
+{leaf_0=P, leaf_1=T, leaf_2=P, leaf_3=P, leaf_4=G, leaf_5=A, leaf_6=A, leaf_7=A}
+{leaf_1=L, leaf_2=R, leaf_3=R, leaf_4=R, leaf_5=H, leaf_6=L, leaf_7=R}
+{leaf_1=R, leaf_2=S, leaf_3=L, leaf_4=A, leaf_5=E, leaf_6=K, leaf_7=P}
+{leaf_0=G, leaf_1=F, leaf_2=W, leaf_3=L, leaf_4=W, leaf_5=W, leaf_6=F, leaf_7=W}
+{leaf_0=E, leaf_1=Y, leaf_2=D, leaf_3=T, leaf_4=D, leaf_5=A, leaf_6=F, leaf_7=S}
+{leaf_0=G, leaf_1=V, leaf_2=G, leaf_3=G, leaf_4=G, leaf_5=G, leaf_6=F, leaf_7=G}
+{leaf_0=A, leaf_1=A, leaf_2=A, leaf_3=A, leaf_4=A, leaf_5=T, leaf_6=S, leaf_7=A}
+{leaf_1=L, leaf_2=L, leaf_3=L, leaf_4=L, leaf_5=F, leaf_6=E, leaf_7=L}
+{leaf_0=E, leaf_1=S, leaf_2=T, leaf_3=A, leaf_4=T, leaf_5=S, leaf_6=Q, leaf_7=S}
+{leaf_0=G, leaf_2=E, leaf_3=G, leaf_4=G, leaf_5=G, leaf_7=G}
+{leaf_0=A, leaf_1=I, leaf_2=N, leaf_3=A, leaf_4=D, leaf_5=E, leaf_6=L, leaf_7=E}
+{leaf_0=R, leaf_1=S, leaf_2=R, leaf_3=H, leaf_4=E, leaf_5=Q, leaf_6=T, leaf_7=R}
+{leaf_0=E, leaf_1=N, leaf_2=A, leaf_3=T, leaf_4=T, leaf_5=T, leaf_6=N, leaf_7=T}
+{leaf_0=D, leaf_1=Q, leaf_2=E, leaf_3=D, leaf_4=D, leaf_5=T, leaf_7=E}
+{leaf_0=D, leaf_1=L, leaf_2=Q, leaf_3=L, leaf_4=M, leaf_6=L, leaf_7=N}

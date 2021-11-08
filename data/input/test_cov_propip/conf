@@ -1,0 +1,15 @@
+alphabet=Protein
+seed=1
+alignment=true
+alignment.version=ram
+input.sequence.file=../data/input/test_cov_propip/Covid_ProPIP_MSA.fasta
+input.sequence.sites_to_use=all
+init.tree=user
+input.tree.file=../data/input/test_cov_propip/Covid_propip_PhyML_tree.nwk
+pip_param_estimate=0
+model=PIP(model=WAG01, lambda=210.235, mu=0.242833)
+output.msa.file=../data/output/test_cov_propip/arpip_cov_propip_msa.fasta
+output.tree.file=../data/output/test_cov_propip/arpip_cov_propip_tree.nwk
+output.node_rel.file=../data/output/test_cov_propip/arpip_cov_propip_node_rel.txt
+output.mlindelpoints.file = ../data/output/test_cov_propip/arpip_cov_propip_mlindelpoints
+output.ancestral.file=../data/output/test_cov_propip/arpip_cov_propip_anc.fasta
