@@ -37,7 +37,7 @@
 
 /**
  * @file PIPMLIndelPoints.cpp
- * @author Gholamhossein Jowkar
+ * @authors Massimo Maiolo and Gholamhossein Jowkar
  * @date 06 07 2020
  * @version 1.0.0
  * @maintainer Gholamhossein Jowkar
