@@ -113,7 +113,7 @@ message("-- Compilation will be performed with the following release of the soft
 
 
 
-# --- the IMPROVED_FIND_LIBRARY macro (taken from the Bio++ CMakeLists.txt) ---
+## --- the IMPROVED_FIND_LIBRARY macro (taken from the Bio++ CMakeLists.txt) ---
 macro(IMPROVED_FIND_LIBRARY OUTPUT_LIBS lib_name include_to_find)
     FIND_PATH(${lib_name}_INCLUDE_DIR ${include_to_find})
     SET(${lib_name}_NAMES ${lib_name} ${lib_name}lib ${lib_name}dll)
@@ -132,41 +132,70 @@ macro(IMPROVED_FIND_LIBRARY OUTPUT_LIBS lib_name include_to_find)
     SET(${OUTPUT_LIBS} ${${OUTPUT_LIBS}} ${${lib_name}_LIBRARY})
 ENDMACRO(IMPROVED_FIND_LIBRARY)
 
+
+
 #--- Libraries & includes ---
+# Dependencies not covered by find package should be found in the following directories
+if (${CMAKE_PREFIX_PATH})
+    include_directories("${CMAKE_PREFIX_PATH}/include")
+    LINK_DIRECTORIES("${CMAKE_PREFIX_PATH}}/lib")
+    LINK_DIRECTORIES("${CMAKE_PREFIX_PATH}/lib64")
+    message(STATUS "Looking for libraries in the following directory: ${CMAKE_PREFIX_PATH}/lib")
+    message(STATUS "Looking for libraries in the following directory: ${CMAKE_PREFIX_PATH}/lib64")
+    message(STATUS "Looking for headers in the following directory: ${CMAKE_PREFIX_PATH}/include")
+endif ()
+
+
 #include_directories("include/")
 MESSAGE(STATUS "Loading libraries & includes:")
-#set(CMAKE_FIND_LIBRARY_SUFFIXES ".a ${CMAKE_FIND_LIBRARY_SUFFIXES}") # uncomment for static compilation
 
 find_package (glog 0.5.0 REQUIRED)
 
-MESSAGE(STATUS "Done!")
 
 # Find Boost Libraries
 set(Boost_USE_MULTITHREADED      ON)
 set(Boost_USE_STATIC_RUNTIME    OFF)
 find_package(Boost REQUIRED COMPONENTS system filesystem)
 
-#set(CMAKE_FIND_LIBRARY_SUFFIXES ".a ${CMAKE_FIND_LIBRARY_SUFFIXES}") # uncomment for static compilation
+##set(CMAKE_FIND_LIBRARY_SUFFIXES ".a ${CMAKE_FIND_LIBRARY_SUFFIXES}") # uncomment for static compilation
 IMPROVED_FIND_LIBRARY(LIBS_BPP bpp-core "Bpp/Clonable.h")
 IMPROVED_FIND_LIBRARY(LIBS_BPP bpp-seq "Bpp/Seq/Sequence.h")
 IMPROVED_FIND_LIBRARY(LIBS_BPP bpp-phyl "Bpp/Phyl/Tree.h")
+
+MESSAGE(STATUS "Done!")
+
 
 #--- Targets ---
 set(EXE ${PROJECT_NAME})
 
 file(GLOB_RECURSE HEADERS include/*.h include/*.hpp)
-file(GLOB_RECURSE SOURCES src/*.cpp test/*.cpp src/*.hpp)
+file(GLOB_RECURSE SOURCES src/*.cpp src/*.hpp)
 add_executable(${EXE} ${SOURCES} ${HEADERS})
 target_link_libraries(${EXE} ${LIBS_BPP})
 target_link_libraries(${EXE} glog::glog)
 
 MESSAGE(STATUS "Targets OK")
 
+add_subdirectory(src)
+#include_directories(src)
+
+#add_subdirectory(test)
+#add_subdirectory(lib/googletest)
+
+#add_subdirectory("/usr/src/googletest" ${CMAKE_BINARY_DIR}/gtest)
+#add_subdirectory(/usr/src/googletest)
+
 # Tests
 enable_testing ()
+include_directories(${GTEST_INCLUDE_DIRS})
+#add_executable(gtest_test test/main.cpp)
+add_test(AllTests test)
+
 include (CTest)
 if (BUILD_TESTING)
-    add_subdirectory (test)
+#    add_subdirectory(src)
+    include_directories(test)
+    add_subdirectory(test)
 endif (BUILD_TESTING)
 MESSAGE(STATUS "Test OK")
 
