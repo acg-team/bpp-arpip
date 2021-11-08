@@ -49,8 +49,4 @@ cmake-build-debug/
 
 #I/O
 data/
-*.dnd
-*.fasta
-*.newick
-/data/
-/test/logs/
+/logs/
