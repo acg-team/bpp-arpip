@@ -1,0 +1,22 @@
+            Bio++ Libraries
+
+ This software is based and extends the Bio++ libraries which are
+ developed by the Bio++ Development Team <http://biopp.univ-montp2.fr>
+ Julien Dutheil <julien.dutheil@univ-montp2.fr>
+ Sylvain Gaillard <sylvain.gaillard@angers.inra.fr>
+ Nicolas Galtier <galtier@univ-montp2.fr>
+ Céline Scornavacca <scornava@lirmm.fr>
+ Laurent Guéguen <gueguen@biomserv.univ-lyon1.fr>
+ Ania Pawelczyk <ania.pawelczyk@gmail.com>
+ François Gindraud <francois.gindraud@gmail.com>
+
+
+             Google Logging Library
+
+Copyright (c) 2003-2008, Jouni Malinen <j@w1.fi> and contributors
+All Rights Reserved.
+
+            Google Test
+
+Copyright 2008, Google Inc.
+All rights reserved.
