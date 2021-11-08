@@ -91,17 +91,22 @@ using namespace bpp;
 void ARPIPTreeTools::renameInternalNodes(bpp::TreeTemplate<Node> *ttree, std::string prefix) {
 
     // Rename internal nodes with standard Vxx * where xx is a progressive number
+//    size_t i = 1; // We can have a ordinal number: 1, 2, 3 instead of progressive one.
+
     for (auto &nodeId:ttree->getNodesId()) {
 
         if (!ttree->hasNodeName(nodeId)) {
 
-        std::string stringId;
-        std::string stringName;
+            std::string stringId;
+            std::string stringName;
 
-        stringId = std::to_string(nodeId);
-        stringName = prefix + stringId;
+            stringId = std::to_string(nodeId);
+            stringName = prefix + stringId;
+//            stringName = prefix + std::to_string(i);
 
-        ttree->setNodeName(nodeId, stringName);
+            ttree->setNodeName(nodeId, stringName);
+
+//            i+=1;
 
         }
     }
@@ -109,7 +114,27 @@ void ARPIPTreeTools::renameInternalNodes(bpp::TreeTemplate<Node> *ttree, std::st
 }
 
 /******************************************************************************/
+size_t ARPIPTreeTools::getLongestBranchesNodeId(TreeTemplate<Node> *ttree){
 
+    double branchLength = 0;
+    size_t nodeWLongestBranch = ttree->getRootId();
+
+    for (auto &nodeId:ttree->getNodesId()) {
+
+        if(ttree->hasFather(nodeId))
+        {
+            double newBranchLength = ttree->getNode(nodeId)->getDistanceToFather();
+
+            if (newBranchLength > branchLength) {
+                nodeWLongestBranch = nodeId;
+            }
+
+        }
+
+    }
+    return nodeWLongestBranch;
+
+}
 
 
 /******************************************************************************/
