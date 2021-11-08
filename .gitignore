@@ -48,5 +48,5 @@ cmake-build-debug/
 #*.txt
 
 #I/O
-data/
-/logs/
+#data/
+#/logs/
