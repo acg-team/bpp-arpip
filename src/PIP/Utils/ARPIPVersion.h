@@ -37,7 +37,7 @@
 
 /**
  * @file Version.hpp
- * @author Gholamhossein Jowkar
+ * @authors Massimo Maiolo and Gholamhossein Jowkar
  * @date 14 07 2021
  * @version 1.0.0
  * @maintainer Gholamhossein Jowkar

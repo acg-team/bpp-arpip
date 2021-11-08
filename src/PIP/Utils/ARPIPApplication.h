@@ -37,7 +37,7 @@
 
 /**
  * @file ARPIPApplication.hpp
- * @author Gholamhossein Jowkar
+ * @authors Massimo Maiolo and Gholamhossein Jowkar
  * @date 12 07 2021
  * @version 1.0.0
  * @maintainer Gholamhossein Jowkar
@@ -171,7 +171,7 @@ namespace bpp{
         void help() {
             std::cout << appName_ << std::endl << std::endl;
             std::cout << "Usage: Arpip [arguments] or [params=file.txt]" << std::endl;
-            std::cout << "Documentation can be found at ..." << std::endl;
+            std::cout << "Documentation can be found at \"https://github.com/acg-team/bpp-arpip \" " << std::endl;
         }
 
 
