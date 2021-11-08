@@ -125,31 +125,22 @@
 /*
 * From Boost
 */
-#include <boost/log/trivial.hpp>
+//#include <boost/log/trivial.hpp>
 
 /*
 * From Gtest
 */
 #include <gtest/gtest.h>
 
-//using namespace bpp;
 
-//TEST(PIPLikeLihoodTest, Trivial){
-//    EXPECT_EQ(1, 1);
-//
-//}
 /**********************************************************************************************************************/
 /****************************************************** Main **********************************************************/
 /**********************************************************************************************************************/
 
 int main(int argc, char *argv[]) {
-    FLAGS_log_dir = "../test/logs/";
+    FLAGS_log_dir = "../logs/";
     ::google::InitGoogleLogging(software::name.c_str());
     ::google::InstallFailureSignalHandler();
-
-
-//    ::testing::InitGoogleTest(&argc, argv);
-//    return RUN_ALL_TESTS();
 
 
     try {
@@ -379,12 +370,19 @@ int main(int argc, char *argv[]) {
         } else {
             bpp::ApplicationTools::displayMessage("Tree is not rooted: the tree must have a root in PIP model!!!!");
             DLOG(INFO) << "The input tree is not rooted, the tree must have a root in PIP model!!!!" << endl;
+//            ttree_->getRootId()
             int root = ttree_->getRootId();
-            int newRoot = rand() % tree->getNumberOfNodes() + 1;
+//            int newRoot = rand() % tree->getNumberOfNodes() + 1;
+//            std::vector<int> bId = ttree_->getBranchesId();
+            std::vector<double> nodeBr = ttree_->getBranchLengths();
+//            int nodeBrMax = bpp::VectorTools::whichMax(nodeBr);
+//            int newRoot = bId[nodeBrMax];
+            size_t newRoot = ARPIPTreeTools::getLongestBranchesNodeId(ttree_);
+            bpp::Node *n = ttree_->getNode(newRoot);
             ttree_->newOutGroup(newRoot);// it should be a random node!
             if(ttree_->isRooted()){
-                bpp::ApplicationTools::displayResult("New random root is", root);
-                DLOG(INFO) << "Now, the tree is rooted....." << "(node " << root << " is the new root)" << endl;
+                bpp::ApplicationTools::displayResult("New random root is", newRoot);
+                DLOG(INFO) << "Now, the tree is rooted....." << "(node " << newRoot << " is the new root)" << endl;
             } else throw bpp::Exception("Tree is not rooted yet.");
         }
 
@@ -421,7 +419,7 @@ int main(int argc, char *argv[]) {
         bpp::ApplicationTools::displayMessage("\n[Setting up substitution model]");
 
         bpp::ReversibleSubstitutionModel *sModel = nullptr;
-        bpp::TransitionModel *tModel = nullptr;
+//        bpp::TransitionModel *tModel = nullptr;
 
 
         // Instantiate a substitution model and extend it with PIP
@@ -488,7 +486,7 @@ int main(int argc, char *argv[]) {
         /////////////////////////////
         // Estimate PIP Parameters: inference of Indel rates
         if (estimatedPIPParameters) {
-            bpp::PIPIndelRateInference *PIPIndelParam = new bpp::PIPIndelRateInference(*sites, *tree, modelMap, &lambda,
+            bpp::PIPIndelRateInference *PIPIndelParam = new bpp::PIPIndelRateInference(*sites, *ttree_, modelMap, &lambda,
                                                                                        &mu);
             lambda = PIPIndelParam->getLambda();
             mu = PIPIndelParam->getMu();
@@ -505,12 +503,12 @@ int main(int argc, char *argv[]) {
             // mu = 0.1
 
             // prank
-            //mu = 0.080935;
-            //lambda = 107.767746;
+            //mu = 0.210789;
+            //lambda = 163.872;
 
             // ProPIP
-            //mu = 0.086234;
-            //lambda = 116.866821;
+            //mu = 0.242833;
+            //lambda = 210.235;
         }
         DLOG(INFO) << "[PIP model] Fixed PIP parameters to (lambda=" << lambda << ",mu=" << mu << "," "I="
                    << lambda * mu << ")";
@@ -585,18 +583,19 @@ int main(int argc, char *argv[]) {
         bpp::ApplicationTools::displayTaskDone();
         DLOG(INFO) << "[Ancestral Sequence Reconstruction] Ancestral sequence were successfully reconstructed.";
 
-        cout << "This sequence is coded with a " << asr->getAlphabet()->getAlphabetType() << endl;
+//        cout << "This sequence is coded with a " << asr->getAlphabet()->getAlphabetType() << endl;
         for (size_t nbseq = 0; nbseq < asr->getNumberOfSequences(); nbseq++) {
 
-            for (size_t i = 0; i < asr->getSequence(nbseq).size(); i++)
-            {
-                cout << asr->getSequence(nbseq).getChar(i) << "\t" << asr->getSequence(nbseq).getValue(i) << "\t" << (asr->getSequence(nbseq))[i] << endl;
-            }
+//            for (size_t i = 0; i < asr->getSequence(nbseq).size(); i++)
+//            {
+//                cout << asr->getSequence(nbseq).getChar(i) << "\t" << asr->getSequence(nbseq).getValue(i) << "\t" << (asr->getSequence(nbseq))[i] << endl;
+//            }
 
             // To change the Alphabet of a sequence, we need to decode and recode it:
             try {
                 bpp::Sequence *sequence = new bpp::BasicSequence(asr->getSequence(nbseq).getName(), asr->getSequence(nbseq).toString(), alphabet);
-                cout << "This sequence is now coded with a " << sequence->getAlphabet()->getAlphabetType() << endl;
+//                cout << "This sequence is now coded with a " << sequence->getAlphabet()->getAlphabetType() << endl;
+
                 delete sequence;
             } catch (bpp::Exception &ex) {
                 cerr << ex.what() << endl;
