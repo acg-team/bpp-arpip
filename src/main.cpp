@@ -370,13 +370,8 @@ int main(int argc, char *argv[]) {
         } else {
             bpp::ApplicationTools::displayMessage("Tree is not rooted: the tree must have a root in PIP model!!!!");
             DLOG(INFO) << "The input tree is not rooted, the tree must have a root in PIP model!!!!" << endl;
-//            ttree_->getRootId()
-            int root = ttree_->getRootId();
-//            int newRoot = rand() % tree->getNumberOfNodes() + 1;
-//            std::vector<int> bId = ttree_->getBranchesId();
+//            int root = ttree_->getRootId();
             std::vector<double> nodeBr = ttree_->getBranchLengths();
-//            int nodeBrMax = bpp::VectorTools::whichMax(nodeBr);
-//            int newRoot = bId[nodeBrMax];
             size_t newRoot = ARPIPTreeTools::getLongestBranchesNodeId(ttree_);
             bpp::Node *n = ttree_->getNode(newRoot);
             ttree_->newOutGroup(newRoot);// it should be a random node!
@@ -558,6 +553,22 @@ int main(int argc, char *argv[]) {
                                                                                                         false);
         DLOG(INFO) << "[TreeLikelihood] Likelihood object under PIP is constructed successfully.";
 
+        //////////////////////////////
+        // Estimate the PIPLogLikelihood value:
+        string optPIPLikelihoodCmp = bpp::ApplicationTools::getStringParameter("opt.likelihood", arpipapp.getParams(),
+                                                                               "0", "", false, 1);
+        if (stoi(optPIPLikelihoodCmp) == 1) {
+            long double logLikelihood = likFunctionPIP20->computePIPTreeLikelihood(lambda, mu);
+            bpp::ApplicationTools::displayResult("The insertion rate", lambda);
+            bpp::ApplicationTools::displayResult("The deletion rate", mu);
+            bpp::ApplicationTools::displayResult("The log likelihood under PIP", logLikelihood);
+            bpp::ApplicationTools::displayWarning(
+                    "By activating \"opt.likelihood\" in config file the operation would be terminated!");
+            bpp::ApplicationTools::displayMessage(
+                    "By running the ASR module, the PIP parameters including logLikelihood would be printed.");
+            DLOG(INFO) << "[TreeLikelihood] Just Log likelihood asked to be printed.";
+            return 1;
+        }
         /////////////////////////
         bpp::ApplicationTools::displayMessage("\n[Extracting Maximum Likelihood Indel Points]");
 
