@@ -262,9 +262,9 @@ int main(int argc, char *argv[]) {
         if (initTreeOpt == "user") {
 
             DLOG(INFO) << "Tree Description:\n";
-            DLOG(INFO) << "[input tree parser] Provided by User:\n";
+            DLOG(INFO) << "[input tree parser] Provided by User.\n";
             tree = bpp::PhylogeneticsApplicationTools::getTree(arpipapp.getParams());
-            DLOG(INFO) << "[Input tree parser] Number of Nodes" << tree->getNumberOfNodes() << std::endl;
+            DLOG(INFO) << "[Input tree parser] Number of Nodes:" << tree->getNumberOfNodes() << std::endl;
         } else {
             // If there is no tree as input
             std::string App_distance_method = bpp::ApplicationTools::getStringParameter("init.tree.method",
@@ -348,6 +348,14 @@ int main(int argc, char *argv[]) {
 
 
         bpp::TreeTemplate<bpp::Node> *ttree_ = new bpp::TreeTemplate<bpp::Node>(*tree);
+
+        // In the case of scaling the tree:
+        string initTreeScale = bpp::ApplicationTools::getStringParameter("opt.tree.scale", arpipapp.getParams(),
+                                                                       "1", "", false, 1);
+        if (initTreeScale != "1") {
+            bpp::ApplicationTools::displayResult("The tree scale is activated with value ", initTreeScale);
+            ARPIPTreeTools::scaleBranches(ttree_, initTreeScale);
+        }
 
         // If tree is mulifurcation, then resolve it with midpoint rooting
         if (ttree_->isMultifurcating()) {
