@@ -1,8 +1,8 @@
-# bpp-arpip: Ancestral Sequence Reconstruction under PIP Poisson Indel Process
+# ARPIP: Ancestral sequence Reconstruction under PIP Poisson Indel Process
 
-ARPIP is an Ancestral Sequence Reconstruction software - a method for Ancestral Sequence Reconstruction that uses 
+ARPIP is an Ancestral Sequence Reconstruction software - a method for ancestral sequence reconstruction that uses 
 Poisson Indel Process (Bouchard-Côté & Jordan, PNAS, 2013) to model insertions and deletions on a phylogenetic tree 
-assuming independence among sites. ARPIP consists of two main algorithms. The first algorithm (MBIndelPoints) infers for
+assuming independence among sites. ARPIP consists of two main algorithms. The first algorithm (IndelPoints) infers for
 each site the insertion and deletion points on the tree topology by highest probability. The second algorithm reconstructs 
 ancestral characters on the pruned subtrees in a manner similar to FastML (Pupko et al. (2000)). 
 
@@ -20,11 +20,14 @@ You can find tutorial, examples and guides on our [Wikipages]()
      *
      * This software is based and extends the following libraries:
      *
-     * - Bio++ libraries
+     * - Bio++ libraries Released version 2.4.1.
      *   developed by the Bio++ development team <http://biopp.univ-montp2.fr>
      *
      * - Google's C++ test framework
      *   developed by the google development team <https://github.com/google/googletest>
+     *
+     * - Google Logging Library
+     *   developed by the google development team <https://github.com/google/glog>
      *
      *
      * ARPIP is distributed in the hope that it will be useful, but WITHOUT
