@@ -114,6 +114,7 @@ void ARPIPTreeTools::renameInternalNodes(bpp::TreeTemplate<Node> *ttree, std::st
 }
 
 /******************************************************************************/
+
 size_t ARPIPTreeTools::getLongestBranchesNodeId(TreeTemplate<Node> *ttree){
 
     double branchLength = 0;
@@ -134,6 +135,18 @@ size_t ARPIPTreeTools::getLongestBranchesNodeId(TreeTemplate<Node> *ttree){
     }
     return nodeWLongestBranch;
 
+}
+
+/******************************************************************************/
+void ARPIPTreeTools::scaleBranches(bpp::TreeTemplate<bpp::Node> *ttree, std::string strScale) {
+    int dScale = std::stoi(strScale);
+    std::vector<int> nodeIds = ttree->getNodesId();
+
+    for (size_t i = 0; i < nodeIds.size(); i++) {
+    if( nodeIds[i] != ttree->getRootId())
+        ttree->setDistanceToFather(nodeIds[i], ttree->getDistanceToFather(nodeIds[i]) * dScale);
+    }
+    DLOG(INFO) << "Branches of the tree is now scaled." << std::endl;
 }
 
 

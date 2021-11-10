@@ -101,6 +101,8 @@ namespace ARPIPTreeTools {
     size_t getLongestBranchesNodeId(bpp::TreeTemplate<bpp::Node> *ttree);
 
 
+    void scaleBranches(bpp::TreeTemplate<bpp::Node> *ttree, std::string strScale);
+
 }
 
 #endif //ARPIP_ARPIPTOOLS_H
