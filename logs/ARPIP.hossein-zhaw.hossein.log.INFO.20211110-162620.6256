@@ -1,0 +1,27 @@
+Log file created at: 2021/11/10 16:26:20
+Running on machine: hossein-zhaw
+Running duration (h:mm:ss): 0:00:00
+Log line format: [IWEF]yyyymmdd hh:mm:ss.uuuuuu threadid file:line] msg
+I20211110 16:26:20.989717  6256 main.cpp:264] Tree Description:
+I20211110 16:26:20.990381  6256 main.cpp:265] [input tree parser] Provided by User.
+I20211110 16:26:20.994014  6256 main.cpp:267] [Input tree parser] Number of Nodes 15
+I20211110 16:26:20.994200  6256 main.cpp:377] Tree is rooted.(14=root)
+I20211110 16:26:20.994207  6256 main.cpp:392] [Input tree parser] Number of Nodes 15
+I20211110 16:26:20.994629  6256 main.cpp:408] [Initial Tree Topology] (((leaf_1_0:0.0289871,leaf_6_1:0.785221)2:0.867356,((leaf_5_3:1.20923,leaf_7_4:0.149556)5:0.459041,leaf_3_6:0.772849)7:0.0589442)8:0.00330723,(leaf_2_9:0.311404,(leaf_0_10:1.64097,leaf_4_11:0.476828)12:0.446804)13:0.00330723);
+I20211110 16:26:20.999788  6256 main.cpp:463] [Base substitution model] is WAG01 and number of states: 20
+I20211110 16:26:21.000002  6256 main.cpp:516] [PIP model] Fixed PIP parameters to (lambda=10,mu=0.1,I=1)
+I20211110 16:26:21.003646  6256 main.cpp:524] [Substitution model] Number of states: 21
+I20211110 16:26:21.003957  6256 main.cpp:547] model=PIP13(.mu=0.100000000000)
+I20211110 16:26:21.003971  6256 main.cpp:552] [Substitution model] Constant distribution rate is used in this model.
+I20211110 16:26:21.004933  6256 PIPDRTreeLikelihoodData.cpp:194] The parameter iota and beta is initialized.
+I20211110 16:26:21.004958  6256 PIPDRTreeLikelihoodData.cpp:199] The value of nu is: 172.138
+I20211110 16:26:21.063215  6256 main.cpp:562] [TreeLikelihood] Likelihood object under PIP is constructed successfully.
+I20211110 16:26:21.063637  6256 PIPMLIndelPoints.cpp:87] PIPMLIndelPoints::PIPMLIndelPoints constructor: The PIP parameter is copied from the likelihood object.
+I20211110 16:26:21.074144  6256 PIPMLIndelPoints.cpp:178] extractIndelPoint::done. Indel points were extracted.
+I20211110 16:26:21.074649  6256 PIPMLIndelPoints.cpp:97] PIPMLIndelPoints::initMaximumLikelihoodIndelPoints_. is initialized successfully.
+I20211110 16:26:21.074657  6256 main.cpp:585] [Maximum Likelihood Indel Points] Indel points using Maximum Likelihood are inferred successfully.
+I20211110 16:26:21.075567  6256 main.cpp:590] [Maximum Likelihood Indel Points] File is written successfully.
+I20211110 16:26:21.075688  6256 PIPAncestralStateReconstruction.cpp:76] PIPAncestralStateReconstruction::PIPAncestralStateReconstruction. is constructed successfully.
+I20211110 16:26:21.104949  6256 PIPAncestralStateReconstruction.cpp:306] [Ancestral Sequence Reconstruction] Joint Ancestral Sequence Reconstruction is done successfully.
+I20211110 16:26:21.105192  6256 main.cpp:603] [Ancestral Sequence Reconstruction] Ancestral sequence were successfully reconstructed.
+I20211110 16:26:21.105859  6256 ARPIPApplication.h:150] ARPIP 1.0's done.
