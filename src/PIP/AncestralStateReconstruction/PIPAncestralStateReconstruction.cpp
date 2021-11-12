@@ -73,7 +73,7 @@ PIPAncestralStateReconstruction::PIPAncestralStateReconstruction(const PIPDRTree
         nbStates_(lik->getLikelihoodData()->getNumberOfStates()),
         rootPatternLinks_(lik->getLikelihoodData()->getRootArrayPositions())
 {
-    DLOG(INFO) << "PIPAncestralStateReconstruction::PIPAncestralStateReconstruction. is constructed successfully.";
+    DLOG(INFO) << "[PIP ASR] PIPAncestralStateReconstruction object is constructed successfully.";
 }
 
 /********************************************* Copy constructor *******************************************************/
@@ -137,13 +137,13 @@ std::map<int, std::vector<int>> PIPAncestralStateReconstruction::getAllAncestral
 
     // Clone the data into a AlignedSequenceContainer for more efficiency:
     AlignedSequenceContainer *data = new AlignedSequenceContainer(*likelihood_->getLikelihoodData()->getShrunkData());
-    DVLOG(2) << "[AR] Cloning the data with "<< data->getNumberOfSites()<<" sites.";
+    DVLOG(2) << "[PIP ASR] Cloning the data with "<< data->getNumberOfSites()<<" sites.";
 
     // Indel points extracted using MLIndelPoints algorithm:
     std::map<size_t, std::vector<std::string>> insertionPoints = mlIndelPoints_->getInsertionPoints();
     std::map<size_t, std::vector<std::string>> deletionPoints = mlIndelPoints_->getDeletionPoints();
-    DVLOG(2) << "[AR] The insertion and deletion points copied from MLIndelPoints object containing " <<
-             insertionPoints.size() << " Insertion points and " << deletionPoints.size() << " deletion points.";
+    DLOG(INFO) << "[PIP ASR] The insertion and deletion points copied from IndelPoints object containing " <<
+             insertionPoints.size() << " insertion points and " << deletionPoints.size() << " deletion points.";
 
     // List of internal nodes:
     std::vector<int> ancestorNodeListNb = tree_.getInnerNodesId();
@@ -156,19 +156,19 @@ std::map<int, std::vector<int>> PIPAncestralStateReconstruction::getAllAncestral
                     "PIPAncestralStateReconstruction::getAllAncestralStatesWGap. Error, NO Insertion point for this site!");
         // Extracting the subtree based on insertion point:
         const Node *newRoot = PIPSubTree->getNode(std::stoi(insertionPoints[siteNb][0]), 0);
-        DVLOG(2) << "[AR] The new root for site number " << siteNb << " is node number: " << newRoot->getId();
+        DVLOG(2) << "[PIP ASR] The new root for site number " << siteNb << " is node number: " << newRoot->getId();
 
         // case newroot != treeRoot
         if(PIPSubTree->getRootId() != newRoot->getId()){
             PIPSubTree = PIPSubTree->cloneSubtree(newRoot->getId());
-            DVLOG(2)<< "[AR] The new root is different from the tree root.";
+            DVLOG(2)<< "[PIP ASR] The new root is different from the tree root.";
         }
 
         // Initialize the ancestor array with gap for both scenario that there are deletions and an insertion different than the root.
         for(auto innerNodeNb:ancestorNodeListNb){
             ancestors[innerNodeNb].resize(nbDistinctSites_);
             ancestors[innerNodeNb][siteNb]= -1;//char for gap state
-            DVLOG(2) << "[AR] The ancestor value for internal node nb " << innerNodeNb << " and siteNb " << siteNb
+            DVLOG(2) << "[PIP ASR] The ancestor value for internal node nb " << innerNodeNb << " and siteNb " << siteNb
                      << " is initialized by:" << ancestors[innerNodeNb][siteNb];
         }
         std::vector<int> PIPDeletionPoints;
@@ -208,6 +208,7 @@ void PIPAncestralStateReconstruction::recursiveJointAncestralStates(const Node *
     VVdouble *carray = &cLikelihoodArray[siteNumber];
 
     bool *visited = &isVisited;
+    DVLOG(2) << "[PIP ASR] This node " << node->getId() << " has been visited: " << isVisited;
 
     if (!(*visited)) {
         *visited = true;
@@ -238,6 +239,8 @@ void PIPAncestralStateReconstruction::recursiveComputeLikelihoodAtSite(const Nod
     }
     // Compute Pupko's likelihood using interface defined:
     likelihood_->computeLikelihoodAtSite(node, tree, likelihoodArray, characterArray,  siteNumber, newRootId);// From PIPDRHomogeneousTreeLikelihood
+    DVLOG(2) << "[PIP ASR] The likelihood value for node number " << node->getId() << " with name " << node->getName()
+             << " @site " << siteNumber << " is compute successfully.";
 
 
 }
@@ -263,15 +266,15 @@ Sequence *PIPAncestralStateReconstruction::getAncestralSequenceForNode(int nodeI
     std::string name = tree_.hasNodeName(nodeId) ? tree_.getNodeName(nodeId) : ("" + TextTools::toString(nodeId));
 
 
-    DVLOG(2) << "[AR] Ancestral Sequence for node (" << nodeId << ") @node ";
+    DVLOG(2) << "[PIP ASR] Ancestral Sequence for node (" << nodeId << ") @node ";
 
     // Mapping the shrunk data to the normal one:
     for (int i = 0; i < nbSites_; ++i) {
         // Extracting the position of the site in the shrunkData
         allStates.at(i) = allNodes[nodeId][rootPatternLinks_[i]];
-        DVLOG(2) << "[AR] " << "COL " << i << " is: " << (mlIndelPoints_->getShrunkData()->getSite(i)).toString()
+        DVLOG(2) << "[PIP ASR] " << "COL " << i << " is: " << (mlIndelPoints_->getShrunkData()->getSite(i)).toString()
                  << std::endl;
-        DVLOG(2) << "[AR] Ancestral Sequence reconstruction for Site (" << i << ") in Shrunk data ("
+        DVLOG(2) << "[PIP ASR] Ancestral Sequence reconstruction for Site (" << i << ") in Shrunk data ("
                  << rootPatternLinks_[i] << ")" << " is: " << allStates.at(i);
     }
     return new BasicSequence(name, allStates, alphabet_);
@@ -303,7 +306,7 @@ AlignedSequenceContainer *PIPAncestralStateReconstruction::getAncestralSequences
 
     // Do the joint reconstruction:
     std::map<int, std::vector<int>> allNodesAllStates = getAllAncestralStatesWGap();
-    DLOG(INFO) << "[Ancestral Sequence Reconstruction] Joint Ancestral Sequence Reconstruction is done successfully.";
+    DLOG(INFO) << "[PIP ASR] Joint Ancestral Sequence Reconstruction is done successfully.";
 
     // Allocate the new array for Sequences:
     AlignedSequenceContainer *asc = new AlignedSequenceContainer(alphabet_);
@@ -315,7 +318,7 @@ AlignedSequenceContainer *PIPAncestralStateReconstruction::getAncestralSequences
 
         size_t currentNodeId = internalNodesIndex[nodeIId];
 
-        DVLOG(2) << "[Ancestral Sequence Reconstruction] Ancestral Sequence for node (" << nodeIId << ") @node ";
+        DVLOG(2) << "[PIP ASR] Ancestral Sequence for node (" << nodeIId << ") @node ";
         std::string name = tree_.hasNodeName(currentNodeId) ? tree_.getNodeName(currentNodeId) : ("" +
                                                                                       TextTools::toString(currentNodeId));
 
@@ -325,7 +328,7 @@ AlignedSequenceContainer *PIPAncestralStateReconstruction::getAncestralSequences
         // Mapping the shrunk data to the normal one:
         for (size_t i = 0; i < nbSites_; i++) {
 
-            DVLOG(2) << "[Ancestral Sequence Reconstruction] " << "COL " << i << " is: "
+            DVLOG(2) << "[PIP ASR] " << "COL " << i << " is: "
                      << (mlIndelPoints_->getShrunkData()->getSite(i)).toString() << std::endl;
 
             size_t rootIndex = rootPatternLinks_[i];
@@ -333,15 +336,18 @@ AlignedSequenceContainer *PIPAncestralStateReconstruction::getAncestralSequences
             // Extracting the position of the site in the shrunkData
             allStates[i] = allNodesAllStates[currentNodeId][rootIndex];
 
-            DVLOG(2) << "[Ancestral Sequence Reconstruction] Ancestral Sequence reconstruction for Site (" << i << ") in Shrunk data ("
+            DVLOG(2) << "[PIP ASR] Ancestral Sequence reconstruction for Site (" << i << ") in Shrunk data ("
                      << rootIndex << ")" << " is: " << allStates.at(i);
         }
 
         BasicSequence *seq = new BasicSequence(name, allStates, alphabet_);
 
         asc->addSequence(*seq);
+        DVLOG(2) << "[PIP ASR] Ancestral states for sequence number (node)" << nodeIId << "is" << seq;
         delete seq;
     }
+    DLOG(INFO)<< "[PIP ASR] Ancestral sequences were mapped to the original order with "<< asc->getNumberOfSites() << "sites.";
+
     return asc;
 }
 /**********************************************************************************************************************/

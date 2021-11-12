@@ -191,12 +191,12 @@ void PIPDRTreeLikelihoodParameters::initPIPParameter_() {
     // Initializing iota and beta parameters
     computePIPIota(tree_->getRootNode(), tau_, mu_, true);
     computePIPBeta(tree_->getRootNode(), mu_, true);
-    DLOG(INFO) << "The parameter iota and beta is initialized." << std::endl;
+    DLOG(INFO) << "[PIP tree likelihood] Parameter iota and beta are initialized." << std::endl;
     ApplicationTools::displayTaskDone();
 
     // Initializing nu parameter
     computeNu_();
-    DLOG(INFO) << "The value of nu is: " << nu_;
+    DLOG(INFO) << "[PIP tree likelihood] The value of nu is: " << nu_;
 
 }
 
@@ -206,7 +206,7 @@ void PIPDRTreeLikelihoodParameters::computeNu_(){
 
 
     if (fabs(mu_) < 1e-8)
-        DLOG(WARNING) << "Constraint match at parameter mu, badValue = " << mu_ << " [ 1e-08; 10000]";
+        DLOG(WARNING) << "[PIP tree likelihood] Constraint match at parameter mu, badValue = " << mu_ << " [ 1e-08; 10000]";
 
     // Initializing nu parameter
     nu_ = lambda_ * (tau_ + 1 / mu_);
@@ -218,7 +218,7 @@ void PIPDRTreeLikelihoodParameters::computeNu_(){
 void PIPDRTreeLikelihoodParameters::computePIPIota(const Node *node, const double tau, const double mu, bool isRoot) {
 
     if (fabs(mu) < 1e-8)
-        DLOG(WARNING) << "Constraint match at parameter mu, badValue = " << mu << " [ 1e-08; 10000]";
+        DLOG(WARNING) << "[PIP tree likelihood] Constraint match at parameter mu, badValue = " << mu << " [ 1e-08; 10000]";
 
     // Initialize iota vector:
     double iotaValue{0};
@@ -253,7 +253,7 @@ void PIPDRTreeLikelihoodParameters::computePIPIota(const Node *node, const doubl
 void PIPDRTreeLikelihoodParameters::computePIPBeta(const Node *node, const double mu, bool isRoot) {
 
     if (fabs(mu) < 1e-8)
-        DLOG(WARNING) << "Constraint match at parameter mu, badValue = " << mu << " [ 1e-08; 10000]";
+        DLOG(WARNING) << "[PIP tree Llikelihood] Constraint match at parameter mu, badValue = " << mu << " [ 1e-08; 10000]";
 
     // Initialize Beta vector:
     double betaValue{0};

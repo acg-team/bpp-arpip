@@ -356,6 +356,7 @@ void PIPDRHomogeneousTreeLikelihood::computePIPLikelihoodForNonEmptySitesAtNode_
         }
         catch (SequenceNotFoundException& snfe)
         {
+            LOG(FATAL)<<"[PIP homogeneous tree likelihood]"<< snfe.message();
             throw SequenceNotFoundException(
                     "PIPDRHomogeneousTreeLikelihood::computePIPLikelihoodForNonEmptySitesAtNode_. Leaf name in tree not found in site container: ",
                     (node->getName()));
@@ -382,6 +383,7 @@ void PIPDRHomogeneousTreeLikelihood::computePIPLikelihoodForNonEmptySitesAtNode_
         // We initialize each son node:
         size_t nbSonNodes = node->getNumberOfSons();
         if (nbSonNodes == 0) {
+            LOG(FATAL)<<"[PIP homogeneous tree likelihood] Post-order recursive call doesn't work.";
             throw Exception(
                     "PIPDRHomogeneousTreeLikelihood::computePIPLikelihoodForNonEmptySitesAtNode_: "
                     "Post-order recursive call doesn't work.");
@@ -506,6 +508,7 @@ long double PIPDRHomogeneousTreeLikelihood::computePIPTreeLikelihood(const doubl
 
     // Update the PIP parameters
     firePIPParameterChanged_(lambda, mu);
+    DLOG(INFO)<< "[DR homogeneous tree likelihood] PIP's parameters (including transition probabilities) is now updated.";
 
     // For non-empty sites and all nodes in the MSA
     computePIPLikelihoodForNonEmptySitesAtNode_(tree_->getRootNode());
@@ -525,7 +528,7 @@ long double PIPDRHomogeneousTreeLikelihood::computePIPTreeLikelihood(const doubl
     for (int i = 0; i < nbDistinctSites_; i++) {
 
         lk_sites[i] = log(p_c_[i]) * siteWeight->at(i);
-        DVLOG(2) << "site log_lk[" << i << "]=" << std::setprecision(18) << lk_sites[i] << std::endl;
+        DVLOG(2) << "[DR homogeneous tree likelihood] site log_lk[" << i << "]=" << std::setprecision(18) << lk_sites[i] << std::endl;
 
     }
 
@@ -538,6 +541,7 @@ long double PIPDRHomogeneousTreeLikelihood::computePIPTreeLikelihood(const doubl
 
     // Calls the routine to compute the FV values
     minusLogLik_ = -logLK;
+    DLOG(INFO) << "[DR homogeneous tree likelihood] PIP likelihood is computed now with value " << logLK;
 
     return logLK;
 
@@ -549,6 +553,7 @@ void PIPDRHomogeneousTreeLikelihood::firePIPParameterChanged_(const double lambd
 
     if (lambda == std::string::npos || mu == std::string::npos) {
         //need to call estimator, but right now throw exception:
+        LOG(FATAL)<<"[PIP homogeneous tree likelihood] Lambda or Mu is missing!";
         throw Exception("PIPDRHomogeneousTreeLikelihood::initPIPParameter_(). Lambda or Mu is missing!");
     }
 
@@ -845,7 +850,7 @@ void PIPDRHomogeneousTreeLikelihood::computeLikelihoodAtSite_(const Node *node,
     pupko_likelihood_node->resize(nbStates_);
 
     // Initialize likelihood array:
-    if (node->isLeaf()) {
+    if (node->isLeaf() && tree_->getRootId()!=nodeId) {
         vector<int> InnerNodes = tree_->getInnerNodesId();
 //        VVdouble *leavesLikelihoods_node;
         if(std::find(InnerNodes.begin(), InnerNodes.end(), nodeId) != InnerNodes.end()) {
