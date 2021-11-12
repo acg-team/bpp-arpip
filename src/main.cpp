@@ -259,18 +259,18 @@ int main(int argc, char *argv[]) {
         string initTreeOpt = bpp::ApplicationTools::getStringParameter("init.tree", arpipapp.getParams(),
                                                                        "user", "", false, 1);
         bpp::ApplicationTools::displayResult("Initial tree", initTreeOpt);
+//        DLOG(INFO) << "Tree Description:\n";
         if (initTreeOpt == "user") {
 
-            DLOG(INFO) << "Tree Description:\n";
-            DLOG(INFO) << "[input tree parser] Provided by User.\n";
+            DLOG(INFO) << "[Input tree parser] Tree Provided by User.\n";
             tree = bpp::PhylogeneticsApplicationTools::getTree(arpipapp.getParams());
-            DLOG(INFO) << "[Input tree parser] Number of Nodes:" << tree->getNumberOfNodes() << std::endl;
+            DLOG(INFO) << "[Input tree parser] Tree name is:" << tree->getName() << std::endl;
         } else {
             // If there is no tree as input
             std::string App_distance_method = bpp::ApplicationTools::getStringParameter("init.tree.method",
                                                                                         arpipapp.getParams(), "nj");
             bpp::ApplicationTools::displayResult("Initial tree reconstruction method", App_distance_method);
-            DLOG(INFO) << "[input tree parser] Reconstruction Method: " << App_distance_method;
+            DLOG(INFO) << "[Tree reconstruction] Reconstruction Method: " << App_distance_method;
 
             bpp::AgglomerativeDistanceMethod *distMethod = nullptr;
 
@@ -315,20 +315,24 @@ int main(int argc, char *argv[]) {
                                                                                                          0);
             bpp::ApplicationTools::displayResult(
                     "Default model without gap is used", tmpSModel->getName());
-
+            DLOG(INFO)
+                    << "[Tree reconstruction] Normal substitution model is used, meaning no gap were considered for tree reconstruction. ";
             // Cloning the site for building the tree
             bpp::SiteContainer *tmpSites = sites->clone();
 
             // Removing gappy regions
             bpp::ApplicationTools::displayTask("Removing gap only sites");
             bpp::SiteContainerTools::removeGapOnlySites(*tmpSites);
-            std::cout << endl;
+            DLOG(INFO) << "[Tree reconstruction] Sites with full gap column were removed.";
 
             bpp::ApplicationTools::displayTask("Changing gaps to unknown characters");
             bpp::SiteContainerTools::changeGapsToUnknownCharacters(*tmpSites);
+            DLOG(INFO) << "[Tree reconstruction] Gap states were changed to unknown characters.";
+
 
             // Computing distance matrix
             bpp::DistanceEstimation distanceMethod(tmpSModel, rateDist, tmpSites);
+            DLOG(INFO) << "[Tree reconstruction] Distance matrix was computed.";
 
 
             // Retrieve the computed distances
@@ -337,12 +341,11 @@ int main(int argc, char *argv[]) {
             distMethod->setDistanceMatrix(*distances);
             distMethod->computeTree();
             tree = distMethod->getTree();
-            DLOG(INFO) << "[input tree parser] Reconstructed by: " << distMethod->getName() << std::endl;
+            DLOG(INFO) << "[Tree reconstruction] Reconstructed by: " << distMethod->getName() << std::endl;
 
             delete tmpSites;
             delete distances;
             delete distMethod;
-//                delete tmpSModel;
             std::cout << endl;
         }
 
@@ -354,6 +357,7 @@ int main(int argc, char *argv[]) {
                                                                        "1", "", false, 1);
         if (initTreeScale != "1") {
             bpp::ApplicationTools::displayResult("The tree scale is activated with value ", initTreeScale);
+            DLOG(INFO) << "[Input tree parser] Tree is now scaling " << initTreeScale << " times.";
             ARPIPTreeTools::scaleBranches(ttree_, initTreeScale);
         }
 
@@ -362,11 +366,11 @@ int main(int argc, char *argv[]) {
             try{
                 bpp::ApplicationTools::displayMessage("Tree is multifuracted.");
                 bpp::TreeTemplateTools::midRoot(*(ttree_), bpp::TreeTemplateTools::MIDROOT_VARIANCE, false);
-                DLOG(INFO) << "Tree is now binary by Midpoint rooting method." << std::endl;
+                DLOG(INFO) << "[Input tree parser] Tree is now binary by Midpoint rooting method.";
 
             } catch (bpp::Exception e){
                 bpp::ApplicationTools::displayError("Error when multifuracting the tree");
-                LOG(FATAL) << "Error when multifuracting the tree" << e.message();
+                LOG(FATAL) << "[Input tree parser] Error when multifuracting the tree" << e.message();
             }
         }
 
@@ -374,7 +378,7 @@ int main(int argc, char *argv[]) {
         if (ttree_->isRooted()) {
             int root = tree->getRootId();
             bpp::ApplicationTools::displayResult("The tree root is node number", root);
-            DLOG(INFO) << "Tree is rooted."<< "(" << root << "=root)" << endl;
+            DLOG(INFO) << "[Input tree parser] Tree is rooted and now the root is " << root << endl;
         } else {
             bpp::ApplicationTools::displayMessage("Tree is not rooted: the tree must have a root in PIP model!!!!");
             DLOG(INFO) << "The input tree is not rooted, the tree must have a root in PIP model!!!!" << endl;
@@ -389,23 +393,25 @@ int main(int argc, char *argv[]) {
             } else throw bpp::Exception("Tree is not rooted yet.");
         }
 
-        DLOG(INFO) << "[Input tree parser] Number of Nodes" << tree->getNumberOfNodes() << std::endl;
-
-
 
         // Tree description
         bpp::ApplicationTools::displayResult("Number of nodes", ttree_->getNumberOfNodes());
         bpp::ApplicationTools::displayResult("Number of leaves", ttree_->getNumberOfLeaves());
         bpp::ApplicationTools::displayResult("Total tree length, aka tau", ttree_->getTotalLength());
+        DLOG(INFO) << "[Input tree parser] Number of Nodes: " << tree->getNumberOfNodes() << std::endl;
+        DLOG(INFO) << "[Input tree parser] Number of leaves: " << tree->getNumberOfLeaves() << std::endl;
+        DLOG(INFO) << "[Input tree parser] Total tree length: " << tree->getTotalLength() << std::endl;
 
 
+        DLOG(INFO) << "[Input tree parser] Initial tree topology is: " << bpp::TreeTools::treeToParenthesis(*tree, true);
         // Rename internal nodes with standard Vxx * where xx is a progressive number
         ttree_->setNodeName(tree->getRootId(), "root");
         ARPIPTreeTools::renameInternalNodes(ttree_);
 
         // Write down the reconstructed tree
         bpp::PhylogeneticsApplicationTools::writeTree(*ttree_, arpipapp.getParams());
-        DLOG(INFO) << "[Initial Tree Topology] " << bpp::TreeTools::treeToParenthesis(*tree, true);
+        DLOG(INFO) << "[Input tree parser] Initial tree topology after topological modifications: "
+                   << bpp::TreeTools::treeToParenthesis(*ttree_, true);
 
         // Write down the relation between nodes
         vector<string> strTreeFileAncestor;
@@ -460,7 +466,8 @@ int main(int argc, char *argv[]) {
                     alphabet, gCode.get(), sites, modelMap,
                     "", true, false, 0));
         }
-        DLOG(INFO) << "[Base substitution model] is " << sModel->getName()<< " and number of states: " << (int) sModel->getNumberOfStates();
+        DLOG(INFO) << "[Substitution model] Base substitution model is " << sModel->getName() << " with "
+                   << (int) sModel->getNumberOfStates() << " number of states.";
         bpp::ApplicationTools::displayResult("Base substitution model", sModel->getName());
 
 
@@ -481,7 +488,7 @@ int main(int argc, char *argv[]) {
 
         if (computeFreqFromData) {
             sModel->setFreqFromData(*sites, 0.01);
-            DLOG(INFO) << "[Base substitution model] used frequency from data" ;
+            DLOG(INFO) << "[Substitution model] Base substitution model used frequency from data" ;
             bpp::ApplicationTools::displayMessage("Set the frequency from data");
         }
 
@@ -512,16 +519,16 @@ int main(int argc, char *argv[]) {
             // ProPIP
             //mu = 0.242833;
             //lambda = 210.235;
+            DLOG(INFO) << "[Substitution model][PIP model] Fixed PIP parameters to (lambda=" << lambda << ",mu=" << mu << "," "I="
+                       << lambda * mu << ")";
         }
-        DLOG(INFO) << "[PIP model] Fixed PIP parameters to (lambda=" << lambda << ",mu=" << mu << "," "I="
-                   << lambda * mu << ")";
+
 
 
 
         // New PIP substitution model:
         sModel = new bpp::PIP13(sModel, mu);
 
-        DLOG(INFO) << "[Substitution model] Number of states: " << (int) sModel->getNumberOfStates();
         bpp::ApplicationTools::displayResult("Substitution model", sModel->getName());
 
         if (App_model_indels)
@@ -536,6 +543,10 @@ int main(int argc, char *argv[]) {
         double pip_intensity = lambda * parameters.getParameter("PIP13.mu").getValue();
         bpp::ApplicationTools::displayResult("PIP13.intensity", bpp::TextTools::toString(pip_intensity));
 
+        DLOG(INFO) << "[Substitution model] Substitution model is " << sModel->getName() << " model with mu="
+                   << parameters.getParameter("PIP13.mu").getValue();
+
+        bpp::ApplicationTools::displayMessage("Equilibrium frequency of substitution model:");
         for (size_t i = 0; i < sModel->getFrequencies().size(); i++) {
 
             bpp::ApplicationTools::displayResult("eq.freq(" + sModel->getAlphabet()->getName(i) + ")",
@@ -544,22 +555,23 @@ int main(int argc, char *argv[]) {
 
         bpp::StdStr s1;
         bpp::PhylogeneticsApplicationTools::printParameters(sModel, s1, 1, true);
-        DLOG(INFO) << s1.str();
+        DLOG(INFO) <<"[Substitution model] Value from the model is " << s1.str();
 
         /////////////////////////
         // Among site rate variation (ASVR)
         bpp::DiscreteDistribution *rDist = new bpp::ConstantRateDistribution();
+        bpp::ApplicationTools::displayResult("Among site rate variation (ASVR)", rDist->getName());
         DLOG(INFO) << "[Substitution model] Constant distribution rate is used in this model.";
 
         /************************************* Tree Likelihood Computation ********************************************/
 
-        bpp::ApplicationTools::displayMessage("\n[Setting up TreeLikelihood]");
+        bpp::ApplicationTools::displayMessage("\n[Setting up Tree Likelihood]");
 
         bpp::PIPDRHomogeneousTreeLikelihood *likFunctionPIP20 = new bpp::PIPDRHomogeneousTreeLikelihood(*ttree_, *sites,
                                                                                                         sModel, rDist,
                                                                                                         lambda, mu,
                                                                                                         false);
-        DLOG(INFO) << "[TreeLikelihood] Likelihood object under PIP is constructed successfully.";
+        DLOG(INFO) << "[PIP tree likelihood] Likelihood object under PIP is constructed successfully.";
 
         //////////////////////////////
         // Estimate the PIPLogLikelihood value:
@@ -574,20 +586,20 @@ int main(int argc, char *argv[]) {
                     "By activating \"opt.likelihood\" in config file the operation would be terminated!");
             bpp::ApplicationTools::displayMessage(
                     "By running the ASR module, the PIP parameters including logLikelihood would be printed.");
-            DLOG(INFO) << "[TreeLikelihood] Just Log likelihood asked to be printed.";
+            DLOG(INFO) << "[PIP tree likelihood] Just Log likelihood asked to be printed.";
             return 1;
         }
         /////////////////////////
-        bpp::ApplicationTools::displayMessage("\n[Extracting Maximum Likelihood Indel Points]");
+        bpp::ApplicationTools::displayMessage("\n[Extracting Indel Points]");
 
         // Maximum Likelihood Indel Points
         bpp::PIPMLIndelPoints *mlIndePoints = new bpp::PIPMLIndelPoints(likFunctionPIP20);
-        DLOG(INFO) << "[Maximum Likelihood Indel Points] Indel points using Maximum Likelihood are inferred successfully.";
+        DLOG(INFO) << "[Indel Points] Indel points using Maximum Likelihood are inferred successfully.";
 
         // Write down the output of the algorithm to a single file
 //        ARPIPTreeTools::treeAncestorRelation(ttree_->getRootNode(), strTreeFileAncestor);
         ARPIPIOTools::writeMLIndelPointsToFile(mlIndePoints, arpipapp.getParam("output.mlindelpoints.file"));
-        DLOG(INFO) << "[Maximum Likelihood Indel Points] File is written successfully.";
+        DLOG(INFO) << "[Indel Points] File is written successfully.";
 
 
         /************************************* Ancestral Sequence Reconstruction **************************************/
@@ -600,7 +612,7 @@ int main(int argc, char *argv[]) {
         bpp::ApplicationTools::displayTask("Ancestral sequence reconstruction");
         bpp::AlignedSequenceContainer *asr = jarPIP.JointAncestralSequencesReconstruction();
         bpp::ApplicationTools::displayTaskDone();
-        DLOG(INFO) << "[Ancestral Sequence Reconstruction] Ancestral sequence were successfully reconstructed.";
+        DLOG(INFO) << "[PIP ASR] Ancestral sequence were successfully reconstructed.";
 
 //        cout << "This sequence is coded with a " << asr->getAlphabet()->getAlphabetType() << endl;
         for (size_t nbseq = 0; nbseq < asr->getNumberOfSequences(); nbseq++) {
@@ -618,6 +630,7 @@ int main(int argc, char *argv[]) {
                 delete sequence;
             } catch (bpp::Exception &ex) {
                 cerr << ex.what() << endl;
+                LOG(FATAL) << "Error when " << ex.message();
             }
         }
 
@@ -625,6 +638,7 @@ int main(int argc, char *argv[]) {
 
         bpp::Fasta fastaWtiter;
         fastaWtiter.writeSequences(arpipapp.getParam("output.ancestral.file"), *asr);
+        LOG(INFO) << "[PIP ASR] File is written successfully.";
         cout << "Printed in file!!!" << endl;
 
         /**************************************** Deleting the pointers ***********************************************/
@@ -635,9 +649,10 @@ int main(int argc, char *argv[]) {
         google::ShutdownGoogleLogging();
         exit(0);
 
-    } catch (exception &exception) {
+    } catch (exception &ex) {
         cout << "ARPIP exception:" << endl;
-        std::cout << exception.what() << std::endl;
+        std::cout << ex.what() << std::endl;
+        LOG(FATAL) << "Error when " << ex.what();
         google::ShutdownGoogleLogging();
         exit(1);
     }
