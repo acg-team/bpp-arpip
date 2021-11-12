@@ -84,17 +84,17 @@ PIPMLIndelPoints::PIPMLIndelPoints(const PIPDRHomogeneousTreeLikelihood *lik) :
         nodeBeta_ = &(lik->getLikelihoodData()->getPipParam().getNodeBetaData());
         nodeSetG_ = (lik->getLikelihoodData()->getNodeSetG());
         nodeSetA_ = (lik->getLikelihoodData()->getNodeSetA());
-        DLOG(INFO) << "PIPMLIndelPoints::PIPMLIndelPoints constructor: The PIP parameter is copied from the likelihood object.";
+        DLOG(INFO) << "[Indel points] In constructor the PIP parameter is copied from the likelihood object.";
     }
     else {
         ApplicationTools::displayError(
-                "PIPMLIndelPoints::PIPMLIndelPoints. This class only supports PIP based models.");
-        DLOG(INFO) << "PIPMLIndePoints::PIPMLIndelPoints. The likelihood object is not PIP-based.";
+                "[Indel points] This class only supports PIP based models. (meaning PIP13,...)");
+        DLOG(ERROR) << "[Indel points] The likelihood object is not PIP-based.";
     }
 
     // Initializing the algorithm
     initMaximumLikelihoodIndelPoints_(tree_->getRootNode());
-    DLOG(INFO) << "PIPMLIndelPoints::initMaximumLikelihoodIndelPoints_. is initialized successfully.";
+    DLOG(INFO) << "[Indel points] IndelPoints object is initialized successfully.";
 
 }
 
@@ -160,7 +160,7 @@ void PIPMLIndelPoints::initMaximumLikelihoodIndelPoints_(const Node *node)  {
 
 
     /* Getting Total tree length: */
-    const double tau = TreeTemplateTools::getTotalLength(*tree_->getRootNode(), false);
+//    const double tau = TreeTemplateTools::getTotalLength(*tree_->getRootNode(), false);
 
     /* Getting the parameter mu: */
     ParameterList PIPpl = model_->getParameters();
@@ -175,7 +175,7 @@ void PIPMLIndelPoints::initMaximumLikelihoodIndelPoints_(const Node *node)  {
 //    std::cout << std::endl << "-------------|" << "extractIndelPoints" << "|--------------" << std::endl;
     ApplicationTools::displayTask("Extracting the Indel Points");
     extractIndelPoint(node, mu);
-    DLOG(INFO)<< "extractIndelPoint::done. Indel points were extracted.";
+    DLOG(INFO)<< "[Indel points] Indel points were inferred successfully.";
     ApplicationTools::displayTaskDone();
     //    MLHomoPath(nodeText_[tree_->getRootId()]);
     MLHomoPath(nodeText_[tree_->getRootId()]);
