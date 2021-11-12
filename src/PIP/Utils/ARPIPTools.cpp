@@ -139,14 +139,19 @@ size_t ARPIPTreeTools::getLongestBranchesNodeId(TreeTemplate<Node> *ttree){
 
 /******************************************************************************/
 void ARPIPTreeTools::scaleBranches(bpp::TreeTemplate<bpp::Node> *ttree, std::string strScale) {
+
     int dScale = std::stoi(strScale);
     std::vector<int> nodeIds = ttree->getNodesId();
+    DLOG(INFO) << "[ARPIPTreeTools] The total tree length was " << ttree->getTotalLength() << ".";
 
     for (size_t i = 0; i < nodeIds.size(); i++) {
     if( nodeIds[i] != ttree->getRootId())
         ttree->setDistanceToFather(nodeIds[i], ttree->getDistanceToFather(nodeIds[i]) * dScale);
     }
-    DLOG(INFO) << "Branches of the tree is now scaled." << std::endl;
+
+    DLOG(INFO) << "[ARPIPTreeTools] Branches of the tree is now scaled." << std::endl;
+    DLOG(INFO) << "[ARPIPTreeTools] The total tree length now is " << ttree->getTotalLength() << ".";
+
 }
 
 
@@ -211,12 +216,12 @@ ARPIPIOTools::writeMLIndelPointsToFile(bpp::PIPMLIndelPoints *mlindelpoint, cons
         }
         output << std::endl;
         output.close();
-        bpp::ApplicationTools::displayResult("Output MLIndelPoint file", path);
+        bpp::ApplicationTools::displayResult("Output IndelPoint file", path);
 
 
     } catch (IOException &e) {
         std::stringstream ss;
-        ss << e.what() << "\nProblem writing mlIndels to file " << path
+        ss << e.what() << "\nProblem writing Indels to file " << path
            << "\n Is the file path correct and do you have the proper authorizations? ";
         throw (IOException(ss.str()));
     }
