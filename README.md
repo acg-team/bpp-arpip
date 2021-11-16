@@ -40,12 +40,13 @@ You can find tutorial, examples and guides on our [Wikipages]()
      * (at your option) any later version.
      *
      * You should have received a copy of the GNU Lesser General Public
-     * License along with ProPIP. If not, see <http://www.gnu.org/licenses/>.
+     * License along with ARPIP. If not, see <http://www.gnu.org/licenses/>.
 
 ---
 #### Reference
 
 [1] Alexandre Bouchard-Côté and Michael I. Jordan. Evolutionary inference via the Poisson Indel Process.Proc. Natl. Acad. Sci. U.S.A., 110(4):1160, 2013.
+
 [2] Tal Pupko and et al.  A fast algorithm for joint reconstruction of ancestral amino acid sequences Molecular biology and evolution. 2000. 17, 6. 890–896.
 
 ---
