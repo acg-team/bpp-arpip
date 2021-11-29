@@ -10,7 +10,7 @@ ancestral characters on the pruned subtrees in a manner similar to FastML (Pupko
 
 #### Documentation
 
-You can find tutorial, examples and guides on our [Wikipages](https://acg-team.github.io/bpp-arpip/).
+You can find tutorial, examples and guides on our [Wikipages](https://acg-team.github.io/bpp-arpip/index.html).
 
 ---
 #### Licence
