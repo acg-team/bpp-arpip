@@ -10,7 +10,7 @@ ancestral characters on the pruned subtrees in a manner similar to FastML (Pupko
 
 #### Documentation
 
-You can find tutorial, examples and guides on our [Wikipages]()
+You can find tutorial, examples and guides on our [Wikipages](https://acg-team.github.io/bpp-arpip/).
 
 ---
 #### Licence
@@ -45,7 +45,7 @@ You can find tutorial, examples and guides on our [Wikipages]()
 ---
 #### Reference
 
-[1] Alexandre Bouchard-Côté and Michael I. Jordan. Evolutionary inference via the Poisson Indel Process.Proc. Natl. Acad. Sci. U.S.A., 110(4):1160, 2013.
+[1] Alexandre Bouchard-Côté and Michael I. Jordan. Evolutionary inference via the Poisson Indel Process. Proc. Natl. Acad. Sci. U.S.A., 110(4):1160, 2013.
 
 [2] Tal Pupko and et al.  A fast algorithm for joint reconstruction of ancestral amino acid sequences Molecular biology and evolution. 2000. 17, 6. 890–896.
 
@@ -55,4 +55,7 @@ In case of bugs or improvement suggestions feel free to:
     
 - Write to [Gholamhossein Jowkar](mailto:jowk@zhaw.ch)
     
+#### Funding
+This work was supported by the Swiss National Science Foundation (SNF) grant [31003A_176316](https://p3.snf.ch/Project-176316) to M.A. The funding body did not play any role in the design of 
+the study and collection, analysis, and interpretation of data and in writing.
 

@@ -175,7 +175,7 @@ std::map<int, std::vector<int>> PIPAncestralStateReconstruction::getAllAncestral
         if (!newRoot->isLeaf()) {
             for(auto &str:deletionPoints[siteNb]) {
                 PIPDeletionPoints.push_back(std::stoi(str));
-                if(PIPSubTree->isLeaf(std::stoi(str))){
+                if(PIPSubTree->isLeaf(std::stoi(str))){ //todo: check!
                     Node *fNode = PIPSubTree->getNode(std::stoi(str))->getFather();
                     Node *cNode = PIPSubTree->getNode(std::stoi(str));
                     fNode->removeSon(cNode);

@@ -65,7 +65,7 @@
 namespace bpp{
 
     /**
- * @brief The Rivas-Eddy substitution model with gap characters.
+ * @brief The PIP substitution model with gap characters.
  *
  * This model expends any reversible substitution model with gaps as an additional state.
  * Although the conditionnal subtitution process is reversible, the insertion/deletion process
