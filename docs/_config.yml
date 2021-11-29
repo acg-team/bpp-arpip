@@ -1,0 +1,19 @@
+# basic options
+title:  ARPIP
+author: Gholamhossein Jowkar
+email:  jowk@zhaw.ch
+description:  ARPIP is an Ancestral Sequence Reconstruction software - a method for ancestral sequence reconstruction with indels.
+twiter_username: ghjowkar
+github_username: ghjowkar
+
+header_pages:
+  - arpip_ancestral_sequence_reconstruction_under_poisson_indel_proccess_about.md
+  - arpip_ancestral_sequence_reconstruction_under_poisson_indel_proccess_compile.md
+  - arpip_ancestral_sequence_reconstruction_under_poisson_indel_proccess_inference_examples.md
+
+minima:
+  skin: dark
+
+# Build settings
+markdown: kramdown
+theme: minima
