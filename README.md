@@ -1,4 +1,4 @@
-# ARPIP: Ancestral sequence Reconstruction under PIP Poisson Indel Process
+# ARPIP: Ancestral sequence Reconstruction under Poisson Indel Process
 
 ARPIP is an Ancestral Sequence Reconstruction software - a method for ancestral sequence reconstruction that uses 
 Poisson Indel Process (Bouchard-Côté & Jordan, PNAS, 2013) to model insertions and deletions on a phylogenetic tree 
@@ -16,7 +16,7 @@ You can find tutorial, examples and guides on our [Wikipages](https://acg-team.g
 #### Licence
 
      * ARPIP is a computer program whose purpose is to infer Ancestral Sequence 
-     * under an indel-aware model for nucleotide and protein datasets.
+     * under Poisson Indel Process for nucleotide and protein datasets.
      *
      * This software is based and extends the following libraries:
      *
