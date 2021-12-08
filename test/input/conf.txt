@@ -1,0 +1,13 @@
+alphabet=DNA
+seed=1
+alignment=true
+input.sequence.file=./input/msa.fasta
+input.sequence.sites_to_use=all
+init.tree=user
+input.tree.file=./input/tree.nwk
+model=PIP(model=JCnuc,lambda=10,mu=0.01)
+output.msa.file=./output/msa.fasta
+output.tree.file=./output/tree.nwk
+output.ancestral.file=./output/anc.fasta
+output.node_rel.file=./output/node_rel.txt
+output.mlindelpoints.file=./output/mlindelpoints

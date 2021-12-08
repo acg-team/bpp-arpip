@@ -1,0 +1,14 @@
+analysis_name = TEST 2
+alphabet=Protein
+seed=1
+input.sequence.file=../data/input/test_02/sim-0_msa_new.fasta
+input.sequence.sites_to_use=all
+init.tree=user
+input.tree.file=../data/input/test_02/sim-0_new.newick
+model=PIP(model=WAG01)
+opt.pip_param_estimate=1
+output.msa.file=../data/output/test_02/msa.fasta
+output.tree.file=../data/output/test_02/tree.nwk
+output.ancestral.file=../data/output/test_02/anc.fasta
+output.node_rel.file=../data/output/test_02/node_rel.txt
+output.mlindelpoints.file = ../data/output/test_02/mlindelpoints.txt
