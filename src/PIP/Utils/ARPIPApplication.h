@@ -104,7 +104,7 @@ namespace bpp{
                                                                                          true, 3);
             bool noint = bpp::ApplicationTools::getBooleanParameter("noninteractive", params_, false, "", true, 3);
             bpp::ApplicationTools::interactive = !noint;
-            seed_ = bpp::ApplicationTools::getParameter<long>("seed", params_, -1, "", true, 3);
+            seed_ = bpp::ApplicationTools::getParameter<long>("opt.seed", params_, -1, "", true, 3);
             if (seed_ >= 0) {
                 bpp::RandomTools::setSeed(seed_);
 
