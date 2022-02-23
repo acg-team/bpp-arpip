@@ -20,7 +20,7 @@ Computer Science (Artificial Intelligence) from Shiraz University, Iran in 2016.
 computer engineering from Shiraz University has improved my abilities which led me to a versatile 
 and an eager-to-learn researcher. As I am greatly interested in interdisciplinary subjects,
 I am a PhD student in SIB (Swiss Institute of Bioinformatics) and 
-looking forward for extending my sceintific network. 
+looking forward for extending my scientific network. 
 
 # Reach me
 
