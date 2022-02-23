@@ -381,7 +381,7 @@ int main(int argc, char *argv[]) {
             DLOG(INFO) << "[Input tree parser] Tree is rooted and now the root is " << root << endl;
         } else {
             bpp::ApplicationTools::displayMessage("Tree is not rooted: the tree must have a root in PIP model!!!!");
-            DLOG(INFO) << "The input tree is not rooted, the tree must have a root in PIP model!!!!" << endl;
+            DLOG(INFO) << "[Input tree parser] The input tree is not rooted, the tree must have a root in PIP model!!!!" << endl;
 //            int root = ttree_->getRootId();
             std::vector<double> nodeBr = ttree_->getBranchLengths();
             size_t newRoot = ARPIPTreeTools::getLongestBranchesNodeId(ttree_);
@@ -389,7 +389,7 @@ int main(int argc, char *argv[]) {
             ttree_->newOutGroup(newRoot);// it should be a random node!
             if(ttree_->isRooted()){
                 bpp::ApplicationTools::displayResult("New random root is", newRoot);
-                DLOG(INFO) << "Now, the tree is rooted....." << "(node " << newRoot << " is the new root)" << endl;
+                DLOG(INFO) << "[Input tree parser] Now, the tree is rooted....." << "(node " << newRoot << " is the new root)" << endl;
             } else throw bpp::Exception("Tree is not rooted yet.");
         }
 
@@ -636,10 +636,13 @@ int main(int argc, char *argv[]) {
 
         /************************************ Writing the result **********************************************/
 
+//        bpp::ApplicationTools::displayTask("Print the ASR file");
         bpp::Fasta fastaWtiter;
         fastaWtiter.writeSequences(arpipapp.getParam("output.ancestral.file"), *asr);
         LOG(INFO) << "[PIP ASR] File is written successfully.";
-        cout << "Printed in file!!!" << endl;
+//        cout << "Printed in file!!!" << endl;
+//        bpp::ApplicationTools::displayTaskDone();
+        bpp::ApplicationTools::displayResult("Output ASR file", arpipapp.getParam("output.ancestral.file"));
 
         /**************************************** Deleting the pointers ***********************************************/
 
