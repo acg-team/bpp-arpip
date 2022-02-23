@@ -28,7 +28,7 @@ find_package (glog 0.5.0 REQUIRED)
 
 
 set(BINARY ${PROJECT_NAME}_test)
-file(GLOB_RECURSE TEST_SOURCES LIST_DIRECTORIES false *.h *.cpp)
+file(GLOB_RECURSE TEST_SOURCES LIST_DIRECTORIES true *.h *.cpp)
 set(SOURCES ${TEST_SOURCES})
 
 add_executable(${BINARY} ${TEST_SOURCES})
