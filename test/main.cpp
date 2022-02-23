@@ -54,8 +54,13 @@
  */
 
 #include <gtest/gtest.h>
+#include <glog/logging.h>
 
 int main(int argc, char **argv) {
+    FLAGS_log_dir = "../../test/output/";
+    ::google::InitGoogleLogging("test");
+    ::google::InstallFailureSignalHandler();
+
     ::testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();
 }

@@ -36,9 +36,9 @@
  *******************************************************************************/
 
 /**
- * @file test_bpp.cpp
+ * @file mlIndelPoints.cpp
  * @author Gholamhossein Jowkar
- * @date 09 08 2021
+ * @date 30 09 2021
  * @version 1.0.0
  * @maintainer Gholamhossein Jowkar
  * @email jowk@zhaw.ch
@@ -53,83 +53,82 @@
  * @see For more information visit:
  */
 
-// From STL:
-#include <iostream>
-#include <filesystem>
+#include "gtest/gtest.h"
+#include "../src/PIP/Likelihood/PIPMLIndelPoints.h"
+
 #include <memory>
-
-// From Gtest:
-#include <gtest/gtest.h>
-
-// From BPP
 #include <Bpp/Seq/Io/Fasta.h>
 #include <Bpp/Phyl/Io/Newick.h>
-#include <Bpp/Phyl/Tree.h>
-#include <Bpp/Phyl/Node.h>
-#include <Bpp/Phyl/TreeTemplateTools.h>
-#include <Bpp/Seq/App/SequenceApplicationTools.h>
 #include <Bpp/Seq/Alphabet/DNA.h>
-#include <Bpp/Phyl/App/PhylogeneticsApplicationTools.h>
+#include <Bpp/Phyl/Model/RateDistribution/ConstantRateDistribution.h>
+#include <Bpp/Phyl/Model/Nucleotide/JCnuc.h>
+#include <Bpp/Seq/Alphabet/AlphabetTools.h>
+#include <gsl/gsl_blas_types.h>
 
 
-class TestSequenceReader: public testing::Test {
-protected:
-    void SetUp()  override {
-        std::string currentPath = get_current_dir_name();
-        inputSequencePath = "../../test/input/msa.fasta";
-        alphabet = new bpp::DNA;
-
-    }
-
-    bpp::Alphabet *alphabet;
-    std::string inputSequencePath;
-
-    void TearDown() override {
-        delete alphabet;
-    }
-
-};
-
-TEST_F(TestSequenceReader, ReadmsaFile){
-    bpp::ApplicationTools::displayTask("Bpp::Fasta module");
-    bpp::Fasta seqReader;
-    bpp::SequenceContainer *sequences = seqReader.readSequences(inputSequencePath, alphabet);
-    bpp::SiteContainer *sites = new bpp::VectorSiteContainer(*sequences);
-    ASSERT_TRUE(sequences != nullptr);
-    EXPECT_EQ(sites->getNumberOfSequences(),5);
-    EXPECT_EQ(sites->getNumberOfSites(), 19);
-    EXPECT_EQ(sites->getSequencesNames()[0],"l1");
-    EXPECT_EQ(sites->getSequence(0).toString(),"ACAACATGTC----ACTGT");
-    bpp::ApplicationTools::displayTaskDone();
-    delete sequences;
-    delete sites;
-}
-
-//TEST_F(TestSequenceReader, WritemsaFile){
-//
-//}
-
-class TestTreeReader : public testing::Test {
+class TestIndelPoints: public testing::Test{
 protected:
     void SetUp() override {
+        lambda = 10;
+        mu = 0.01;
+        bpp::Fasta seqReader;
+        inputSequencePath = "../../test/input/msa.fasta";
+        alphabet = new bpp::DNA;
+        sequences = seqReader.readSequences(inputSequencePath, alphabet);
+        sites = new bpp::VectorSiteContainer(*sequences);
+        bpp::Site objectSite = sites->getSite(0);
         inputTreePath = "../../test/input/tree.nwk";
+        bpp::Newick tReader;
+        tree = tReader.read(inputTreePath);
+        ttree = new bpp::TreeTemplate<bpp::Node>(*tree);
+        rDist = new bpp::ConstantRateDistribution();
+
+        sModel = new bpp::JCnuc(&bpp::AlphabetTools::DNA_ALPHABET);
+
+        extendedSModel = new bpp::PIP13(sModel, mu);
+
+        likFunctionPIP20 = new bpp::PIPDRHomogeneousTreeLikelihood(*ttree, *sites,
+                                                                   extendedSModel, rDist,
+                                                                   lambda, mu,
+                                                                   false);
+
 
     }
-
+    double lambda;
+    double mu;
+    bpp::Alphabet *alphabet;
+    std::string inputSequencePath;
     std::string inputTreePath;
-    std::string outputTreePath;
+    bpp::SequenceContainer *sequences;
+    bpp::Tree *tree;
+    bpp::SiteContainer *sites;
+    bpp::TreeTemplate<bpp::Node> *ttree;
+    bpp::ReversibleSubstitutionModel *sModel;
+    bpp::ReversibleSubstitutionModel *extendedSModel;
+    bpp::DiscreteDistribution *rDist ;
+    bpp::PIPDRHomogeneousTreeLikelihood *likFunctionPIP20;
 
-    void TearDown() override {}
+    void TearDown() override {
+        delete sequences;
+        delete sites;
+    }
+
 };
 
-TEST_F(TestTreeReader, ReadTreeFile){
-    bpp::ApplicationTools::displayTask("Bpp::Newick module");
-    bpp::Newick tReader;
-    bpp::Tree *ttree = tReader.read(inputTreePath);
+TEST_F(TestIndelPoints, IndelPointsPre){
     ASSERT_TRUE(ttree != nullptr);
-    EXPECT_EQ(ttree->getNumberOfNodes(),9);
-    EXPECT_EQ(ttree->getNumberOfLeaves(),5);
-    EXPECT_EQ(ttree->getTotalLength(),2.125);
+    ASSERT_TRUE(sequences != nullptr);
+    EXPECT_EQ(likFunctionPIP20->getLikelihoodData()->getNumberOfDistinctSites(), 17);
+    EXPECT_NEAR(likFunctionPIP20->getLikelihoodData()->getPipParam().getNodeBetaData(1),0.999375, 10e-3);
+    EXPECT_NEAR(likFunctionPIP20->getLikelihoodData()->getPipParam().getNodeIotaData(1),0.00122399, 10e-3);
+    bpp::ApplicationTools::displayTask("bpp::Likelihood module");
     bpp::ApplicationTools::displayTaskDone();
-    delete ttree;
+
+//    EXPECT_EQ(likFunctionPIP20,5);
 }
+
+
+
+
+
+
