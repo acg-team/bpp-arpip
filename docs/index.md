@@ -1,4 +1,4 @@
-<img src="ARPIP_logo_fine_3.png" width="100" >
+<img src="ARPIP_logo_fine_3.jpg" width="100" >
  
 
 # ARPIP: Ancestral sequence Reconstruction under PIP Poisson Indel Process

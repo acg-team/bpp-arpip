@@ -10,7 +10,7 @@ We develop phylogenetic methods for protein-coding sequences that enable to eval
 
 We embrace the interdisciplinary approach by integrating different data sources and combining methods from biological, mathematical, and computer science disciplines.
 
-Our group is based in Switzerland and leads by [Dr. Maria Anisimova](https://www.zhaw.ch/en/about-us/person/anis/)
+Our group is based in Switzerland and leads by [Prof. Dr. Maria Anisimova](https://www.zhaw.ch/en/about-us/person/anis/)
 
 
 # About the developer
