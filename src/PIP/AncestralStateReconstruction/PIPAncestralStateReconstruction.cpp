@@ -136,7 +136,7 @@ std::map<int, std::vector<int>> PIPAncestralStateReconstruction::getAllAncestral
     cLikelihoodArray.resize(nbDistinctSites_);
 
     // Clone the data into a AlignedSequenceContainer for more efficiency:
-    AlignedSequenceContainer *data = new AlignedSequenceContainer(*likelihood_->getLikelihoodData()->getShrunkData());
+     AlignedSequenceContainer *data = new AlignedSequenceContainer(*likelihood_->getLikelihoodData()->getShrunkData());
     DVLOG(2) << "[PIP ASR] Cloning the data with "<< data->getNumberOfSites()<<" sites.";
 
     // Indel points extracted using MLIndelPoints algorithm:
@@ -186,8 +186,8 @@ std::map<int, std::vector<int>> PIPAncestralStateReconstruction::getAllAncestral
                     fNode->removeSon(cNode);
                 }
             }
-
-            recursiveJointAncestralStates(newRoot, PIPSubTree, ancestors, likelihoodArray, cLikelihoodArray,
+            Node *newPIPRoot = PIPSubTree->getRootNode();
+            recursiveJointAncestralStates(newPIPRoot, PIPSubTree, ancestors, likelihoodArray, cLikelihoodArray,
                                           *data, siteNb, newRoot->getId(), 0);
         }
         delete newRoot;
@@ -213,7 +213,6 @@ void PIPAncestralStateReconstruction::recursiveJointAncestralStates(const Node *
     if (!(*visited)) {
         *visited = true;
         recursiveComputeLikelihoodAtSite(node, tree, *larray,*carray, siteNumber, newRootId);
-
     }
 
     if (!node->isLeaf()) {
@@ -223,7 +222,6 @@ void PIPAncestralStateReconstruction::recursiveJointAncestralStates(const Node *
                                           newRootId, isVisited);
         }
     }
-
 }
 /**********************************************************************************************************************/
 
