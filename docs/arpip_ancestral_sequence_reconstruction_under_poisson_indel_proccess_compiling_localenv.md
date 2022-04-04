@@ -91,10 +91,6 @@ make
 #!bash
 git clone https://github.com/acg-team/bpp-arpip/
 cd bpp-arpip
-
-
-
-
 cmake --target bpp-arpip -- -DCMAKE_BUILD_TYPE=Release-static CMakeLists.txt
 make
 ```
