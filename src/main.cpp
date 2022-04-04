@@ -160,7 +160,11 @@ int main(int argc, char *argv[]) {
         }
 
 //        bool PAR = bpp::ApplicationTools::getBooleanParameter("", arpipapp.getParams(), false);
-
+        /*
+         * Read all the files in directory:
+         */
+//        std::string inPath = "../data/input/";
+//        std::vector<char *> files = ReadDirectory(in_path.c_str());
 
         bpp::ApplicationTools::displayResult("Random seed set to", arpipapp.getSeed());
         bpp::ApplicationTools::displayResult("Log files location", std::string("current execution path"));
@@ -503,7 +507,7 @@ int main(int argc, char *argv[]) {
 
             DLOG(INFO) << "[PIP model] Estimated PIP parameters from data using input sequences (lambda=" <<
                        lambda << ",mu=" << mu << "," "I=" << lambda * mu << ")";
-
+            delete PIPIndelParam;
         } else {
             lambda = (modelMap.find("lambda") == modelMap.end()) ? 0.1 : std::stod(modelMap["lambda"]);
             mu = (modelMap.find("mu") == modelMap.end()) ? 0.2 : std::stod(modelMap["mu"]);
@@ -614,19 +618,13 @@ int main(int argc, char *argv[]) {
         bpp::ApplicationTools::displayTaskDone();
         DLOG(INFO) << "[PIP ASR] Ancestral sequence were successfully reconstructed.";
 
-//        cout << "This sequence is coded with a " << asr->getAlphabet()->getAlphabetType() << endl;
+        DVLOG(2) << "[PIP ASR] This sequence is coded with a" << asr->getAlphabet()->getAlphabetType();
         for (size_t nbseq = 0; nbseq < asr->getNumberOfSequences(); nbseq++) {
-
-//            for (size_t i = 0; i < asr->getSequence(nbseq).size(); i++)
-//            {
-//                cout << asr->getSequence(nbseq).getChar(i) << "\t" << asr->getSequence(nbseq).getValue(i) << "\t" << (asr->getSequence(nbseq))[i] << endl;
-//            }
-
             // To change the Alphabet of a sequence, we need to decode and recode it:
             try {
                 bpp::Sequence *sequence = new bpp::BasicSequence(asr->getSequence(nbseq).getName(), asr->getSequence(nbseq).toString(), alphabet);
-//                cout << "This sequence is now coded with a " << sequence->getAlphabet()->getAlphabetType() << endl;
-
+                DVLOG(2) << "[PIP ASR] This sequence is now coded with a" << sequence->getAlphabet()->getAlphabetType();
+                DVLOG(3) << "[PIP ASR] The sequence is " << sequence->toString();
                 delete sequence;
             } catch (bpp::Exception &ex) {
                 cerr << ex.what() << endl;
@@ -636,17 +634,18 @@ int main(int argc, char *argv[]) {
 
         /************************************ Writing the result **********************************************/
 
-//        bpp::ApplicationTools::displayTask("Print the ASR file");
         bpp::Fasta fastaWtiter;
         fastaWtiter.writeSequences(arpipapp.getParam("output.ancestral.file"), *asr);
         LOG(INFO) << "[PIP ASR] File is written successfully.";
-//        cout << "Printed in file!!!" << endl;
-//        bpp::ApplicationTools::displayTaskDone();
         bpp::ApplicationTools::displayResult("Output ASR file", arpipapp.getParam("output.ancestral.file"));
 
         /**************************************** Deleting the pointers ***********************************************/
 
-
+        delete mlIndePoints;
+        delete sequences;
+        delete asr;
+        delete rDist;
+        delete rateDist;
 
         arpipapp.done();
         google::ShutdownGoogleLogging();
