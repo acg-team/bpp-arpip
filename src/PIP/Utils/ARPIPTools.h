@@ -77,7 +77,11 @@ namespace ARPIPIOTools {
     void writeMLIndelPointsToFile(bpp::PIPMLIndelPoints *mlindelpoint, const std::string &path, bool overwrite = true,
                                   bool verbose = 0);
 
+    /**
+     * @brief For running a batch, we need to read the directory
+     */
 
+    std::vector<char*> ReadDirectory(char const * path);
 }
 
 

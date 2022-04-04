@@ -58,6 +58,7 @@
 #include "ARPIPTools.h"
 #include <iostream>
 #include <iterator>
+#include <dirent.h>
 
 
 using namespace bpp;
@@ -228,3 +229,26 @@ ARPIPIOTools::writeMLIndelPointsToFile(bpp::PIPMLIndelPoints *mlindelpoint, cons
 
 }
 
+/******************************************************************************/
+
+std::vector<char*> ARPIPIOTools::ReadDirectory(char const *path){
+
+    DIR *dir;
+//    dir = path;
+    struct dirent *diread;
+    std::vector<char *> files;
+    if ((dir = opendir(path)) != nullptr) {
+        while ((diread = readdir(dir)) != nullptr) {
+            files.push_back(diread->d_name);
+        }
+        closedir (dir);
+    } else {
+        perror ("opendir");
+        std::cout << "FAILED TO READ!!!" << std::endl;
+    }
+    for (auto file : files)
+        std::cout << file << "| ";
+    std::cout << std::endl;
+
+    return files;
+}
