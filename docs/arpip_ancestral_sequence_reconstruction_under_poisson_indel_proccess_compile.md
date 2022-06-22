@@ -25,13 +25,15 @@ title: Compiling
 - [Bio++/bpp-core 2.4.1](https://github.com/BioPP/bpp-core/releases/tag/v2.4.1)
 - [Bio++/bpp-seq 2.4.1](https://github.com/BioPP/bpp-seq/releases/tag/v2.4.1)
 - [Bio++/bpp-phyl 2.4.1](https://github.com/BioPP/bpp-phyl/releases/tag/v2.4.1)
-- [glog - Google Logging Library](https://github.com/google/glog)
-- [gtest - Google's C++ test framework](https://github.com/google/googletest)
+- [glog - Google Logging Library](https://github.com/google/glog/releases/tag/v0.5.0)
+- [gtest - Google's C++ test framework](https://github.com/google/googletest/releases/tag/release-1.11.0)
 
 ## How to compile
 
 - [1] [Preparing your system](arpip_ancestral_sequence_reconstruction_under_poisson_indel_proccess_preparing_system.md)
 
 - [2] [Compiling on your local machine](arpip_ancestral_sequence_reconstruction_under_poisson_indel_proccess_compiling_localenv.md)
+
+- [3] [Compiling on a shared environment (i.e. cluster)](arpip_ancestral_sequence_reconstruction_under_poisson_indel_proccess_compiling_sharedenv.md)
 
 
