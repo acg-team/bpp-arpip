@@ -51,14 +51,14 @@ source scl_source enable devtoolset-2
 
 ## Cmake (all the platforms)
 
-ARPIP depends on any version of CMake above 3.8.1
+ARPIP depends on any version of CMake above 3.16.1
 
 
 [**cmake 3.16.3**](http://cmake.org/)
 
 ```
 #!bash
-wget https://cmake.org/files/v3.10/cmake-3.10.3-Linux-x86_64.sh
+wget https://cmake.org/files/v3.16/cmake-3.16.3-Linux-x86_64.sh
 chmod +x cmake-3.16.3-Linux-x86_64.sh
 sudo ./cmake-3.16.3-Linux-x86_64.sh
 export PATH=$PATH:path/to/cmake-3.16.3-Linux-x86_64/bin

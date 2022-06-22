@@ -30,10 +30,10 @@ ancestral characters on the pruned subtrees in a manner similar to FastML (Pupko
      * - Bio++ libraries Released version 2.4.1.
      *   developed by the Bio++ development team <http://biopp.univ-montp2.fr>
      *
-     * - Google's C++ test framework
+     * - Google's C++ test framework version 1.11.0.
      *   developed by the google development team <https://github.com/google/googletest>
      *
-     * - Google Logging Library
+     * - Google Logging Library version 0.5.0
      *   developed by the google development team <https://github.com/google/glog>
      *
      *
