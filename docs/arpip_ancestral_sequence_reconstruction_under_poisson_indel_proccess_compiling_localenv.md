@@ -53,7 +53,7 @@ make install
 
 ```
 #!bash
-git clone https://github.com/google/glog
+git clone -b v0.5.0 https://github.com/google/glog
 cd glog
 cmake -H. -Bbuild -G "Unix Makefiles"
 cmake --build build --target install
@@ -64,7 +64,6 @@ cmake --build build --target install
 
 ```
 #!bash
-git clone https://github.com/google/googletest.git
 git clone https://github.com/google/googletest.git -b release-1.11.0
 cd googletest        # Main directory of the cloned repository.
 mkdir build          # Create a directory to hold the build output.
@@ -94,5 +93,4 @@ cd bpp-arpip
 cmake --target bpp-arpip -- -DCMAKE_BUILD_TYPE=Release-static CMakeLists.txt
 make
 ```
-
 
