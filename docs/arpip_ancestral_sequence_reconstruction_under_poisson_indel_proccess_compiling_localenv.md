@@ -69,7 +69,6 @@ git clone -b v0.5.0 https://github.com/google/glog
 cd glog
 cmake -H. -Bbuild -G "Unix Makefiles"
 cmake --build build --target install
-
 ```
 
 **gtest - Google Test Library** https://github.com/google/googletest/

@@ -12,7 +12,6 @@ We define a unique location for installing the libraries (lib + include). This l
 #!bash
 export SharedLibraryPath=path/to/folder
 export SharedIncludePath=${SharedLibraryPath}/include
-
 ```
 
 For example:
@@ -38,7 +37,6 @@ make -j$(nproc)
 make install
 export PATH=$PATH:$SharedLibraryPath/bin
 export PATH=$SharedLibraryPath/bin:$PATH
-
 ```
 
 
@@ -101,7 +99,6 @@ git clone -b v0.5.0 https://github.com/google/glog
 cd glog
 cmake -H. -Bbuild -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=${SharedLibraryPath}
 cmake --build build --target install
-
 ```
 **gtest - Google Test Library** https://github.com/google/googletest/
 
@@ -111,7 +108,6 @@ git clone https://github.com/google/googletest.git -b release-1.11.0
 cd googletest        
 cmake -H. -Bbuild -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX=${SharedLibraryPath}
 cmake --build build --target install
-
 ```
 
 
