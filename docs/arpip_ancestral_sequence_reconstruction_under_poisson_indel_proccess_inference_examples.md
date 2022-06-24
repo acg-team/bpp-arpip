@@ -62,7 +62,7 @@ output.param.file=./data/output/test_01/param.txt
 
 ### Execute the analysis
 ```
-$ ARPIP params=$ ../data/input/test_01/conf.txt
+$ ARPIP params=../data/input/test_01/conf.txt
 
 ```
 ---
@@ -99,7 +99,7 @@ value the program would be terminated. This feature is for specific usage for li
 
 ### Execute the analysis
 ```
-$ ARPIP params=$ ../data/input/test_02/conf.txt
+$ ARPIP params=../data/input/test_02/conf.txt
 ```
 ---
 ## 4: Inferring an ancestral sequences with extended substitution model from amino-acids input sequences. The tree is not provided and therefore inferred from the input sequences.  
@@ -119,14 +119,14 @@ We list all the parameters required by ARPIP in a text file named `conf.txt`
 analysis_name = TEST 3
 alphabet=Protein
 alignment=true
-input.sequence.file=../tests/input/test_03/sim0-msa_new.fasta
+input.sequence.file=../data/input/test_03/sim0-msa_new.fasta
 input.sequence.sites_to_use=all
 init.tree=bionj
 model=PIP(model=WAG01,lambda=10, mu=0.01)
 opt.seed=1
 rate_distribution=Constant
-output.msa.file=../tests/output/test_03/msa.fasta
-output.tree.file=../tests/output/test_03/tree.nwk
+output.msa.file=../data/output/test_03/msa.fasta
+output.tree.file=../data/output/test_03/tree.nwk
 output.node_rel.file=../data/output/test_03/node_rel.txt
 output.mlindelpoints.file = ../data/output/test_03/mlindelpoints.txt
 ```
@@ -135,5 +135,5 @@ By using `model=PIP(model=WAG01,lambda=10,mu=0.1)` we can use the known indel pa
 
 ### Execute the analysis
 ```
-$ ARPIP params=../tests/input/test_03/conf.txt
+$ ARPIP params=../data/input/test_03/conf.txt
 ```

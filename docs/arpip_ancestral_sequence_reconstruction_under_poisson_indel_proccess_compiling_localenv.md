@@ -48,6 +48,18 @@ cmake  ..
 make install
 ```
 
+**boost - C++ Libraries** http://www.boost.org/
+
+```
+#!bash
+wget https://boostorg.jfrog.io/artifactory/main/release/1.79.0/source/boost_1_79_0.tar.gz
+tar xvf boost_1_79_0.tar.gz
+cd boost_1_79_0
+./bootstrap.sh --prefix=/usr/
+./b2 
+./b2 install 
+```
+
 
 **glog - Google Logging Library** https://github.com/google/glog
 
@@ -71,6 +83,8 @@ cd build
 cmake ..             # Generate native build scripts for GoogleTest.
 ```
 
+
+
 ---
 
 ## Compiling ARPIP
@@ -81,7 +95,7 @@ cmake ..             # Generate native build scripts for GoogleTest.
 #!bash
 git clone https://github.com/acg-team/bpp-arpip/
 cd bpp-arpip
-cmake --target bpp-arpip -- -DCMAKE_BUILD_TYPE=Release CMakeLists.txt
+cmake --target ARPIP -- -DCMAKE_BUILD_TYPE=Release CMakeLists.txt
 make
 ```
 
@@ -90,7 +104,7 @@ make
 #!bash
 git clone https://github.com/acg-team/bpp-arpip/
 cd bpp-arpip
-cmake --target bpp-arpip -- -DCMAKE_BUILD_TYPE=Release-static CMakeLists.txt
+cmake --target ARPIP -- -DCMAKE_BUILD_TYPE=Release-static CMakeLists.txt
 make
 ```
 

@@ -81,6 +81,17 @@ cd build
 cmake -DCMAKE_INSTALL_PREFIX=${SharedLibraryPath} ..
 make install
 ```
+**boost - C++ Libraries** http://www.boost.org/
+
+```
+#!bash
+wget https://boostorg.jfrog.io/artifactory/main/release/1.79.0/source/boost_1_79_0.tar.gz
+tar xvf boost_1_79_0.tar.gz
+cd boost_1_79_0
+./bootstrap.sh --libdir=${SharedLibraryPath}/lib --includedir=${SharedIncludePath}
+./b2 --libdir=${SharedLibraryPath}/lib --includedir=${SharedIncludePath}
+./b2 install --prefix=${SharedLibraryPath}
+```
 
 **glog - Google Logging Library** https://github.com/google/glog/
 

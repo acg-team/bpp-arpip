@@ -18,16 +18,10 @@ You can find tutorial, examples and guides on our [Wikipages](https://acg-team.g
      * ARPIP is a computer program whose purpose is to infer Ancestral Sequence 
      * under Poisson Indel Process for nucleotide and protein datasets.
      *
-     * This software is based and extends the following libraries:
+     * This software is based and extends the Bio++ libraries:
      *
      * - Bio++ libraries Released version 2.4.1.
      *   developed by the Bio++ development team <http://biopp.univ-montp2.fr>
-     *
-     * - Google's C++ test framework
-     *   developed by the google development team <https://github.com/google/googletest>
-     *
-     * - Google Logging Library
-     *   developed by the google development team <https://github.com/google/glog>
      *
      *
      * ARPIP is distributed in the hope that it will be useful, but WITHOUT
