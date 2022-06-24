@@ -123,7 +123,7 @@ cmake --build build --target install
 #!bash
 git clone https://github.com/acg-team/bpp-arpip/
 cd bpp-arpip
-cmake --target bpp-arpip -- -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=${SharedIncludePath} -DCMAKE_PREFIX_PATH=${SharedLibraryPath} CMakeLists.txt
+cmake --target ARPIP -- -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=${SharedIncludePath} -DCMAKE_PREFIX_PATH=${SharedLibraryPath} CMakeLists.txt
 make
 ```
 *Static linking*
@@ -131,6 +131,6 @@ make
 #!bash
 git clone https://github.com/acg-team/bpp-arpip/
 cd bpp-arpip
-cmake --target bpp-arpip -- -DCMAKE_BUILD_TYPE=Release-static -DCMAKE_PREFIX_PATH=${SharedIncludePath} -DCMAKE_PREFIX_PATH=${SharedLibraryPath} CMakeLists.txt
+cmake --target ARPIP -- -DCMAKE_BUILD_TYPE=Release-static -DCMAKE_PREFIX_PATH=${SharedIncludePath} -DCMAKE_PREFIX_PATH=${SharedLibraryPath} CMakeLists.txt
 make
 ```
