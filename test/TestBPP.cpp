@@ -75,7 +75,7 @@
 class TestSequenceReader: public testing::Test {
 protected:
     void SetUp()  override {
-        std::string currentPath = get_current_dir_name();
+//        std::string currentPath = get_current_dir_name();// incompatible with clang compiler
         inputSequencePath = "../../test/input/msa.fasta";
         alphabet = new bpp::DNA;
 
