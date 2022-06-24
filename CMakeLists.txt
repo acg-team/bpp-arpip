@@ -43,7 +43,20 @@ set(CMAKE_CXX_FLAGS "-Wall -Wshadow -Wextra -Weffc++")
 
 
 set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -fopenmp")
+
+# Handling different compilers:
+if (${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+    set(LINUX TRUE)
+    message(STATUS "Compilation will be performed under Linux OS")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -fopenmp")
+elseif(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    set(MACOSX TRUE)
+    if (STATIC GREATER 0)
+        message(FATAL_ERROR "You can not build this project statically on Mac OS. Ask Apple why! CMake will exit.")
+    endif ()
+    message(STATUS "Compilation will be performed under Apple MacOS")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -Xpreprocessor -fopenmp")
+endif()
 
 ## Store the git hash of the current head
 if(EXISTS "${PROJECT_SOURCE_DIR}/.git/HEAD")
@@ -162,7 +175,7 @@ IMPROVED_FIND_LIBRARY(LIBS_BPP bpp-core "Bpp/Clonable.h")
 IMPROVED_FIND_LIBRARY(LIBS_BPP bpp-seq "Bpp/Seq/Sequence.h")
 IMPROVED_FIND_LIBRARY(LIBS_BPP bpp-phyl "Bpp/Phyl/Tree.h")
 
-MESSAGE(STATUS "Done!")
+MESSAGE(STATUS "Linking OK")
 
 
 #--- Targets ---
