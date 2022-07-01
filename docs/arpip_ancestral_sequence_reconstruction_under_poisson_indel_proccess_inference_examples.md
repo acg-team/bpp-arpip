@@ -14,6 +14,7 @@ We list all the parameters required by ARPIP in a text file named `conf.txt`
 analysis_name = TEST
 alphabet=DNA
 input.sequence.file=../data/input/test_00/msa.fasta
+input.sequence.sites_to_use=all
 init.tree=user
 input.tree.file=../data/input/test_00/tree.newick
 model=PIP(model=JC69,lambda=10,mu=0.01)
