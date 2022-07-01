@@ -1,6 +1,7 @@
 analysis_name = TEST 0
 alphabet=DNA
 input.sequence.file=../data/input/test_00/msa.fasta
+input.sequence.sites_to_use=all
 init.tree=user
 input.tree.file=../data/input/test_00/tree.newick
 model=PIP(model=JC69,lambda=10,mu=0.01)
