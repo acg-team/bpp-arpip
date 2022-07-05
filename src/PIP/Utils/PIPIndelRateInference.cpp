@@ -269,8 +269,8 @@ void PIPIndelRateInference::inferIndelRateFromSequences(PIPDRHomogeneousTreeLike
     // Brent method:
     SimpleMultiDimensions optimizer(&func);
     optimizer.setVerbose(0);
-    optimizer.setMaximumNumberOfEvaluations(maxIteration);// maxIteration=100000
-    optimizer.getStopCondition()->setTolerance(tolerance);// tolerance=0.0001
+    optimizer.setMaximumNumberOfEvaluations(maxIteration);// maxIteration=10000
+    optimizer.getStopCondition()->setTolerance(tolerance);// tolerance=0.001
     optimizer.init(func.getParameters());
     optimizer.optimize();
 

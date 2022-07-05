@@ -131,8 +131,8 @@ namespace bpp {
          * @param likeFunObj object from the class implements the likelihood computation for a tree using PIP model.
          */
         PIPIndelRateInference(PIPDRHomogeneousTreeLikelihood &likeFunObj,
-                              int MaxIteration = 100000,
-                              double tolerance = 0.0001);
+                              int MaxIteration = 10000,
+                              double tolerance = 0.001);
 
         /**
          * @brief Constructor which build the likelihood array inside itself
@@ -145,8 +145,8 @@ namespace bpp {
                               std::string> modelMap,
                               double *lambda,
                               double *mu,
-                              int MaxIteration = 100000,
-                              double tolerance = 0.0001);
+                              int MaxIteration = 10000,
+                              double tolerance = 0.001);
 
         /**
          * @brief Copy constructor.
