@@ -131,6 +131,7 @@
 * From Gtest
 */
 #include <gtest/gtest.h>
+#include <Bpp/Seq/SiteTools.h>
 
 
 /**********************************************************************************************************************/
@@ -138,7 +139,7 @@
 /**********************************************************************************************************************/
 
 int main(int argc, char *argv[]) {
-    FLAGS_log_dir = "../logs/";
+    FLAGS_log_dir = "./logs/";// "../logs/"
     ::google::InitGoogleLogging(software::name.c_str());
     ::google::InstallFailureSignalHandler();
 
@@ -168,6 +169,15 @@ int main(int argc, char *argv[]) {
 
         bpp::ApplicationTools::displayResult("Random seed set to", arpipapp.getSeed());
         bpp::ApplicationTools::displayResult("Log files location", std::string("current execution path"));
+        bpp::ApplicationTools::displayResult("Analysis name is" ,
+                                              bpp::ApplicationTools::getStringParameter("analysis_name",
+                                                                                        arpipapp.getParams(), "missing",
+                                                                                        "", true,
+                                                                                        true));
+        DLOG(INFO) << "[Analysis name] "<<bpp::ApplicationTools::getStringParameter("analysis_name",
+                                                                                    arpipapp.getParams(), "missing",
+                                                                                    "", true,
+                                                                                    true)<< "\n";
         /************************************************** INPUT *****************************************************/
         /* ***************************************************
          * Standard workflow
@@ -220,8 +230,8 @@ int main(int argc, char *argv[]) {
             // Check what is the alphabet:
             bpp::ApplicationTools::displayResult("The alphabet is", alphabet->getAlphabetType());
 
-            bpp::ApplicationTools::displayMessage("\n[Preparing input Files]");
-        std::string input_sequences = bpp::ApplicationTools::getAFilePath("input.sequence.file", arpipapp.getParams(),
+            bpp::ApplicationTools::displayMessage("\n[Preparing input sequences]");
+            std::string input_sequences = bpp::ApplicationTools::getAFilePath("input.sequence.file", arpipapp.getParams(),
                                                                               true, true, "",
                                                                               false, "", 1);
 
@@ -502,15 +512,42 @@ int main(int argc, char *argv[]) {
             /////////////////////////////
             // Estimate PIP Parameters: inference of Indel rates
             if (estimatedPIPParameters) {
-                bpp::PIPIndelRateInference *PIPIndelParam = new bpp::PIPIndelRateInference(*sites, *ttree_, modelMap,
-                                                                                           &lambda,
-                                                                                           &mu);
-                lambda = PIPIndelParam->getLambda();
-                mu = PIPIndelParam->getMu();
+                bpp::ApplicationTools::displayTask("The PIP parameter estimation");
 
-                DLOG(INFO) << "[PIP model] Estimated PIP parameters from data using input sequences (lambda=" <<
-                           lambda << ",mu=" << mu << "," "I=" << lambda * mu << ")";
-                delete PIPIndelParam;
+                // Handling no gap in MSA but the user asked for indel inference
+                std::size_t numbGapSite{0};
+                for (size_t i = 0; i < sites->getNumberOfSites(); i++)
+                {
+                    const bpp::Site *site = &sites->getSite(i);
+                    if (bpp::SiteTools::isGapOnly(*site))
+                        numbGapSite += 1;
+                }
+
+                if (numbGapSite == 0) {
+                    bpp::ApplicationTools::displayWarning("No indel inference.");
+                    bpp::ApplicationTools::displayMessage(
+                            "The MSA columns did not contain any gap char, hence, no indel inference.");
+                    // Two very small values:
+                    lambda = 0.000001 ;
+                    mu = 0.000001;
+
+                    DLOG(INFO)
+                            << "[PIP model] The MSA columns did not contain gap char, very small PIP parameters were set (lambda="
+                            << lambda << ",mu=" << mu << "," "I=" << lambda * mu << ")";
+                    estimatedPIPParameters = 0;// the parameter is not the estimated one.
+                } else {
+
+                    bpp::PIPIndelRateInference *PIPIndelParam = new bpp::PIPIndelRateInference(*sites, *ttree_,
+                                                                                               modelMap,
+                                                                                               &lambda,
+                                                                                               &mu);
+                    lambda = PIPIndelParam->getLambda();
+                    mu = PIPIndelParam->getMu();
+                    bpp::ApplicationTools::displayTaskDone();
+                    DLOG(INFO) << "[PIP model] Estimated PIP parameters from data using input sequences (lambda=" <<
+                               lambda << ",mu=" << mu << "," "I=" << lambda * mu << ")";
+                    delete PIPIndelParam;
+                }
             } else {
                 lambda = (modelMap.find("lambda") == modelMap.end()) ? 0.1 : std::stod(modelMap["lambda"]);
                 mu = (modelMap.find("mu") == modelMap.end()) ? 0.2 : std::stod(modelMap["mu"]);
@@ -615,7 +652,7 @@ int main(int argc, char *argv[]) {
 
             /************************************* Ancestral Sequence Reconstruction **************************************/
 
-            bpp::ApplicationTools::displayMessage("\n[Computing Ancestral Sequences Reconstruction]");
+            bpp::ApplicationTools::displayMessage("\n[Computing join ancestral sequences reconstruction]");
 
 
             bpp::PIPAncestralStateReconstruction jarPIP(likFunctionPIP20, mlIndePoints);
@@ -646,7 +683,7 @@ int main(int argc, char *argv[]) {
             bpp::Fasta fastaWtiter;
             fastaWtiter.writeSequences(arpipapp.getParam("output.ancestral.file"), *asr);
             LOG(INFO) << "[PIP ASR] File is written successfully.";
-            bpp::ApplicationTools::displayResult("Output ASR file", arpipapp.getParam("output.ancestral.file"));
+            bpp::ApplicationTools::displayResult("Output ancestral sequence file", arpipapp.getParam("output.ancestral.file"));
 
             /**************************************** Deleting the pointers ***********************************************/
 
@@ -663,7 +700,7 @@ int main(int argc, char *argv[]) {
     }catch (exception &ex) {
         cout << "ARPIP exception:" << endl;
         std::cout << ex.what() << std::endl;
-        LOG(FATAL) << "Error when " << ex.what();
+        LOG(FATAL) << "Error: " << ex.what();
         google::ShutdownGoogleLogging();
         exit(1);
     }
