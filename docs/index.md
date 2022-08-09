@@ -16,7 +16,18 @@ ancestral characters on the pruned subtrees in a manner similar to FastML (Pupko
 1. **[Compiling ARPIP](arpip_ancestral_sequence_reconstruction_under_poisson_indel_proccess_compile.md)**
 2. **[Features and project structure](arpip_ancestral_sequence_reconstruction_under_poisson_indel_proccess_features.md)**
 3. **[Executing an analysis](arpip_ancestral_sequence_reconstruction_under_poisson_indel_proccess_inference_examples.md)**
+4. **[Interpret the result](arpip_ancestral_sequence_reconstruction_under_poisson_indel_proccess_result.md)**
 
+---
+
+#### Citation
+
+When using ARPIP, please cite [this paper](https://academic.oup.com/sysbio/advance-article-abstract/doi/10.1093/sysbio/syac050/6648472):
+
+Gholamhossein Jowkar, Julija Pecerska, Manuel Gil, and Maria Anisimova 
+**ARPIP: Ancestral sequence Reconstruction with insertions and deletions under the Poisson Indel Process.** 
+*Systematic Biology, 2022;* 
+doi:[https://doi.org/10.1093/sysbio/syac050](https://doi.org/10.1093/sysbio/syac050)
 
 ---
 
@@ -62,7 +73,7 @@ ancestral characters on the pruned subtrees in a manner similar to FastML (Pupko
 #### Support
 In case of bugs or improvement suggestions feel free to:
     
-- Write to [Gholamhossein Jowkar](mailto:jowk@zhaw.ch)
+- Write to [Gholam-Hossein Jowkar](mailto:jowk@zhaw.ch)
     
 ---   
 
@@ -71,3 +82,4 @@ This work was supported by the Swiss National Science Foundation (SNF) grant [31
 the study and collection, analysis, and interpretation of data and in writing.
 
 <img src="sib_logo_trans_background.png" width="100" >
+<img src="SNF_logo_standard_web_color_pos_e.png" width="200">
