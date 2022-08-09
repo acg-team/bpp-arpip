@@ -37,14 +37,13 @@ You can find tutorial, examples and guides on our [Wikipages](https://acg-team.g
      * License along with ARPIP. If not, see <http://www.gnu.org/licenses/>.
 
 ---
-### Citation
+#### Citation
 
 When using ARPIP, please cite:
-
-Gholamhossein Jowkar, Julija Pecerska, Manuel Gil, and Maria Anisimova 
-ARPIP: Ancestral sequence Reconstruction with insertions and deletions under the Poisson Indel Process.
-Systematic Biology, syac050, 2022; 
- doi:[https://doi.org/10.1093/sysbio/syac050](https://doi.org/10.1093/sysbio/syac050)
+   Gholamhossein Jowkar, Julija Pecerska, Manuel Gil, and Maria Anisimova 
+   **ARPIP: Ancestral sequence Reconstruction with insertions and deletions under the Poisson Indel Process.**
+   Systematic Biology, syac050, 2022; 
+   doi:[10.1093/sysbio/syac050](https://doi.org/10.1093/sysbio/syac050)
 ---
 #### Reference
 
