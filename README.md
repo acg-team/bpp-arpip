@@ -41,7 +41,8 @@ You can find tutorial, examples and guides on our [Wikipages](https://acg-team.g
 
 When using ARPIP, please cite [this paper](https://doi.org/10.1093/sysbio/syac050):
    
-Gholamhossein Jowkar, Julija Pecerska, Manuel Gil, and Maria Anisimova 
+Gholamhossein Jowkar, Julija Pecerska, Manuel Gil, and Maria Anisimova
+
 **ARPIP: Ancestral sequence Reconstruction with insertions and deletions under the Poisson Indel Process.**
 *Systematic Biology*, syac050, 2022;
 
