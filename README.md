@@ -43,8 +43,10 @@ When using ARPIP, please cite [this paper](https://doi.org/10.1093/sysbio/syac05
    
 Gholamhossein Jowkar, Julija Pecerska, Manuel Gil, and Maria Anisimova 
 **ARPIP: Ancestral sequence Reconstruction with insertions and deletions under the Poisson Indel Process.**
-*Systematic Biology, syac050, 2022;* 
+*Systematic Biology*, syac050, 2022;
+
 doi:[10.1093/sysbio/syac050](https://doi.org/10.1093/sysbio/syac050)
+
 ---
 #### Reference
 
