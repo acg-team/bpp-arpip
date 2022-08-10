@@ -80,7 +80,7 @@ using namespace bpp;
     if(node->hasFather())
         *relation_n = node->getName() + "     " + node->getFather()->getName();
     else
-        *relation_n = node->getName() + "        " + "Root!";
+        *relation_n = node->getName() + "   " + "--";
     int nbSons = node->getNumberOfSons();
     for (int i = 0; i < nbSons; ++i) {
         *relation_n = *relation_n + "   " + node->getSon(i)->getName();
