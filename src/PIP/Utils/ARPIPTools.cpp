@@ -203,7 +203,36 @@ ARPIPIOTools::writeMLIndelPointsToFile(bpp::PIPMLIndelPoints *mlindelpoint, cons
 //            std::cout << rootPosition << std::endl;
             std::vector<unsigned int> arrayWeights = mlindelpoint->getLikelihood()->getLikelihoodData()->getWeights();
             std::vector<unsigned int> weight_pos = mlindelpoint->getLikelihood()->getLikelihoodData()->getWeights();
-            homoPathPtr.at(i) = mlindelpoint->getHomoPath()[rootPosition];
+//            homoPathPtr.at(i) = mlindelpoint->getHomoPath()[rootPosition];
+
+            // Processing the indel string:
+            std::string str_homo = mlindelpoint->getHomoPath()[rootPosition];
+            // New storage for new homo_path
+            std::string new_str_homo{};
+            std::string delimiter_semicolon = ";";
+            size_t pos_h = 0;
+            // removing the ";" at the end of each string and finding position of ";" using find()
+            while ((pos_h = str_homo.find(delimiter_semicolon)) != std::string::npos) {
+                // copy the substring before ";"
+                std::string sub = str_homo.substr(0, pos_h);
+                str_homo = str_homo.substr(pos_h + delimiter_semicolon.length());
+                if (!sub.empty()) {
+                    // resetting the pos value for the next usage
+                    size_t pos = 0;
+                    std::string delimiter_colon = ":";
+                    std::string token;
+                    //find the position of ":"
+                    while ((pos = sub.find(delimiter_colon)) != std::string::npos) {
+                        token = sub.substr(0, pos);
+                        if (!token.empty()) {
+                            new_str_homo = new_str_homo + mlindelpoint->getTree()->getNodeName(std::stoi(token)) + ":" +
+                                           sub.substr(pos + 1, sub.length()) + ";";
+                        }
+                        sub.erase(0, pos + delimiter_semicolon.length());
+                    }
+                }
+            }
+            homoPathPtr.at(i) = new_str_homo;
         }
 
         // Open file and writing the content
