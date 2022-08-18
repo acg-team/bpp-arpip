@@ -13,4 +13,4 @@ leaf_0     V12
 leaf_4     V12
 V12     V13   leaf_0   leaf_4
 V13     root   leaf_2   V12
-root        Root!   V8   V13
+root   --   V8   V13
