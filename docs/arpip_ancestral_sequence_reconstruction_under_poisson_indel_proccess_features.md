@@ -161,12 +161,12 @@ Please note that this algorithm is designed to work the 'PIP13' model.
 
 ### Output alignment file
 
-    output.msa.file={{path}}                                      Alignment used in the study.
+    output.msa.file={path}                                      Alignment used in the study.
 
 
 ### Output inferred file
 
-    output.ancestral.file={path}                                Write ancestral seuqences inferred by algorithm.
-    output.node_rel.file= {path}                                Write the relation of nodes. It is important to idendifying the internal nodes.
-    output.mlindelpoints.file = {path}                          Write the inferred indel points.
-   
+    output.ancestral.file={path}                              Write ancestral seuqences inferred by algorithm.
+    output.node_rel.file={path}                               Write the relation of nodes. It is important to idendifying the internal nodes.
+    output.mlindelpoints.file={path}                          Write the inferred indel points.
+    output.pipparams.file={path}                              Write the estimated PIP parameters if the user set opt.likelihood=1
