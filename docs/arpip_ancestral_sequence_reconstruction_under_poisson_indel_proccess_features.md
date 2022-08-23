@@ -61,14 +61,14 @@ title: Features and project structure
 #  Options
 ---
 
-    opt.seed = {real}                                       Sets the seed value of the random number generator.
+    opt.seed={real}                                         Sets the seed value of the random number generator.
  
     opt.likelihood={0|1}                                    1: The user wants to know what is the value of joint likelihood of tree and MAS under PIP
                                                             0: Deactive this option. By default it is 0.
                                         
     opt.pip_param_estimate={0|1}                            1: The user does not know what are the evelutionary parameter (i.e. lambda and mu) and
                                                             wants program to compute them. 0: other way.
-    
+    opt.tree.scale={real}                                   Set the scale value to scale the branch lengths.                                         
     
 ---
 #  Initial tree options
