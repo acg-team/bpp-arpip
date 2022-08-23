@@ -77,6 +77,9 @@ namespace ARPIPIOTools {
     void writeMLIndelPointsToFile(bpp::PIPMLIndelPoints *mlindelpoint, const std::string &path, bool overwrite = true,
                                   bool verbose = 0);
 
+    void writeInferredPIPParams(double lambda, double mu, long double logLikelihood, const std::string path,
+                                bool overwrite = true);
+    
     /**
      * @brief For running a batch, we need to read the directory
      */

@@ -173,6 +173,29 @@ void ARPIPIOTools::writeNodeRelationToFile(std::vector<std::string> &params, std
 
 /******************************************************************************/
 
+void ARPIPIOTools::writeInferredPIPParams(double lambda, double mu, long double logLikelihood, const std::string path,
+                                          bool overwrite) {
+    try {
+        // Open file and writing the content
+        std::ofstream output(path.c_str(), overwrite ? (std::ios::out) : (std::ios::out | std::ios::app));
+        output << "Lambda:" << lambda << std::endl;
+        output << "Mu:" << mu << std::endl;
+        output << "Loglikelihood:" << logLikelihood << std::endl;
+        output << std::endl;
+        output.close();
+        bpp::ApplicationTools::displayResult("Output estimated PIPParameter file", path);
+
+
+    } catch (IOException &e) {
+        std::stringstream ss;
+        ss << e.what() << "\nProblem writing PIPParameter to file " << path
+           << "\n Is the file path correct and do you have the proper authorizations? ";
+        throw (IOException(ss.str()));
+    }
+}
+
+/******************************************************************************/
+
 void
 ARPIPIOTools::writeMLIndelPointsToFile(bpp::PIPMLIndelPoints *mlindelpoint, const std::string &path, bool overwrite,
                                        bool verbose) {
