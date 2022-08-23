@@ -26,7 +26,7 @@ looking forward for extending my scientific network.
 
 In case of bugs, improvement suggestions or collaboration feel free to:
 
-- Write to [Gholamhossein Jowkar](mailto:jowk@zhaw.ch)
+- Write to [Gholam-Hossein Jowkar](mailto:jowk_@_zhaw.ch)
     
 You can also find me on [Linkedin](https://www.linkedin.com/in/gholam-hossein-jowkar/), [RsearchGate](https://www.researchgate.net/profile/Gholam-Hossein-Jowkar).
 
