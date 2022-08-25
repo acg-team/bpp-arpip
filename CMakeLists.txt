@@ -39,7 +39,7 @@ project(bpp_arpip ${ARPIP_VERSION}
         DESCRIPTION ${ARPIP_DESCRIPTION}
         LANGUAGES CXX)
 
-set(CMAKE_CXX_FLAGS "-Wall -Wshadow -Wextra -Weffc++")
+set(CMAKE_CXX_FLAGS "")#-Wall -Weffc++ -Wshadow -Wconversion
 
 
 set(CMAKE_CXX_STANDARD 14)
