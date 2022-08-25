@@ -162,7 +162,7 @@ endif ()
 #include_directories("include/")
 MESSAGE(STATUS "Loading libraries & includes:")
 
-find_package (glog 0.5.0 REQUIRED)
+find_package(glog 0.5.0 REQUIRED)
 
 
 # Find Boost Libraries
@@ -174,6 +174,8 @@ find_package(Boost REQUIRED COMPONENTS system filesystem)
 IMPROVED_FIND_LIBRARY(LIBS_BPP bpp-core "Bpp/Clonable.h")
 IMPROVED_FIND_LIBRARY(LIBS_BPP bpp-seq "Bpp/Seq/Sequence.h")
 IMPROVED_FIND_LIBRARY(LIBS_BPP bpp-phyl "Bpp/Phyl/Tree.h")
+IMPROVED_FIND_LIBRARY(GLOG glog "glog/logging.h")
+IMPROVED_FIND_LIBRARY(googleTest gtest  "gtest/gtest.h" )
 
 MESSAGE(STATUS "Linking OK")
 
