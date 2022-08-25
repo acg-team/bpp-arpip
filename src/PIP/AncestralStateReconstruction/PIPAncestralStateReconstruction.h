@@ -168,7 +168,7 @@ namespace bpp {
         /****************************************** Based class functions **********************************************/
 
         std::map<int, std::vector<size_t>> getAllAncestralStates() const override {};
-        // We can not use this definition cause "std::vector<size_t>": for gap state we have -1 which need int type.
+        // We can not use this definition because of "std::vector<size_t>": for gap state we have -1 which need int type.
 
         /**
         * @brief Get the ancestral sequence for a given node.

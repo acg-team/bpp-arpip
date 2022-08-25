@@ -173,6 +173,7 @@ PIPDRTreeLikelihoodParameters &PIPDRTreeLikelihoodParameters::operator=(const PI
     nu_             = data.nu_;
     nodeIotaData_   = data.nodeIotaData_;
     nodeBetaData_   = data.nodeBetaData_;
+    return *this;
 }
 
 /************************************* initPIPParameter_ *****************************************/

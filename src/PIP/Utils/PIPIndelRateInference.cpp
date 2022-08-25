@@ -102,10 +102,11 @@ OptimizationFunction::OptimizationFunction(const OptimizationFunction &obj) :
 
 /****************************** Operator overloading ******************************/
 
-OptimizationFunction & OptimizationFunction::operator=(const OptimizationFunction &obj) {
+OptimizationFunction &OptimizationFunction::operator=(const OptimizationFunction &obj) {
     AbstractParametrizable::operator=(obj);
     fValue_         = obj.fValue_;
     likeFunData_    = obj.likeFunData_;
+    return *this;
 }
 
 /****************************** setParameters ******************************/
@@ -166,6 +167,7 @@ PIPIndelRateInference &PIPIndelRateInference::operator=(const PIPIndelRateInfere
     likelihood_     = inference.likelihood_;
     lambda_         = inference.lambda_;
     mu_             = inference.mu_;
+    return *this;
 }
 
 /************************************** init_ ******************************************/

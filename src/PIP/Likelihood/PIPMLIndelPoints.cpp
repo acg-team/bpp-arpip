@@ -153,6 +153,7 @@ PIPMLIndelPoints &PIPMLIndelPoints::operator=(const PIPMLIndelPoints &mlindel) {
     insertionPoints_            = mlindel.insertionPoints_;
     deletionPoints_             = mlindel.deletionPoints_;
 
+    return *this;
 }
 
 /******************************************* PIP specific functions ***************************************************/
