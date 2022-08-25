@@ -53,7 +53,7 @@
  * @see For more information visit:
  */
 
-#include "gtest/gtest.h"
+#include <gtest/gtest.h>
 #include "../src/PIP/Likelihood/PIPMLIndelPoints.h"
 
 #include <memory>
@@ -63,7 +63,7 @@
 #include <Bpp/Phyl/Model/RateDistribution/ConstantRateDistribution.h>
 #include <Bpp/Phyl/Model/Nucleotide/JCnuc.h>
 #include <Bpp/Seq/Alphabet/AlphabetTools.h>
-#include <gsl/gsl_blas_types.h>
+//#include <gsl/gsl_blas_types.h>
 
 
 class TestIndelPoints: public testing::Test{

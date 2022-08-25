@@ -57,13 +57,13 @@
 #include <iostream>
 
 // From Gtest:
-#include "gtest/gtest.h"
+//#include "gtest/gtest.h"
 
 // From BPP
-#include <Bpp/Seq/Io/Fasta.h>
-#include <Bpp/Phyl/Tree.h>
-#include <Bpp/Phyl/Node.h>
-#include <Bpp/Phyl/TreeTemplateTools.h>
+//#include <Bpp/Seq/Io/Fasta.h>
+//#include <Bpp/Phyl/Tree.h>
+//#include <Bpp/Phyl/Node.h>
+//#include <Bpp/Phyl/TreeTemplateTools.h>
 
 namespace{
 //    TEST(PIPLikeLihoodTest, Trivial){

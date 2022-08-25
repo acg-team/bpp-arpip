@@ -175,7 +175,7 @@ IMPROVED_FIND_LIBRARY(LIBS_BPP bpp-core "Bpp/Clonable.h")
 IMPROVED_FIND_LIBRARY(LIBS_BPP bpp-seq "Bpp/Seq/Sequence.h")
 IMPROVED_FIND_LIBRARY(LIBS_BPP bpp-phyl "Bpp/Phyl/Tree.h")
 IMPROVED_FIND_LIBRARY(GLOG glog "glog/logging.h")
-IMPROVED_FIND_LIBRARY(googleTest gtest  "gtest/gtest.h" )
+IMPROVED_FIND_LIBRARY(googleTest gtest  "gtest/gtest.h")
 
 MESSAGE(STATUS "Linking OK")
 
