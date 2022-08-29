@@ -534,6 +534,11 @@ long double PIPDRHomogeneousTreeLikelihood::computePIPTreeLikelihood(const doubl
 
     // Sum all the values stored in the lk vector
     logLK = std::accumulate(lk_sites.begin(), lk_sites.end(), decltype(lk_sites)::value_type(0));
+    if (isinf(logLK)) {
+        throw Exception(
+                "PIPDRHomogeneousTreeLikelihood::computePIPTreeLikelihood: Log likelihood value is not valid.");
+        DLOG(INFO) << "[DR homogeneous tree likelihood] log likelihood value is " << logLK << " and not valid.";
+    }
     DVLOG(2) << "LK Sites [BPP] " << std::setprecision(18) << logLK;
 
     // Add log phi to site likelihood
