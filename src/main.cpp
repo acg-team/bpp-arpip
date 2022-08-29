@@ -78,6 +78,8 @@
 #include <Bpp/Seq/Container/VectorSiteContainer.h>
 #include <Bpp/Seq/App/SequenceApplicationTools.h>
 #include <Bpp/Seq/Io/Fasta.h>
+#include <Bpp/Seq/SiteTools.h>
+
 
 
 
@@ -258,9 +260,23 @@ int main(int argc, char *argv[]) {
             bpp::ApplicationTools::displayResult("Number of sequences", sites->getNumberOfSequences());
             bpp::ApplicationTools::displayResult("Number of sites", sites->getNumberOfSites());
 
+            // Changing unknown chars to gap
+            bpp::SiteContainerTools::changeUnresolvedCharactersToGaps(*sites);
+            bpp::ApplicationTools::displayWarning("The unknown character would be treated as gap in this program.");
+            static bpp::Sequence *s = bpp::SiteContainerTools::getConsensus(*sites, "consensus", true, false);
+
+            // Removing gaponly regions
+            bool isOnlyGapCl = bpp::ApplicationTools::getBooleanParameter("opt.has_only_gap_column",
+                                                                             arpipapp.getParams(), 0,
+                                                                             "", false, 1);
+            if (isOnlyGapCl) {
+                bpp::ApplicationTools::displayTask("Removing gap only sites if exists");
+                bpp::SiteContainerTools::removeGapOnlySites(*sites);
+                DLOG(INFO) << "[Input MSA parser] Sites with full gap column were removed if exists.";
+            }
 
         } catch (bpp::Exception &e) {
-            LOG(FATAL) << "Error when reading sequence file due to: " << e.message();
+            LOG(FATAL) << "[Input MSA parser] Error when reading sequence file due to: " << e.message();
         }
 
 
@@ -333,7 +349,7 @@ int main(int argc, char *argv[]) {
             // Cloning the site for building the tree
             bpp::SiteContainer *tmpSites = sites->clone();
 
-            // Removing gappy regions
+            // Removing gaponly regions
             bpp::ApplicationTools::displayTask("Removing gap only sites");
             bpp::SiteContainerTools::removeGapOnlySites(*tmpSites);
             DLOG(INFO) << "[Tree reconstruction] Sites with full gap column were removed.";

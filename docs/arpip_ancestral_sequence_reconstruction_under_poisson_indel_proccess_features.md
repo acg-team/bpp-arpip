@@ -68,7 +68,10 @@ title: Features and project structure
                                         
     opt.pip_param_estimate={0|1}                            1: The user does not know what are the evelutionary parameter (i.e. lambda and mu) and
                                                             wants program to compute them. 0: other way.
-    opt.tree.scale={real}                                   Set the scale value to scale the branch lengths.                                         
+    opt.tree.scale={real}                                   Set the scale value to scale the branch lengths.
+    
+    opt.has_only_gap_column={0|1}                           1: Remove all the only gap columns from MSA file. By deffault is 0.
+    
     
 ---
 #  Initial tree options
