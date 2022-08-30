@@ -27,7 +27,7 @@ SharedIncludePath=$HOME/local/include
 
 ### Compiling and installing the dependencies
 
-**cmake** in the case which the minimum version is not provided
+**cmake** The version 3.16.3 is supported.
 ```
 Wget https://cmake.org/files/v3.16/cmake-3.16.3.tar.gz
 tar zxvf cmake-3.16.3.tar.gz
@@ -35,7 +35,6 @@ cd cmake-3.16.3
 ./bootstrap --prefix=${SharedLibraryPath}
 make -j$(nproc)
 make install
-export PATH=$PATH:$SharedLibraryPath/bin
 export PATH=$SharedLibraryPath/bin:$PATH
 ```
 

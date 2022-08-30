@@ -8,6 +8,17 @@ The user shoud have reading/writing rights on the system folders (i.e. /usr/loca
 
 ## Compiling and installing the dependencies
 
+**cmake** The version 3.16.3 is supported.
+```
+Wget https://cmake.org/files/v3.16/cmake-3.16.3.tar.gz
+tar zxvf cmake-3.16.3.tar.gz
+cd cmake-3.16.3
+./bootstrap --prefix=${SharedLibraryPath}
+make -j$(nproc)
+make install
+export PATH=$SharedLibraryPath/bin:$PATH
+```
+
 
 **bpp-core** http://biopp.univ-montp2.fr/
 
@@ -61,7 +72,7 @@ cd boost_1_79_0
 ```
 
 
-**glog - Google Logging Library** https://github.com/google/glog
+**glog - Google Logging Library** https://github.com/google/glog/
 
 ```
 #!bash

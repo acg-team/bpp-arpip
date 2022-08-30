@@ -25,8 +25,9 @@ title: Compiling
 - [Bio++/bpp-core 2.4.1](https://github.com/BioPP/bpp-core/releases/tag/v2.4.1)
 - [Bio++/bpp-seq 2.4.1](https://github.com/BioPP/bpp-seq/releases/tag/v2.4.1)
 - [Bio++/bpp-phyl 2.4.1](https://github.com/BioPP/bpp-phyl/releases/tag/v2.4.1)
-- [glog - Google Logging Library](https://github.com/google/glog/releases/tag/v0.5.0)
-- [gtest - Google's C++ test framework](https://github.com/google/googletest/releases/tag/release-1.11.0)
+- [Glog - Google Logging Library](https://github.com/google/glog/releases/tag/v0.5.0)
+- [Gtest - Google's C++ test framework](https://github.com/google/googletest/releases/tag/release-1.11.0)
+- [Boost - boost - C++ Libraries](https://boostorg.jfrog.io/artifactory/main/release/1.79.0/source/boost_1_79_0.tar.gz)
 
 ## How to compile
 

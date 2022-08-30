@@ -51,7 +51,7 @@ source scl_source enable devtoolset-2
 
 ## Cmake (all the platforms)
 
-ARPIP depends on any version of CMake above 3.16.1
+ARPIP depends on CMake version 3.16.3
 
 
 [**cmake 3.16.3**](http://cmake.org/)
