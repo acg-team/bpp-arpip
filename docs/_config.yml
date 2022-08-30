@@ -10,7 +10,7 @@ header_pages:
   - arpip_ancestral_sequence_reconstruction_under_poisson_indel_proccess_about.md
   - arpip_ancestral_sequence_reconstruction_under_poisson_indel_proccess_compile.md
   - arpip_ancestral_sequence_reconstruction_under_poisson_indel_proccess_inference_examples.md
-  -[Source code](https://github.com/acg-team/bpp-arpip)
+  -"[Source code](https://github.com/acg-team/bpp-arpip)"
 minima:
   skin: dark
 
