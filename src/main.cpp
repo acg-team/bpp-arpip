@@ -568,17 +568,6 @@ int main(int argc, char *argv[]) {
             lambda = (modelMap.find("lambda") == modelMap.end()) ? 0.1 : std::stod(modelMap["lambda"]);
             mu = (modelMap.find("mu") == modelMap.end()) ? 0.2 : std::stod(modelMap["mu"]);
 
-            //sim-0 True:
-            // lambda = 10 ;
-            // mu = 0.1
-
-            // prank
-            //mu = 0.210789;
-            //lambda = 163.872;
-
-            // ProPIP
-            //mu = 0.242833;
-            //lambda = 210.235;
             DLOG(INFO) << "[Substitution model][PIP model] Fixed PIP parameters to (lambda=" << lambda << ",mu="
                        << mu << "," "I="
                        << lambda * mu << ")";
@@ -637,25 +626,6 @@ int main(int argc, char *argv[]) {
                                                                                                         false);
         DLOG(INFO) << "[PIP tree likelihood] Likelihood object under PIP is constructed successfully.";
 
-        //////////////////////////////
-        // Estimate the PIPLogLikelihood value:
-        string optPIPLikelihoodCmp = bpp::ApplicationTools::getStringParameter("opt.likelihood",
-                                                                               arpipapp.getParams(),
-                                                                               "0", "", false, 1);
-        if (stoi(optPIPLikelihoodCmp) == 1) {
-            long double logLikelihood = likFunctionPIP20->computePIPTreeLikelihood(lambda, mu);
-            bpp::ApplicationTools::displayResult("The insertion rate", lambda);
-            bpp::ApplicationTools::displayResult("The deletion rate", mu);
-            bpp::ApplicationTools::displayResult("The log likelihood under PIP", logLikelihood);
-//            bpp::ApplicationTools::displayWarning(
-//                    "By activating \"opt.likelihood\" in config file the operation would be terminated!");
-//            bpp::ApplicationTools::displayMessage(
-//                    "By running the ASR module, the PIP parameters including logLikelihood would be printed.");
-            ARPIPIOTools::writeInferredPIPParams(lambda, mu, logLikelihood, arpipapp.getParam("output.pipparams.file"));
-            DLOG(INFO) << "[PIP tree likelihood] Log likelihood asked to be printed.";
-//            return 1;
-        }
-        /////////////////////////
         bpp::ApplicationTools::displayMessage("\n[Extracting Indel Points]");
 
         // Maximum Likelihood Indel Points
@@ -696,6 +666,22 @@ int main(int argc, char *argv[]) {
         }
 
         /************************************ Writing the result **********************************************/
+
+        //////////////////////////////// Write the estimated PIPLogLikelihood value:
+        string optPIPLikelihoodCmp = bpp::ApplicationTools::getStringParameter("opt.likelihood",
+                                                                               arpipapp.getParams(),
+                                                                               "0", "", false, 1);
+        if (stoi(optPIPLikelihoodCmp) == 1) {
+            long double logLikelihood = likFunctionPIP20->computePIPTreeLikelihood(lambda, mu);
+            bpp::ApplicationTools::displayResult("The insertion rate", lambda);
+            bpp::ApplicationTools::displayResult("The deletion rate", mu);
+            bpp::ApplicationTools::displayResult("The log likelihood under PIP", logLikelihood);
+
+            ARPIPIOTools::writeInferredPIPParams(lambda, mu, logLikelihood, arpipapp.getParam("output.pipparams.file"));
+            DLOG(INFO) << "[PIP tree likelihood] Log likelihood asked to be printed.";
+        }
+
+        /////////////////////////// Write the inferred ancestral states:
 
         bpp::Fasta fastaWtiter;
         fastaWtiter.writeSequences(arpipapp.getParam("output.ancestral.file"), *asr);
