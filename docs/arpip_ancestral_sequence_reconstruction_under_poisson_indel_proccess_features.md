@@ -70,7 +70,10 @@ title: Features and project structure
                                                             wants program to compute them. 0: other way.
     opt.tree.scale={real}                                   Set the scale value to scale the branch lengths.
     
-    opt.has_only_gap_column={0|1}                           1: Remove all the only gap columns from MSA file. By deffault is 0.
+    opt.unknown_as_gap={0|1}                                1: This software does not support ambiguity in characters.
+                                                            We are kindly ask users to remove the unknown chars, o.w. the 
+                                                            software change them to gap and next will remove all the only-gap 
+                                                            columns from MSA file. By deffault this flag is 0.
     
     
 ---
@@ -121,20 +124,7 @@ If the `init.tree metod=user`, then refer to the option you find in "Reading tre
     JTT92
     WAG01
     LG08
-    LLG08_EX2([relrate1={real]0,1[}, relproba1={real]0,1[}])
-    LLG08_EX3([relrate1={real]0,1[}, relrate2={real]0,1[}, relproba1={real]0,1[}, relproba2={real]0,1[}])
-    LLG08_EHO([relrate1={real]0,1[}, relrate2={real]0,1[}, relproba1={real]0,1[}, relproba2={real]0,1[}])
-    LLG08_UL2([relrate1={real]0,1[}, relproba1={real]0,1[}])
-    LLG08_UL3([relrate1={real]0,1[}, relrate2={real]0,1[}, relproba1={real]0,1[}, relproba2={real]0,1[}])
-    LGL08_CAT(nbCat={[10,20,30,40,50,60]}, [relrate1={real]0,1[}, relrate2={real]0,1[}, ..., relproba1={real]0,1[}, relproba2={real]0,1[}, ...] ))
-    LGL08_CAT_C{[1,...,nbCat]}(nbCat={[10,20,30,40,50,60]})
-    DSO78+F([theta={real]0,1[}, theta1={real]0,1[}, theta2={real]0,1[}, ... ,"equilibrium frequencies"])
-    JTT92+F([theta={real]0,1[}, theta1={real]0,1[}, theta2={real]0,1[}, ..., "equilibrium frequencies"])
-    WAG01+F([theta={real]0,1[}, theta1={real]0,1[}, theta2={real]0,1[}, ..., "equilibrium frequencies"])
-    LG08+F([theta={real]0,1[}, theta1={real]0,1[}, theta2={real]0,1[}, ..., "equilibrium frequencies"])
-    Empirical(name={chars}, file={path})
-    Empirical+F(name={chars}, file={path}, [theta={real]0,1[}, theta1={real]0,1[}, theta2={real]0,1[}, ...,  "equilibrium frequencies"])
-
+    
 *The following meta models are currently available:*
 
     PIP13(model={model description}, {lambda={real>0}, mu={real>0})
