@@ -259,19 +259,21 @@ int main(int argc, char *argv[]) {
             bpp::ApplicationTools::displayResult("Number of sequences", sites->getNumberOfSequences());
             bpp::ApplicationTools::displayResult("Number of sites", sites->getNumberOfSites());
 
-            // Changing unknown chars to gap
-            bpp::SiteContainerTools::changeUnresolvedCharactersToGaps(*sites);
-            bpp::ApplicationTools::displayWarning("The unknown character would be treated as gap in this program.");
-            static bpp::Sequence *s = bpp::SiteContainerTools::getConsensus(*sites, "consensus", true, false);
-
-            // Removing gaponly regions
-            bool isOnlyGapCl = bpp::ApplicationTools::getBooleanParameter("opt.has_only_gap_column",
+            ///////////////////Handle unknown characters:
+            bool isUnknownAsGap = bpp::ApplicationTools::getBooleanParameter("opt.unknown_as_gap",
                                                                              arpipapp.getParams(), 0,
                                                                              "", false, 1);
-            if (isOnlyGapCl) {
+            if (isUnknownAsGap) {
+                // Changing unknown chars to gap
+                bpp::SiteContainerTools::changeUnresolvedCharactersToGaps(*sites);
+                bpp::ApplicationTools::displayWarning("The unknown character would be treated as gap in this program.");
+                DLOG(INFO) << "[Input MSA parser] Sites with unknown chars would be treated as gap.";
+                // Removing gaponly regions
                 bpp::ApplicationTools::displayTask("Removing gap only sites if exists");
                 bpp::SiteContainerTools::removeGapOnlySites(*sites);
+                std::cout << std::endl;
                 DLOG(INFO) << "[Input MSA parser] Sites with full gap column were removed if exists.";
+                bpp::ApplicationTools::displayResult("New number of sites", sites->getNumberOfSites());
             }
 
         } catch (bpp::Exception &e) {
@@ -348,14 +350,20 @@ int main(int argc, char *argv[]) {
             // Cloning the site for building the tree
             bpp::SiteContainer *tmpSites = sites->clone();
 
+
+            // Change unknown chars to gap:
+            bpp::ApplicationTools::displayTask("Changing unknown characters to gap");
+            bpp::SiteContainerTools::changeUnresolvedCharactersToGaps(*tmpSites);
+            DLOG(INFO) << "[Tree reconstruction] Unknown characters were changed to gap.";
+            bpp::ApplicationTools::displayWarning("The unknown character would be treated as gap in this program.");
+
+
             // Removing gaponly regions
             bpp::ApplicationTools::displayTask("Removing gap only sites");
             bpp::SiteContainerTools::removeGapOnlySites(*tmpSites);
+            std::cout << std::endl;
             DLOG(INFO) << "[Tree reconstruction] Sites with full gap column were removed.";
-
-            bpp::ApplicationTools::displayTask("Changing gaps to unknown characters");
-            bpp::SiteContainerTools::changeGapsToUnknownCharacters(*tmpSites);
-            DLOG(INFO) << "[Tree reconstruction] Gap states were changed to unknown characters.";
+            bpp::ApplicationTools::displayResult("New number of sites", sites->getNumberOfSites());
 
 
             // Computing distance matrix
