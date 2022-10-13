@@ -187,7 +187,7 @@ void PIPDRTreeLikelihoodParameters::initPIPParameter_() {
         throw Exception("PIPDRTreeLikelihoodParameters::initPIPParameter_(). Lambda or Mu is missing!");
     }
 
-    ApplicationTools::displayTask("Initializing iota and beta parameters");
+    ApplicationTools::displayTask("\nInitializing iota and beta parameters");
 
     // Initializing iota and beta parameters
     computePIPIota(tree_->getRootNode(), tau_, mu_, true);
