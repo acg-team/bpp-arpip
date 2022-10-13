@@ -113,7 +113,9 @@ void PIPAncestralStateReconstruction::getAncestralStatesForSite(const Node *node
 
     int nodeId = node->getId();
     if (nodeId == newRootId) {
-        ancestors[nodeId][siteNumber] = VectorTools::whichMax(lArray[nodeId]);
+//        std::cout << bpp::VectorTools::whichMax(lArray[nodeId]*10000);
+//        std::cout << std::max_element(lArray[nodeId].begin(), lArray[nodeId].end());
+        ancestors[nodeId][siteNumber] = bpp::VectorTools::whichMax(lArray[nodeId]);
     } else {
         const Node *father = node->getFather();
         int winnerIndex = ancestors[father->getId()][siteNumber];
@@ -187,6 +189,11 @@ std::map<int, std::vector<int>> PIPAncestralStateReconstruction::getAllAncestral
                 }
             }
             Node *newPIPRoot = PIPSubTree->getRootNode();
+//            newPIPRoot->setNodeProperty("isNotLeaf", BppInteger(true));
+//            Clonable *isNotLeaf = newPIPRoot->getNodeProperty("isNotLeaf");
+//            if (isNotLeaf) {
+//                std::cout << "Not a leaf\n";
+//            }
             recursiveJointAncestralStates(newPIPRoot, PIPSubTree, ancestors, likelihoodArray, cLikelihoodArray,
                                           *data, siteNb, newRoot->getId(), 0);
         }
@@ -214,8 +221,7 @@ void PIPAncestralStateReconstruction::recursiveJointAncestralStates(const Node *
         *visited = true;
         recursiveComputeLikelihoodAtSite(node, tree, *larray,*carray, siteNumber, newRootId);
     }
-
-    if (!node->isLeaf()) {
+    if (!node->isLeaf() || tree->getRootId()==node->getId()) {//check if the new subtree is not a single leaf node or is a rooted with one son.
         getAncestralStatesForSite(node, ancestors, *larray, *carray, siteNumber, newRootId);
         for (size_t i = 0; i < node->getNumberOfSons(); i++) {
             recursiveJointAncestralStates(node->getSon(i), tree, ancestors, likelihoodArray, cLikelihoodArray, data, siteNumber,
