@@ -78,12 +78,12 @@ using namespace bpp;
     std::string *relation_n = &relation[nodeId];
 
     if(node->hasFather())
-        *relation_n = node->getName() + "     " + node->getFather()->getName();
+        *relation_n = node->getName() + "\t" + node->getFather()->getName();
     else
-        *relation_n = node->getName() + "   " + "--";
+        *relation_n = node->getName() + "\t" + "--";
     int nbSons = node->getNumberOfSons();
     for (int i = 0; i < nbSons; ++i) {
-        *relation_n = *relation_n + "   " + node->getSon(i)->getName();
+        *relation_n = *relation_n + "\t" + node->getSon(i)->getName();
     }
 }
 
