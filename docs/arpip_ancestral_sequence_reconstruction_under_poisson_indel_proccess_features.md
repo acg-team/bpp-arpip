@@ -72,8 +72,13 @@ title: Features and project structure
     
     opt.unknown_as_gap={0|1}                                1: This software does not support ambiguity in characters.
                                                             We are kindly ask users to remove the unknown chars, o.w. the 
-                                                            software change them to gap and next will remove all the only-gap 
-                                                            columns from MSA file. By deffault this flag is 0.
+                                                            software change them to gap and in the next step will remove 
+                                                            all the only-gap columns from MSA file. By default this flag is 0.
+    
+    opt.combine_msa_asr={0|1}                               1: The user can see the result along with their corresponding MSA.
+                                                            It is recommended that user to activate this flag when using 
+                                                            'unknown_as_gap'. In the case of having column full of gap the length
+                                                            of input MSA and ASR are not the same. By default this flag is 0.                                                        
     
     
 ---
