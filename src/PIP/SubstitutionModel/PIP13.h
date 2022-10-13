@@ -67,9 +67,9 @@ namespace bpp{
     /**
  * @brief The PIP substitution model with gap characters.
  *
- * This model expends any reversible substitution model with gaps as an additional state.
- * Although the conditionnal subtitution process is reversible, the insertion/deletion process
- * needs not be. The model hence adds one parameter just for deletions, @f$\mu@f$.
+ * This model expends any semi-reversible substitution model with gaps as an additional state.
+ * Although the conditionnal subtitution process is not reversible, the insertion/deletion process
+ * needs be. The model hence adds one parameter just for deletions, @f$\mu@f$.
  * If we note @f$Q@f$ the (simple) transition matrix (= Markov generator) and @f$Q^\epsilon@f$ the extended one, we have:
  * @f[
  * Q^\epsilon =
@@ -87,7 +87,7 @@ namespace bpp{
  * @f$\delta_{ij}@f$ is 1 if i=j, 0 otherwise.
  * Note that in the original paper @f$Q@f$ is noted as @f$R@f$, and @f$Q_t@f$ is used for the probability matrix, which is referred here as @f$P^\epsilon(t)@f$ for consistency with the documentation of other models.
  *
- * The extended Markov model is reversible, and the equilibrium frequencies are
+ * The extended Markov model is semi-reversible, but the equilibrium frequencies are
  * @f[
  * \pi^\epsilon = \left( \pi \cdot \frac{\lambda}{\lambda + \mu}, \frac{\mu}{\lambda + \mu}\right).
  * @f]
