@@ -690,11 +690,30 @@ int main(int argc, char *argv[]) {
         }
 
         /////////////////////////// Write the inferred ancestral states:
-
+        bool isCombine = bpp::ApplicationTools::getBooleanParameter("opt.combine_msa_asr",
+                                                                         arpipapp.getParams(), 0,
+                                                                         "", false, 1);
         bpp::Fasta fastaWtiter;
-        fastaWtiter.writeSequences(arpipapp.getParam("output.ancestral.file"), *asr);
-        LOG(INFO) << "[PIP ASR] File is written successfully.";
-        bpp::ApplicationTools::displayResult("Output ancestral sequence file", arpipapp.getParam("output.ancestral.file"));
+        if (isCombine) {
+            bpp::AlignedSequenceContainer *combined_msa_asr = new bpp::AlignedSequenceContainer(*sites);
+            for (size_t nbseq = 0; nbseq < asr->getNumberOfSequences(); nbseq++) {
+                // concat the msa and asr sequences:
+                try {
+                    combined_msa_asr->addSequence(asr->getSequence(nbseq));
+                } catch (bpp::Exception &ex) {
+                    cerr << ex.what() << endl;
+                    LOG(FATAL) << "Error when " << ex.message();
+                }
+            }
+            fastaWtiter.writeSequences(arpipapp.getParam("output.ancestral.file"), *combined_msa_asr);
+            LOG(INFO) << "[PIP ASR] File is written successfully.";
+            bpp::ApplicationTools::displayResult("Output ancestral sequence file", arpipapp.getParam("output.ancestral.file"));
+        }
+        else{
+            fastaWtiter.writeSequences(arpipapp.getParam("output.ancestral.file"), *asr);
+            LOG(INFO) << "[PIP ASR] File is written successfully.";
+            bpp::ApplicationTools::displayResult("Output ancestral sequence file", arpipapp.getParam("output.ancestral.file"));
+        }
 
         /**************************************** Deleting the pointers ***********************************************/
 
