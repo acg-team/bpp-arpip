@@ -187,9 +187,11 @@ int main(int argc, char *argv[]) {
          * 2. alignment  => (2.1) parse alignment => (2.2) generate tree using one of supported methods
          * 3. sequences + tree => (3.1) Perform alignment using ProPIP => (3.2) generate tree using one of supported methods (For future release!!!)
          */
-
-        double lambda = 0.01;
-        double mu = 0.01;
+        double rand_seed = bpp::ApplicationTools::getDoubleParameter("opt.seed", arpipapp.getParams(), 1, "",
+                                                               true, true);
+        bpp::RandomTools::setSeed((unsigned)rand_seed);
+        double lambda = bpp::RandomTools::giveRandomNumberBetweenZeroAndEntry(1);
+        double mu = bpp::RandomTools::giveRandomNumberBetweenZeroAndEntry(1);
         bool estimatedPIPParameters = false;
 
         std::string App_model_substitution = bpp::ApplicationTools::getStringParameter("model", arpipapp.getParams(),
