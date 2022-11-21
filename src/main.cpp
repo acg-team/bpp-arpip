@@ -140,7 +140,7 @@
 /**********************************************************************************************************************/
 
 int main(int argc, char *argv[]) {
-    FLAGS_log_dir = "./logs/";// "../logs/"
+    FLAGS_log_dir = "../logs/";// "./logs/"
     ::google::InitGoogleLogging(software::name.c_str());
     ::google::InstallFailureSignalHandler();
 
