@@ -36,7 +36,7 @@
  *******************************************************************************/
 
 /**
- * @file Version.hpp
+ * @file Version.h
  * @authors Massimo Maiolo and Gholamhossein Jowkar
  * @date 14 07 2021
  * @version 1.0.0

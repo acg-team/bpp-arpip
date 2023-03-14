@@ -36,7 +36,7 @@
  *******************************************************************************/
 
 /**
- * @file ARPIPApplication.hpp
+ * @file ARPIPApplication.h
  * @authors Massimo Maiolo and Gholamhossein Jowkar
  * @date 12 07 2021
  * @version 1.0.0
