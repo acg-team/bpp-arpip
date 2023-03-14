@@ -12,8 +12,9 @@ title: Features and project structure
 ### Reading sequences
 
     input.sequence.file={path}                              The aligned sequence file to use. 
-
                                                             Will consider {n} random sites, with optional replacement.
+                                                            Please note that unknown character is not supported in this 
+                                                            version of ARPIP.
 
 *The following formats are currently supported:*
 
@@ -52,11 +53,9 @@ title: Features and project structure
 ---
 
 
-    alphabet={DNA|RNA|Protein)|Codon(letter={DNA|RNA},type={Standard|EchinodermMitochondrial|InvertebrateMitochondrial|VertebrateMitochondrial})}
-                                                            The alphabet to use when reading sequences. DNA and RNA alphabet can in addition take
-                                                            an argument: **bangAsgap={bool}**
-                                                            Tell is exclamation mark should be considered as a gap character. The default
-                                                            is to consider it as an unknown character such as 'N' or '?'.    
+    alphabet={DNA|RNA|Protein},type={Standard|EchinodermMitochondrial|InvertebrateMitochondrial|VertebrateMitochondrial})}
+                                                            The alphabet to use when reading sequences. This version of 
+                                                            ARPIP does not consider an unknown character such as 'N' or '?'.    
 ---
 #  Options
 ---
@@ -102,7 +101,8 @@ If the `init.tree metod=user`, then refer to the option you find in "Reading tre
 ---
 #  Evolutionary model options
 ---
-
+For more information about the substitution models available on BPP library please check their documentation at:
+https://pbil.univ-lyon1.fr/bpp-doc/bpp-phyl/html/
 ### Substitution models
 
 
@@ -110,17 +110,21 @@ If the `init.tree metod=user`, then refer to the option you find in "Reading tre
 
 *The following nucleotide models are currently available as a core model:*
 
+See the 'test_dna_sub_model' folder in the source code for example of the correct syntax. 
+
     JC69
     K80([kappa={real>0}])
-    F84([kappa={real>0}, theta={real]0,1[}, theta1={real]0,1[},theta2={real]0,1[} ,"equilibrium frequencies"])
-    HKY85([kappa={real>0}, theta={real]0,1[}, theta1={real]0,1[}, theta2={real]0,1[} ,"equilibrium frequencies"])
-    T92([kappa={real>0}, theta={real]0,1[} ,"equilibrium frequencies"])
-    TN93([kappa1={real>0}, kappa2={real>0}, theta={real]0,1[}, theta1={real]0,1[}, theta2={real]0,1[} ,"equilibrium frequencies"])
-    GTR([a={real>0}, b={real>0}, c={real>0}, d={real>0}, e={real>0}, theta={real]0,1[}, theta1={real]0,1[}, theta2={real]0,1[} ,"equilibrium frequencies"])
-    L95([beta={real>0}, gamma={real>0}, delta={real>0}, theta={real]0,1[}, theta1={real]0,1[}, theta2={real]0,1[} ,"equilibrium frequencies"])
-    SSR([beta={real>0}, gamma={real>0}, delta={real>0}, theta={real]0,1[}])
-    RN95([thetaR={real]0,1[}, thetaC={real]0,1[}, thetaG={real]0,1[}, kappaP={real[0,1[}, gammaP={real[0,1[}, sigmaP={real>1}, alphaP={real>1}])
-    RN95s([thetaA={real]0,0.5[}, gamma={real]0,0.5[}, alphaP={real>1}])
+    F84([kappa={real>0}, {theta={real[0,1]}, theta1={real[0,1]},theta2={real[0,1]}} | "equilibrium frequencies"])
+    HKY85([kappa={real>0}, {theta={real[0,1]}, theta1={real[0,1]}, theta2={real[0,1]}} | "equilibrium frequencies"])
+    T92([kappa={real>0}, theta={real[0,1]} | "equilibrium frequencies"])
+    TN93([kappa1={real>0}, kappa2={real>0}, theta={real[0,1]}, theta1={real[0,1]}, theta2={real[0,1]} | "equilibrium frequencies"])
+    GTR([a={real>0}, b={real>0}, c={real>0}, d={real>0}, e={real>0}, {theta={real[0,1]}, theta1={real[0,1]}, theta2={real[0,1]} | "equilibrium frequencies" ])
+    L95([{beta={real>0}, gamma={real>0}, delta={real>0}, theta={real[0,1]}, theta1={real[0,1]}}, theta2={real[0,1]} | "equilibrium frequencies"])
+    SSR([beta={real>0}, gamma={real>0}, delta={real>0}, theta={real[0,1]}])
+    RN95([thetaR={real[0,1]}, kappaP={real[0,1]}, gammaP={real[0,1]}, alpha={real>1}, sigma={real>1}, beta={real>1}, epsilon={real>1}])
+    
+    "equilibrium frequencies" are {piA={real[0,1]},piC={real[0,1]},piG={real[0,1]},piT={real[0,1]}} and the summation should be one.
+    For example: {piA=0.26,piC=0.25,piG=0.24,piT=0.25} 
 
 *The following protein models are currently available as a core model:*
 
