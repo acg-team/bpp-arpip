@@ -365,11 +365,19 @@ int main(int argc, char *argv[]) {
             bpp::SiteContainerTools::removeGapOnlySites(*tmpSites);
             std::cout << std::endl;
             DLOG(INFO) << "[Tree reconstruction] Sites with full gap column were removed.";
-            bpp::ApplicationTools::displayResult("New number of sites", sites->getNumberOfSites());
+            bpp::ApplicationTools::displayResult("New number of sites", tmpSites->getNumberOfSites());
+
+            // Removing the column containing the gap character
+            bpp::ApplicationTools::displayMessage("Removing gappy sites for tree reconstruction");
+            // Removing the sites containing the gap character
+            const bpp::SiteContainer *tmpSitesWOGap = bpp::SiteContainerTools::getSitesWithoutGaps(*tmpSites);
+            DLOG(INFO) << "[Tree reconstruction] Sites with gap character were removed.";
+            DLOG(INFO) << "[Tree reconstruction] The new number of sites are:"<< tmpSitesWOGap->getNumberOfSites();
+            bpp::ApplicationTools::displayResult("New number of sites used for tree reconstruction", tmpSitesWOGap->getNumberOfSites());
 
 
             // Computing distance matrix
-            bpp::DistanceEstimation distanceMethod(tmpSModel, rateDist, tmpSites);
+            bpp::DistanceEstimation distanceMethod(tmpSModel, rateDist, tmpSitesWOGap);
             DLOG(INFO) << "[Tree reconstruction] Distance matrix was computed.";
 
 
