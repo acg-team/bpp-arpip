@@ -13,4 +13,4 @@ output.msa.file=../data/output/test_00/msa.fasta
 output.tree.file=../data/output/test_00/tree.nwk
 output.ancestral.file=../data/output/test_00/anc.fasta
 output.node_rel.file=../data/output/test_00/node_rel.txt
-output.mlindelpoints.file = ../data/output/test_00/mlindelpoints.txt
+output.mlindelpoints.file=../data/output/test_00/mlindelpoints.txt
