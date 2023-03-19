@@ -1,13 +1,16 @@
 analysis_name = TEST 3
 alphabet=Protein
-alignment=true
+opt.seed=1
+opt.likelihood=0
+opt.pip_param_estimate=0
+opt.combine_msa_asr=1
 input.sequence.file=../data/input/test_03/sim-0_msa_new.fasta
 input.sequence.sites_to_use=all
 init.tree=auto
-init.tree.method=bionj
+init.tree.method=upgma
 model=PIP(model=WAG01,lambda=10, mu=0.01)
 rate_distribution=Constant
-output.msa.file=../data/output/test_03/msa.fasta
 output.tree.file=../data/output/test_03/tree.nwk
+output.ancestral.file=../data/output/test_03/anc.fasta
 output.node_rel.file=../data/output/test_03/node_rel.txt
-output.mlindelpoints.file = ../data/output/test_03/mlindelpoints.txt
+output.mlindelpoints.file=../data/output/test_03/mlindelpoints.txt
