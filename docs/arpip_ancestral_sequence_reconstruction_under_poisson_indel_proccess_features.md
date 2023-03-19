@@ -95,7 +95,7 @@ title: Features and project structure
                                                             matrix from the pairwise alignments and then with bionj algorithm infers the tree.
     
 
-If the `init.tree metod=user`, then refer to the option you find in "Reading trees".
+If the `init.tree.metod=user`, then refer to the option you find in "Reading trees".
 
 
 ---
