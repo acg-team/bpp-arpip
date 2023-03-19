@@ -305,11 +305,16 @@ void PIPDRHomogeneousTreeLikelihood::computePIPLikelihoodForEmptySiteAtNode_(con
 /*********************************** computePIPPhi_ ***********************************/
 
 void PIPDRHomogeneousTreeLikelihood::computePIPPhi_(){
-    if (nbSites_==0)
+    if (nbSites_==0){
         throw Exception("PIPDRHomogeneousTreeLikelihood::computePIPPhi_: The number of sites is zero!");
-    if(p_c_0_ ==0 || isnan(p_c_0_))
+        LOG(FATAL)<<"[PIPDRHomogeneousTreeLikelihood] computePIPPhi_: The number of sites is zero.";
+    }
+    if(p_c_0_ ==0 || isnan(p_c_0_)){
         throw Exception(
-                "PIPDRHomogeneousTreeLikelihood::computePIPPhi_: The likelihood value of empty column is zero");
+                "PIPDRHomogeneousTreeLikelihood::computePIPPhi_: The likelihood value of empty columns is zero or nan.");
+        LOG(FATAL)<<"[PIPDRHomogeneousTreeLikelihood] computePIPPhi_: The likelihood value of empty columns is zero or nan,"
+                    "In the case of nan p_c_0_: plz check the branch lengths. Branches of length zero is not valid except for the root.";
+    }
 //            phi_ = (pow(nu_, nbSites_) * exp(((p_c_0_) - 1) * nu_)) /std::tgamma(nbSites_ + 1) ;
     double log_factorial_m;
 
