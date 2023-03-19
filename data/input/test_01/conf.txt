@@ -11,5 +11,5 @@ output.msa.file=../data/output/test_01/msa.fasta
 output.tree.file=../data/output/test_01/tree.nwk
 output.ancestral.file=../data/output/test_01/anc.fasta
 output.node_rel.file=../data/output/test_01/node_rel.txt
-output.mlindelpoints.file = ../data/output/test_01/mlindelpoints.txt
-output.param.file=./data/output/test_01/param.txt
+output.mlindelpoints.file=../data/output/test_01/mlindelpoints.txt
+output.param.file=../data/output/test_01/param.txt
