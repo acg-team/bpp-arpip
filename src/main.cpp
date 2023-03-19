@@ -390,6 +390,7 @@ int main(int argc, char *argv[]) {
             DLOG(INFO) << "[Tree reconstruction] Reconstructed by: " << distMethod->getName() << std::endl;
 
             delete tmpSites;
+            delete tmpSitesWOGap;
             delete distances;
             delete distMethod;
             std::cout << endl;
