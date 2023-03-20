@@ -189,11 +189,6 @@ std::map<int, std::vector<int>> PIPAncestralStateReconstruction::getAllAncestral
                 }
             }
             Node *newPIPRoot = PIPSubTree->getRootNode();
-//            newPIPRoot->setNodeProperty("isNotLeaf", BppInteger(true));
-//            Clonable *isNotLeaf = newPIPRoot->getNodeProperty("isNotLeaf");
-//            if (isNotLeaf) {
-//                std::cout << "Not a leaf\n";
-//            }
             recursiveJointAncestralStates(newPIPRoot, PIPSubTree, ancestors, likelihoodArray, cLikelihoodArray,
                                           *data, siteNb, newRoot->getId(), 0);
         }
