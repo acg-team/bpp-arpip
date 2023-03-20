@@ -389,6 +389,13 @@ int main(int argc, char *argv[]) {
             tree = distMethod->getTree();
             DLOG(INFO) << "[Tree reconstruction] Reconstructed by: " << distMethod->getName() << std::endl;
 
+            // Checking the branches of new reconstructed tree
+//            bool MoreThanOne = ARPIPTreeTools::detectZeroBranchLength(tree);
+            if (ARPIPTreeTools::detectZeroBranchLength(tree)){
+                throw bpp::Exception("Reconstructed tree has branch length of zero: Please change the tree reconstruction method.");
+                DLOG(FATAL) << "[Tree reconstruction] " << distMethod->getName() << "made a branch length zero.";
+            }
+
             delete tmpSites;
             delete tmpSitesWOGap;
             delete distances;
@@ -618,7 +625,6 @@ int main(int argc, char *argv[]) {
 
         bpp::ApplicationTools::displayMessage("Equilibrium frequency of substitution model:");
         for (size_t i = 0; i < sModel->getFrequencies().size(); i++) {
-
             bpp::ApplicationTools::displayResult("eq.freq(" + sModel->getAlphabet()->getName(i) + ")",
                                                  bpp::TextTools::toString(sModel->getFrequencies()[i], 4));
         }
@@ -721,9 +727,20 @@ int main(int argc, char *argv[]) {
             bpp::ApplicationTools::displayResult("Output ancestral sequence file", arpipapp.getParam("output.ancestral.file"));
         }
         else{
-            fastaWtiter.writeSequences(arpipapp.getParam("output.ancestral.file"), *asr);
-            LOG(INFO) << "[PIP ASR] File is written successfully.";
-            bpp::ApplicationTools::displayResult("Output ancestral sequence file", arpipapp.getParam("output.ancestral.file"));
+            try{
+                fastaWtiter.writeSequences(arpipapp.getParam("output.ancestral.file"), *asr);
+                LOG(INFO) << "[PIP ASR] File is written successfully.";
+                bpp::ApplicationTools::displayResult("Output ancestral sequence file", arpipapp.getParam("output.ancestral.file"));
+
+                fastaWtiter.writeSequences(arpipapp.getParam("output.msa.file"), *sites);
+                LOG(INFO) << "[PIP MSA] File is written successfully.";
+                bpp::ApplicationTools::displayResult("Output MSA file", arpipapp.getParam("output.msa.file"));
+            } catch (bpp::Exception &ex) {
+                std::cout << "Make sure you set the output.msa.file or use opt.combine_msa_asr" << std::endl;
+                LOG(FATAL) << "[PIP MSA ASR] Error when " << ex.message() << endl
+                           << "Make sure you set the output.msa.file or use opt.combine_msa_asr";
+                cerr << ex.what() << endl;
+            }
         }
 
         /**************************************** Deleting the pointers ***********************************************/
@@ -732,7 +749,7 @@ int main(int argc, char *argv[]) {
         delete sequences;
         delete asr;
         delete rDist;
-        delete rateDist;
+//        delete rateDist;
 
         arpipapp.done();
         google::ShutdownGoogleLogging();

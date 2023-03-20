@@ -89,6 +89,16 @@ using namespace bpp;
 
 /******************************************************************************/
 
+bool ARPIPTreeTools::detectZeroBranchLength(bpp::Tree *tree){
+    std::vector<double> branchLens = tree->getBranchLengths();
+    int ans = std::count(branchLens.begin(), branchLens.end(), 0);
+    if (ans > 1)
+        return 1;
+    return 0;
+}
+
+/******************************************************************************/
+
 void ARPIPTreeTools::renameInternalNodes(bpp::TreeTemplate<Node> *ttree, std::string prefix) {
 
     // Rename internal nodes with standard Vxx * where xx is a progressive number

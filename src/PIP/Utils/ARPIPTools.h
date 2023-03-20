@@ -98,6 +98,13 @@ namespace ARPIPTreeTools {
     void treeAncestorRelation(bpp::Node *node, std::vector <std::string> &relation);
 
     /**
+     * @brief After tree reconstruction, there is a chance that more than one of branches has the length of zero (except for
+     * the root). In this case we have to inform the user to change the tree reconstruction method since br=0 is problematic
+     * for the rest of actions.
+     */
+     bool detectZeroBranchLength(bpp::Tree *tree);
+
+    /**
     * @brief Rename internal nodes with standard Vxx * where xx is a progressive number during post-order traverse of the tree.
     */
     void renameInternalNodes(bpp::TreeTemplate<bpp::Node> *ttree, std::string prefix = "V");
