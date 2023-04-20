@@ -1,4 +1,4 @@
-analysis_name = TEST 3
+analysis_name=TEST 3
 alphabet=Protein
 opt.seed=1
 opt.likelihood=0

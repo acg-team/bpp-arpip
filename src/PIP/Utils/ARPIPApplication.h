@@ -184,7 +184,7 @@ namespace bpp{
 
             bpp::ApplicationTools::displayMessage("------------------------------------------------------------------------------");
             bpp::ApplicationTools::displayMessage(appName_);
-            bpp::ApplicationTools::displayMessage("PARPIP: Ancestral Sequence Reconstruction with insertions and deletions under the Poisson Indel Process");
+            bpp::ApplicationTools::displayMessage("ARPIP: Ancestral Sequence Reconstruction with insertions and deletions under the Poisson Indel Process");
             bpp::ApplicationTools::displayMessage("Authors: Gholamhossein Jowkar");
             bpp::ApplicationTools::displayMessage("Build on commit: " + appVersion_);
             bpp::ApplicationTools::displayMessage("On date: "+ appBuild_);
