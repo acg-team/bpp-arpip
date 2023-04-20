@@ -242,6 +242,7 @@ int main(int argc, char *argv[]) {
         bpp::SiteContainer *sites = nullptr;
 
         try {
+            //todo: Reading other sequence formats like phylip
 
             // Read aligned sequences
             bpp::Fasta seqReader;
@@ -466,7 +467,14 @@ int main(int argc, char *argv[]) {
         ARPIPTreeTools::renameInternalNodes(ttree_,"V");
 
         // Write down the reconstructed tree
-        bpp::PhylogeneticsApplicationTools::writeTree(*ttree_, arpipapp.getParams());
+        bool isAncestralNodePrinted = bpp::ApplicationTools::getBooleanParameter("opt.tree.with_ans_node_names",
+                                                                         arpipapp.getParams(), 1,
+                                                                         "", false, 1);
+        if (isAncestralNodePrinted) {
+            ARPIPTreeTools::writeNewickFile(ttree_, arpipapp.getParam("output.tree.file"));
+        } else {
+            bpp::PhylogeneticsApplicationTools::writeTree(*ttree_, arpipapp.getParams());
+        }
         DLOG(INFO) << "[Input tree parser] Initial tree topology after topological modifications: "
                    << bpp::TreeTools::treeToParenthesis(*ttree_, true);
 
@@ -476,8 +484,6 @@ int main(int argc, char *argv[]) {
         // Store relation between node in a string vector
         ARPIPTreeTools::treeAncestorRelation(ttree_->getRootNode(), strTreeFileAncestor);
         ARPIPIOTools::writeNodeRelationToFile(strTreeFileAncestor, arpipapp.getParam("output.node_rel.file"));
-
-
 
         /*********************************** Process the substitution model *******************************************/
 
