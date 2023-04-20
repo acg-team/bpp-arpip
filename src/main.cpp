@@ -143,7 +143,7 @@ int main(int argc, char *argv[]) {
     FLAGS_log_dir = "../logs/";// "./logs/"
     ::google::InitGoogleLogging(software::name.c_str());
     ::google::InstallFailureSignalHandler();
-
+    ::google::EnableLogCleaner(3); // keep the logs for 3 days
 
     try {
         bpp::ARPIPApplication arpipapp
