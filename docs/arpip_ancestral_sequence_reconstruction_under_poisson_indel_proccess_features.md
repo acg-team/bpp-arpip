@@ -65,9 +65,14 @@ title: Features and project structure
     opt.likelihood={0|1}                                    1: The user wants to know what is the value of joint likelihood of tree and MAS under PIP
                                                             0: Deactive this option. By default it is 0.
                                         
-    opt.pip_param_estimate={0|1}                            1: The user does not know what are the evelutionary parameter (i.e. lambda and mu) and
+    opt.pip_param_estimate={0|1}                            1: The user does not know what are the evolutionary parameter (i.e. lambda and mu) and
                                                             wants program to compute them. 0: other way.
     opt.tree.scale={real}                                   Set the scale value to scale the branch lengths.
+    
+    opt.tree.with_ans_node_names={0|1}                      1: The printed tree (orginal or reconstructed) will have the
+                                                            internal nodes name placed in the newick file. For the case 
+                                                            of 0: the user have the check the internal node's name in the
+                                                            relation file or use indelviewer software. By default it is 1. 
     
     opt.unknown_as_gap={0|1}                                1: This software does not support ambiguity in characters.
                                                             We are kindly ask users to remove the unknown chars, o.w. the 

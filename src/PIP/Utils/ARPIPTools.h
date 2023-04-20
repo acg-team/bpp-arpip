@@ -117,6 +117,14 @@ namespace ARPIPTreeTools {
 
     void scaleBranches(bpp::TreeTemplate<bpp::Node> *ttree, std::string strScale);
 
+    /**
+     * @brief Iteratively export a tree structure and returns its Newick representation.
+     */
+    void writeNewickFile(bpp::TreeTemplate<bpp::Node> *tree, std::string path);
+    /**
+     * @brief Traverse the tree in post-order adding the node's name and branch length to string nwk_string.
+     */
+    void postorderTreeTraverse(bpp::Node *node, std::string &nwk_string);
 }
 
 #endif //ARPIP_ARPIPTOOLS_H

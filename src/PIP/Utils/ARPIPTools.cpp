@@ -165,7 +165,43 @@ void ARPIPTreeTools::scaleBranches(bpp::TreeTemplate<bpp::Node> *ttree, std::str
 
 }
 
+/******************************************************************************/
+void ARPIPTreeTools::writeNewickFile(bpp::TreeTemplate<bpp::Node> *ttree, std::string path){
+    Node *rootNode = ttree->getRootNode();
+    std::string nwk_string;
+    postorderTreeTraverse(rootNode, nwk_string);
+    std::ofstream outTreeNWKFile;
+    outTreeNWKFile.open(path);
+    outTreeNWKFile << nwk_string;
+    outTreeNWKFile.close();
+    bpp::ApplicationTools::displayResult("Output tree file", path);
 
+
+
+}
+
+/******************************************************************************/
+void ARPIPTreeTools::postorderTreeTraverse(bpp::Node *node, std::string &nwk_string){
+    if (!node->isLeaf()) {
+        int nbSons = node->getNumberOfSons();
+        nwk_string.append("(");
+        for (int i = 0; i < nbSons; ++i) {
+            postorderTreeTraverse(node->getSon(i), nwk_string);
+            // parentheses only of the first child
+            if (i<1)
+                nwk_string.append(",");
+        }
+        nwk_string.append(")");
+    }
+    // To resolve the root condition
+    if (node->hasFather()){
+        std::string node_name = node->getName();
+        float node_dist = node->getDistanceToFather();
+        nwk_string.append(node_name + ":" + std::to_string(node_dist));
+    } else{
+        nwk_string.append("root;");
+    }
+}
 /******************************************************************************/
 /******************************* ARPIPIOTools *********************************/
 /******************************************************************************/
