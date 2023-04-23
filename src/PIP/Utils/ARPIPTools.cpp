@@ -66,6 +66,7 @@ using namespace bpp;
 /******************************************************************************/
 /****************************** ARPIPTreeTools ********************************/
 /******************************************************************************/
+
  void ARPIPTreeTools::treeAncestorRelation(Node *node, std::vector<std::string> &relation){
 
     int nodeId = node->getId();
@@ -106,7 +107,7 @@ void ARPIPTreeTools::renameInternalNodes(bpp::TreeTemplate<Node> *ttree, std::st
 
     for (auto &nodeId:ttree->getNodesId()) {
 
-        if (!ttree->hasNodeName(nodeId)) {
+        if (!ttree->hasNodeName(nodeId) || (ttree->getNodeName(nodeId) == "root")) {
 
             std::string stringId;
             std::string stringName;
@@ -149,6 +150,7 @@ size_t ARPIPTreeTools::getLongestBranchesNodeId(TreeTemplate<Node> *ttree){
 }
 
 /******************************************************************************/
+
 void ARPIPTreeTools::scaleBranches(bpp::TreeTemplate<bpp::Node> *ttree, std::string strScale) {
 
     int dScale = std::stoi(strScale);
@@ -166,6 +168,7 @@ void ARPIPTreeTools::scaleBranches(bpp::TreeTemplate<bpp::Node> *ttree, std::str
 }
 
 /******************************************************************************/
+
 void ARPIPTreeTools::writeNewickFile(bpp::TreeTemplate<bpp::Node> *ttree, std::string path){
     Node *rootNode = ttree->getRootNode();
     std::string nwk_string;
@@ -175,12 +178,10 @@ void ARPIPTreeTools::writeNewickFile(bpp::TreeTemplate<bpp::Node> *ttree, std::s
     outTreeNWKFile << nwk_string;
     outTreeNWKFile.close();
     bpp::ApplicationTools::displayResult("Output tree file", path);
-
-
-
 }
 
 /******************************************************************************/
+
 void ARPIPTreeTools::postorderTreeTraverse(bpp::Node *node, std::string &nwk_string){
     if (!node->isLeaf()) {
         int nbSons = node->getNumberOfSons();
@@ -199,9 +200,11 @@ void ARPIPTreeTools::postorderTreeTraverse(bpp::Node *node, std::string &nwk_str
         float node_dist = node->getDistanceToFather();
         nwk_string.append(node_name + ":" + std::to_string(node_dist));
     } else{
-        nwk_string.append("root;");
+        std::string node_name = node->getName();
+        nwk_string.append(node_name + ";");
     }
 }
+
 /******************************************************************************/
 /******************************* ARPIPIOTools *********************************/
 /******************************************************************************/
