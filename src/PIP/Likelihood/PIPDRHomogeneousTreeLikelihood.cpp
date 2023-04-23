@@ -860,7 +860,7 @@ void PIPDRHomogeneousTreeLikelihood::computeLikelihoodAtSite_(const Node *node,
     pupko_likelihood_node->resize(nbStates_);
 
     // Initialize likelihood array:
-    if (node->isLeaf() && tree_->getRootId()!=nodeId) {
+    if (node->isLeaf() && tree_->getRootId()!=nodeId && node->getId()!=newRootId) {
         vector<int> InnerNodes = tree_->getInnerNodesId();
 //        VVdouble *leavesLikelihoods_node;
         if(std::find(InnerNodes.begin(), InnerNodes.end(), nodeId) != InnerNodes.end()) {
@@ -920,6 +920,8 @@ void PIPDRHomogeneousTreeLikelihood::computeLikelihoodAtSite_(const Node *node,
         size_t nbNodes = node->getNumberOfSons();
 
         if (sonNode) {
+            DLOG(ERROR) << "[DR homogeneous tree likelihood]"
+                    << "PIPDRHomogeneousTreeLikelihood::computeLikelihoodAtSite_(...). 'sonNode' not found as a son of 'node'.";
             throw ("PIPDRHomogeneousTreeLikelihood::computeLikelihoodAtSite_(...). 'sonNode' not found as a son of 'node'.");
         }
         vector<const Vdouble *> iLik;
@@ -987,6 +989,7 @@ void PIPDRHomogeneousTreeLikelihood::computeLikelihoodFromArraysForRoot(const ve
     }
     // We pick the argmax corresponding to the root
     (*oCLik_i)[0] = VectorTools::whichMax(*oLik_i);
+//    std::cout << "The ancestral values for is \t" << (*oCLik_i)[0] << std::endl;
 }
 
 /*******************************************************************************/
@@ -1023,11 +1026,11 @@ void PIPDRHomogeneousTreeLikelihood::computeLikelihoodFromArrays(
 //            const VVVdouble *pxy_n = tProb[n];
 
             for (size_t y = 0; y < nbStates; y++) {
-//                cout << "1:" << (*iLik_n)[y] << endl;
-//                cout << "2:" << (*cLik_n)[y] << endl;
+//                cout << "1 lik:" << (*iLik_n)[y] << endl;
+//                cout << "2 char:" << (*cLik_n)[y] << endl;
                 likelihood[y] *= (*iLik_n)[y];// left and right child multiplication
-//                likelihood += (*pxy_n_c_x)[y] * (*iLik_n)[y];
-//                cout << i << "\t" << c << "\t" << x << "\t" << y << "\t" <<  (* pxy__son_c_x)[y] << "\t" << (* likelihoods_root_son_i_c)[y] << endl;
+//                likelihood += (*pxy_fa_c)[y] * (*iLik_n)[y];
+//                std::cout << "Node " << n << "\t" << "Site " << x << "\t and \t" << y << "\t With lik \t" << (likelihood)[y] << std::endl;
             }
         }
 
@@ -1045,10 +1048,6 @@ void PIPDRHomogeneousTreeLikelihood::computeLikelihoodFromArrays(
     //Gap state:
     (*oLik_i)[nbStates-1] = 0;
     (*oCLike_i)[nbStates-1] = nbStates-1;
-
-
-
-
 
 }
 /*******************************************************************************/
