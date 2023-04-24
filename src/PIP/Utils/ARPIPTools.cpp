@@ -122,7 +122,7 @@ void ARPIPTreeTools::renameInternalNodes(bpp::TreeTemplate<Node> *ttree, std::st
 
         }
     }
-
+    ttree->setNodeName(ttree->getRootId(), "root");
 }
 
 /******************************************************************************/

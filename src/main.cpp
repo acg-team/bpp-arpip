@@ -464,7 +464,7 @@ int main(int argc, char *argv[]) {
                    << bpp::TreeTools::treeToParenthesis(*tree, true);
         // Rename internal nodes with standard Vxx * where xx is a progressive number
         ARPIPTreeTools::renameInternalNodes(ttree_,"V");
-        ttree_->setNodeName(tree->getRootId(), "root");
+//        ttree_->setNodeName(tree->getRootId(), "root");
 
         // Write down the reconstructed tree
         bool isAncestralNodePrinted = bpp::ApplicationTools::getBooleanParameter("opt.tree.with_ans_node_names",
