@@ -1,5 +1,6 @@
 # Prerequisites
 *.d
+*.orig
 
 # Compiled Object files
 *.slo
@@ -45,9 +46,10 @@
 cmake-build-*/
 cmake-build-debug/
 #CMakeLists.txt
-#*.txt
 
 #I/O
+*.txt
+
 #data/
 /logs/
 *.INFO
