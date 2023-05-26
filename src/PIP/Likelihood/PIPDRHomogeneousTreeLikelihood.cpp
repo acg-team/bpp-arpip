@@ -311,7 +311,8 @@ void PIPDRHomogeneousTreeLikelihood::computePIPPhi_(){
     }
     if(p_c_0_ ==0 || isnan(p_c_0_)){
         throw Exception(
-                "PIPDRHomogeneousTreeLikelihood::computePIPPhi_: The likelihood value of empty columns is zero or nan.");
+                "PIPDRHomogeneousTreeLikelihood::computePIPPhi_: The likelihood value of empty columns is zero or nan.\n "
+                "In the case of nan p_c_0_: plz check the branch lengths. Branches of length zero is not valid except for the root.");
         LOG(FATAL)<<"[PIPDRHomogeneousTreeLikelihood] computePIPPhi_: The likelihood value of empty columns is zero or nan,"
                     "In the case of nan p_c_0_: plz check the branch lengths. Branches of length zero is not valid except for the root.";
     }
