@@ -241,13 +241,13 @@ void PIPDRTreeLikelihoodParameters::computePIPIota(const Node *node, const doubl
 //            iotaValue = 0;
             int nId = node->getId();
             Node *theNode = const_cast<Node *>(tree_->getNode(nId));
-            theNode->setDistanceToFather(1e-20);
+            theNode->setDistanceToFather(1e-8);
 
             ApplicationTools::displayWarning("Branch length of node " + node->getName() +
-                                             " is 0. It is not valid except for the root. now, we set branch length to very small value 1e-20.");
+                                             " is 0. It is not valid except for the root. now, we set branch length to very small value 1e-8.");
 
             DLOG(WARNING) << "[PIP tree likelihood] Branch length of node " << node->getName()
-                          << " is 0. It is not valid except for the root. now, we set branch length to very small value 1e-20.";
+                          << " is 0. It is not valid except for the root. now, we set branch length to very small value 1e-8.";
         }
         iotaValue = bl / (tau + (1 / mu));
     }
