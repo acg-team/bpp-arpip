@@ -74,6 +74,14 @@ title: Features and project structure
                                                             of 0: the user have the check the internal node's name in the
                                                             relation file or use indelviewer software. By default it is 1. 
     
+    opt.tree.re_root={rand|node_name|long}                  In the case the the tree is not rooted user can choose which
+                                                            lineage would be the outgroup lineage. 'rand': With this option
+                                                            one of the node would be picked randomly. 'node_name': Replace
+                                                            the node name with one of the taxa name. For example 'leaf_1'
+                                                            in the tree provided as test cases. 'long': By default it is
+                                                            activated meaning the longest branch would be considered as
+                                                            the lineage to outgroup.
+    
     opt.unknown_as_gap={0|1}                                1: This software does not support ambiguity in characters.
                                                             We are kindly ask users to remove the unknown chars, o.w. the 
                                                             software change them to gap and in the next step will remove 
@@ -95,19 +103,18 @@ title: Features and project structure
                                                             parsimony for instance. The random option picks a random tree, which is handy
                                                             to test convergence.  This may however slows down significantly the optimization
                                                             process.
-    init.distance.method={wpgma|upgma|nj|bionj}             When distance method is required, the user can specify which algorithm to use.
-                                                            With the option 'infere_distance_matrix' the algorithm calculates the distance 
-                                                            matrix from the pairwise alignments and then with bionj algorithm infers the tree.
+    init.tree.method={wpgma|upgma|nj|bionj}                 When tree reconstruction method is required, the user can specify which algorithm 
+                                                            to use. 
     
 
-If the `init.tree.metod=user`, then refer to the option you find in "Reading trees".
+If the `init.tree=user`, then refer to the option you find in "Reading trees".
 
 
 ---
 #  Evolutionary model options
 ---
-For more information about the substitution models available on BPP library please check their documentation at:
-https://pbil.univ-lyon1.fr/bpp-doc/bpp-phyl/html/
+For more information about the substitution models available on BPP library please check their documentation at [Bio++](https://github.com/BioPP/bpp-documentation/wiki)
+
 ### Substitution models
 
 
