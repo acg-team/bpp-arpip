@@ -358,7 +358,8 @@ void PIPDRHomogeneousTreeLikelihood::computePIPLikelihoodForNonEmptySitesAtNode_
         const Sequence* seq;
         try
         {
-            seq = &shrunkData_->getSequence(node->getName());
+//            seq = &shrunkData_->getSequence(node->getName());
+            seq = &likelihoodData_->getShrunkData()->getSequence(node->getName());
         }
         catch (SequenceNotFoundException& snfe)
         {
