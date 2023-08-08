@@ -333,7 +333,7 @@ void PIPDRHomogeneousTreeLikelihood::computePIPPhi_(){
 /************************* computePIPLikelihoodNoneEmptySites **************************/
 
 void PIPDRHomogeneousTreeLikelihood::computePIPLikelihoodForNonEmptySitesAtNode_(const Node *node) {
-    // This section is independent from likelihood data structure defined in the bpp lib!!!
+    // This section is independent of likelihood data structure defined in the bpp lib!!!
 
     int nodeId = node->getId();
     VVdouble *fTildeValue_node = &nodeFTildeValues_[nodeId];
