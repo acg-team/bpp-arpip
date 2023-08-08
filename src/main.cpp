@@ -141,9 +141,13 @@
 
 int main(int argc, char *argv[]) {
     FLAGS_log_dir = "../logs/";// "./logs/"
+//    ::google::InitGoogleLogging(argv[2]); //--vmodule=mapreduce=2,file=1,gfs*=3 --v=0
     ::google::InitGoogleLogging(software::name.c_str());
     ::google::InstallFailureSignalHandler();
     ::google::EnableLogCleaner(3); // keep the logs for 3 days
+//    if (VLOG_IS_ON(0)) {
+//        LOG(INFO) << "The VLOG flag of level 3 is activated" << std::endl;
+//    }
 
     try {
         bpp::ARPIPApplication arpipapp
