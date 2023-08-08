@@ -233,6 +233,22 @@ void PIPDRTreeLikelihoodParameters::computePIPIota(const Node *node, const doubl
         iotaValue = (1 / mu) / (tau + (1 / mu));
     } else {
         bl = node->getDistanceToFather();
+        // This is one of the cases that user forget to make sure that the branch length of zero is not valid except for
+        // the root. So we have to check it here, resolve it and warn the user.
+        // To resolve it, we set the branch length to a very small value (1e-8).
+        if (bl == 0) {
+
+//            iotaValue = 0;
+            int nId = node->getId();
+            Node *theNode = const_cast<Node *>(tree_->getNode(nId));
+            theNode->setDistanceToFather(1e-20);
+
+            ApplicationTools::displayWarning("Branch length of node " + node->getName() +
+                                             " is 0. It is not valid except for the root. now, we set branch length to very small value 1e-20.");
+
+            DLOG(WARNING) << "[PIP tree likelihood] Branch length of node " << node->getName()
+                          << " is 0. It is not valid except for the root. now, we set branch length to very small value 1e-20.";
+        }
         iotaValue = bl / (tau + (1 / mu));
     }
 
@@ -268,6 +284,11 @@ void PIPDRTreeLikelihoodParameters::computePIPBeta(const Node *node, const doubl
     } else {
 
         bl = node->getDistanceToFather();
+        // see the comment in computePIPIota function
+        if (bl== 0)
+            DLOG(WARNING) << "[PIP tree likelihood] Branch length of node " << node->getName()
+                          << " is 0. It is not valid except for the root. This should never happened as it is solved in iota.";
+
         betaValue = (1 - exp(-mu * bl)) / (mu * bl);
     }
 
