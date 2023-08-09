@@ -22,8 +22,6 @@ title: Features and project structure
                                                             extension of the format. The argument strict_names, default to 'no', specifies that
                                                             only the first word in the fasta header is used as a sequence names, the rest of the
                                                             header being considered as comments.
-    Mase(siteSelection={chars})                             The Mase format (as read by Seaview and Phylo_win for instance), with an optional site
-                                                            selection name.
     Phylip(order={interleaved|sequential}, type={classic|extended}, split={spaces|tab})
                                                             The Phylip format, with several variations. The argument order distinguishes between
                                                             sequential and interleaved format, while the option type distinguished between the
@@ -32,17 +30,6 @@ title: Features and project structure
                                                             argument specifies the type of character that separates the sequence name from the
                                                             sequence content. The conventional option is to use one (classic) or more (extended)
                                                             spaces, but tabs can also be used instead.
-    Clustal(extraSpaces={int})                              The Clustal format.
-                                                            In its basic set up, sequence names do not have space characters, and one space splits
-                                                            the sequence content from its name. The parser can however be configured to allow
-                                                            for spaces in the sequence names, providing a minimum number of space characters is
-                                                            used to split the content from the name. Setting extraSpaces to 5 for instance, the
-                                                            sequences are expected to be at least 6 spaces away for their names.
-    Dcse()                                                  The DCSE alignment format. The secondary structure annotation will be ignored.
-    Nexus()                                                 The Nexus alignment format. (Only very basic support is provided)
-    GenBank()                                               The GenBank not aligned sequences format.
-                                                            Very basic support: only retrieves the sequence content for now, all features are
-                                                            ignored.
 
 ### Reading trees
 
