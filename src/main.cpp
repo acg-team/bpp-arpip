@@ -255,27 +255,27 @@ int main(int argc, char *argv[]) {
             if (seq_ext=="fa" || seq_ext=="fast"||seq_ext=="fasta" || seq_ext=="fas"){
 
                 bpp::Fasta seqReader(false, false);
-                sequences = seqReader.readSequences(input_sequences, alphabet);
+                sites = seqReader.readAlignment(input_sequences, alphabet);
 
             }else if (seq_ext=="phy" || seq_ext=="phylip"||seq_ext=="ph") {
 
-                bpp::Phylip phylipReader;
-                sequences = phylipReader.readSequences(input_sequences, alphabet);
+                bpp::Phylip phylipReader(true, false);
+                sites = phylipReader.readAlignment(input_sequences, alphabet);
 
             }else if(seq_ext=="phylip3" || seq_ext=="ph3"){
 
                 bpp::Phylip phylip3Reader(true, true);
-                sequences = phylip3Reader.readSequences(input_sequences, alphabet);
+                sites = phylip3Reader.readAlignment(input_sequences, alphabet);
 
             }else if(seq_ext=="nex" || seq_ext=="nexus"){
 
                 bpp::NexusIOSequence nexusReader;
-                sequences = nexusReader.readSequences(input_sequences, alphabet);
+                sites = nexusReader.readAlignment(input_sequences, alphabet);
 
             }else if (seq_ext=="aln"){
 
                 bpp::Clustal clustalReader;
-                sequences = clustalReader.readSequences(input_sequences, alphabet);
+                sites = clustalReader.readAlignment(input_sequences, alphabet);
 
             }else{
 
@@ -285,17 +285,17 @@ int main(int argc, char *argv[]) {
             }
 
 
-            bpp::VectorSiteContainer *allSites = bpp::SequenceApplicationTools::getSiteContainer(alphabet,
-                                                                                                 arpipapp.getParams());
+//            bpp::VectorSiteContainer *allSites = bpp::SequenceApplicationTools::getSiteContainer(alphabet,
+//                                                                                                 arpipapp.getParams());
 
-            sites = bpp::SequenceApplicationTools::getSitesToAnalyse(*allSites, arpipapp.getParams(), "", true,
+            sites = bpp::SequenceApplicationTools::getSitesToAnalyse(*sites, arpipapp.getParams(), "", true,
                                                                      0, true, 1);
 
             // Removing gap within sites:
             //sites = SequenceApplicationTools::getSitesToAnalyse(*allSites, arpipapp.getParams(), "", true,
             //                                                    1, true, 1);
 
-            delete allSites;
+//            delete allSites;
             bpp::ApplicationTools::displayResult("Number of sequences", sites->getNumberOfSequences());
             bpp::ApplicationTools::displayResult("Number of sites", sites->getNumberOfSites());
 
