@@ -18,18 +18,12 @@ title: Features and project structure
 
 *The following formats are currently supported:*
 
-    Fasta(extended={bool}, strictNames={bool})              The fasta format. The argument extended, default to 'no' allows to enable the HUPO-PSI
-                                                            extension of the format. The argument strict_names, default to 'no', specifies that
-                                                            only the first word in the fasta header is used as a sequence names, the rest of the
-                                                            header being considered as comments.
-    Phylip(order={interleaved|sequential}, type={classic|extended}, split={spaces|tab})
-                                                            The Phylip format, with several variations. The argument order distinguishes between
-                                                            sequential and interleaved format, while the option type distinguished between the
-                                                            plain old Phylip format and the more recent extention allowing for sequence names
-                                                            longer than 10 characters, as understood by PAML and PhyML. Finally, the split
-                                                            argument specifies the type of character that separates the sequence name from the
-                                                            sequence content. The conventional option is to use one (classic) or more (extended)
-                                                            spaces, but tabs can also be used instead.
+    Fasta             
+                                                            The fasta format. The argument extended, default to 'no' 
+                                                            allows to enable the HUPO-PSI extension of the format. The 
+                                                            argument strict_names, default to 'no', specifies that only
+                                                            the first word in the fasta header is used as a sequence names,
+                                                            the rest of the header being considered as comments.
 
 ### Reading trees
 
@@ -49,11 +43,14 @@ title: Features and project structure
 
     opt.seed={real}                                         Sets the seed value of the random number generator.
  
-    opt.likelihood={0|1}                                    1: The user wants to know what is the value of joint likelihood of tree and MAS under PIP
-                                                            0: Deactive this option. By default it is 0.
+    opt.likelihood={0|1}                                    1: The user wants to know what is the value of joint 
+                                                            likelihood of tree and MAS under PIP 0: Deactive this option.
+                                                            By default it is 0.
                                         
-    opt.pip_param_estimate={0|1}                            1: The user does not know what are the evolutionary parameter (i.e. lambda and mu) and
-                                                            wants program to compute them. 0: other way.
+    opt.pip_param_estimate={0|1}                            1: The user does not know what are the evolutionary parameter 
+                                                            (i.e. lambda and mu) and wants program to compute them. 
+                                                            0: otherwise.
+    
     opt.tree.scale={real}                                   Set the scale value to scale the branch lengths.
     
     opt.tree.with_ans_node_names={0|1}                      1: The printed tree (orginal or reconstructed) will have the
@@ -84,12 +81,17 @@ title: Features and project structure
 #  Initial tree options
 ---
 
-    init.tree={user|auto}                                   Set the method for the initial tree to use.
-                                                            The user option allows you to use an existing file passed via input.tree.file
-                                                            This file may have been built using another method like neighbor joining or
-                                                            parsimony for instance. The random option picks a random tree, which is handy
-                                                            to test convergence.  This may however slows down significantly the optimization
-                                                            process.
+    init.tree={user|auto}                                   Set the method for the initial tree reconstruction to use.
+                                                            The user option allows you to use an existing file passed via
+                                                            input.tree.file. This file may have been built using another 
+                                                            method like neighbor joining or parsimony for instance. 
+                                                            The random option picks a random tree, which is handy to test
+                                                            convergence.  This may however slows down significantly the 
+                                                            optimization process. Please notice that this option has a 
+                                                            limited proficiency as this method is not developed to 
+                                                            reconstruct the tree. It is recommended to use the user option
+                                                            and provide the tree as input using other software such as Phyml.
+
     init.tree.method={wpgma|upgma|nj|bionj}                 When tree reconstruction method is required, the user can specify which algorithm 
                                                             to use. 
     
@@ -100,7 +102,8 @@ If the `init.tree=user`, then refer to the option you find in "Reading trees".
 ---
 #  Evolutionary model options
 ---
-For more information about the substitution models available on BPP library please check their documentation at [Bio++](https://github.com/BioPP/bpp-documentation/wiki)
+For more information about the substitution models available on BPP library please check their documentation at
+[Bio++](https://github.com/BioPP/bpp-documentation/wiki)
 
 ### Substitution models
 
