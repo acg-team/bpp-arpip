@@ -299,16 +299,16 @@ int main(int argc, char *argv[]) {
             bpp::ApplicationTools::displayResult("Number of sequences", sites->getNumberOfSequences());
             bpp::ApplicationTools::displayResult("Number of sites", sites->getNumberOfSites());
 
-            ///////////////////Handle unknown characters:
+            ///////////////////Handle unknown characters: convert unknown characters to gaps
             bool isUnknownAsGap = bpp::ApplicationTools::getBooleanParameter("opt.unknown_as_gap",
-                                                                             arpipapp.getParams(), 0,
+                                                                             arpipapp.getParams(), 1,
                                                                              "", false, 1);
             if (isUnknownAsGap) {
                 // Changing unknown chars to gap
                 bpp::SiteContainerTools::changeUnresolvedCharactersToGaps(*sites);
                 bpp::ApplicationTools::displayWarning("The unknown character would be treated as gap in this program.");
                 DLOG(INFO) << "[Input MSA parser] Sites with unknown chars would be treated as gap.";
-                // Removing gaponly regions
+                // Removing gap-only regions
                 bpp::ApplicationTools::displayTask("Removing gap only sites if exists");
                 bpp::SiteContainerTools::removeGapOnlySites(*sites);
                 std::cout << std::endl;
