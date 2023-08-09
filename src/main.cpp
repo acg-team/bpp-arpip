@@ -78,6 +78,9 @@
 #include <Bpp/Seq/Container/VectorSiteContainer.h>
 #include <Bpp/Seq/App/SequenceApplicationTools.h>
 #include <Bpp/Seq/Io/Fasta.h>
+#include <Bpp/Seq/Io/Phylip.h>
+#include <Bpp/Seq/Io/NexusIoSequence.h>
+#include <Bpp/Seq/Io/Clustal.h>
 #include <Bpp/Seq/SiteTools.h>
 
 
@@ -241,16 +244,46 @@ int main(int argc, char *argv[]) {
         std::string input_sequences = bpp::ApplicationTools::getAFilePath("input.sequence.file", arpipapp.getParams(),
                                                                           true, true, "",
                                                                           false, "", 1);
+        // find the extension of the file:
+        std::string seq_ext = input_sequences.substr(input_sequences.find_last_of(".") + 1);
 
         bpp::SequenceContainer *sequences = nullptr;
         bpp::SiteContainer *sites = nullptr;
 
         try {
-            //todo: Reading other sequence formats like phylip
-
             // Read aligned sequences
-            bpp::Fasta seqReader;
-            sequences = seqReader.readSequences(input_sequences, alphabet);
+            if (seq_ext=="fa" || seq_ext=="fast"||seq_ext=="fasta" || seq_ext=="fas"){
+
+                bpp::Fasta seqReader(false, false);
+                sequences = seqReader.readSequences(input_sequences, alphabet);
+
+            }else if (seq_ext=="phy" || seq_ext=="phylip"||seq_ext=="ph") {
+
+                bpp::Phylip phylipReader;
+                sequences = phylipReader.readSequences(input_sequences, alphabet);
+
+            }else if(seq_ext=="phylip3" || seq_ext=="ph3"){
+
+                bpp::Phylip phylip3Reader(true, true);
+                sequences = phylip3Reader.readSequences(input_sequences, alphabet);
+
+            }else if(seq_ext=="nex" || seq_ext=="nexus"){
+
+                bpp::NexusIOSequence nexusReader;
+                sequences = nexusReader.readSequences(input_sequences, alphabet);
+
+            }else if (seq_ext=="aln"){
+
+                bpp::Clustal clustalReader;
+                sequences = clustalReader.readSequences(input_sequences, alphabet);
+
+            }else{
+
+                throw bpp::Exception("Sequence file format is not supported. Check the input file extension in the documentation.");
+                LOG(FATAL) << "[Input MSA parser] Sequence file format is not supported. Check the input file extension in the documentation.";
+
+            }
+
 
             bpp::VectorSiteContainer *allSites = bpp::SequenceApplicationTools::getSiteContainer(alphabet,
                                                                                                  arpipapp.getParams());
