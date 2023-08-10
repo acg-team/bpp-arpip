@@ -271,11 +271,13 @@ void PIPIndelRateInference::inferIndelRateFromSequences(PIPDRHomogeneousTreeLike
     // Brent method:
     SimpleMultiDimensions optimizer(&func);
     optimizer.setVerbose(0);
+    optimizer.setProfiler(0); // showing the likelihood log 0: no profiling. in the case of debugging should be commented.
+//    optimizer.getOptimizationProgressCharacter();
     optimizer.setMaximumNumberOfEvaluations(maxIteration);// maxIteration=10000
     optimizer.getStopCondition()->setTolerance(tolerance);// tolerance=0.001
     optimizer.init(func.getParameters());
     optimizer.optimize();
-
+    optimizer.getProfiler(); // activate the profiler again to display the results
     ApplicationTools::displayMessage("\nThe Brent Multidimensional optimization used.");
 
     double minf = func.getValue();
