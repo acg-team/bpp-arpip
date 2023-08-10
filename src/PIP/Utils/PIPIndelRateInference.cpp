@@ -87,8 +87,8 @@ OptimizationFunction::OptimizationFunction(PIPDRHomogeneousTreeLikelihood *likeF
         {
 
         //We declare parameters here:
-        addParameter_(new Parameter("lambda",1));
-        addParameter_(new Parameter("mu", 0.02));
+        addParameter_(new Parameter("lambda", bpp::RandomTools::giveRandomNumberBetweenZeroAndEntry(10)));
+        addParameter_(new Parameter("mu", bpp::RandomTools::giveRandomNumberBetweenZeroAndEntry(10)));
 
         fireParameterChanged(getParameters());
         }
