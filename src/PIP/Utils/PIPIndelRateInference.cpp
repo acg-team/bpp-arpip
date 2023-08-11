@@ -62,6 +62,7 @@
 // From bpp-core
 #include <Bpp/Numeric/Function/BrentOneDimension.h>
 #include <Bpp/Numeric/Function/SimpleMultiDimensions.h>
+#include <Bpp/Numeric/Function/DirectionFunction.h>
 #include <Bpp/Seq/Alphabet/AlphabetTools.h>
 
 // From bpp-phy
@@ -86,11 +87,14 @@ OptimizationFunction::OptimizationFunction(PIPDRHomogeneousTreeLikelihood *likeF
         AbstractParametrizable(""), fValue_(0), likeFunData_(likeFunObj)
         {
 
-        //We declare parameters here:
-        addParameter_(new Parameter("lambda", bpp::RandomTools::giveRandomNumberBetweenZeroAndEntry(10)));
-        addParameter_(new Parameter("mu", bpp::RandomTools::giveRandomNumberBetweenZeroAndEntry(10)));
+            //We declare parameters here:
+            addParameter_(new Parameter("lambda", bpp::RandomTools::giveRandomNumberBetweenZeroAndEntry(10),
+                                        &Parameter::R_PLUS_STAR));
+//            addParameter_(new Parameter("lambda", bpp::RandomTools::giveRandomNumberBetweenZeroAndEntry(10)));
+            addParameter_(new Parameter("mu", bpp::RandomTools::giveRandomNumberBetweenZeroAndEntry(10),
+                                new IntervalConstraint(0.0001, 100, false, true)));
 
-        fireParameterChanged(getParameters());
+            fireParameterChanged(getParameters());
         }
 
 /******************************** Copy constructor *********************************/
@@ -272,7 +276,8 @@ void PIPIndelRateInference::inferIndelRateFromSequences(PIPDRHomogeneousTreeLike
     SimpleMultiDimensions optimizer(&func);
     optimizer.setVerbose(0);
     optimizer.setProfiler(0); // showing the likelihood log 0: no profiling. in the case of debugging should be commented.
-//    optimizer.getOptimizationProgressCharacter();
+    optimizer.getOptimizationProgressCharacter();
+    optimizer.setConstraintPolicy(AutoParameter::CONSTRAINTS_AUTO); // to set the constraints of parameters to avoid out of range values.
     optimizer.setMaximumNumberOfEvaluations(maxIteration);// maxIteration=10000
     optimizer.getStopCondition()->setTolerance(tolerance);// tolerance=0.001
     optimizer.init(func.getParameters());
@@ -290,9 +295,6 @@ void PIPIndelRateInference::inferIndelRateFromSequences(PIPDRHomogeneousTreeLike
     ApplicationTools::displayResult("The new Mu", mu_);
     ApplicationTools::displayResult("The new lambda", lambda_);
     ApplicationTools::displayResult("-logLikelihood value", minf);
-
-//    cout << setprecision(20) << (abs(minf) + abs(x - 5) + abs(y + 2) + abs(z - 3)) << endl;
-//    bool test = abs(minf) + abs(x - 5) + abs(y + 2) + abs(z - 3) < optimizer.getStopCondition()->getTolerance();
 
 }
 
