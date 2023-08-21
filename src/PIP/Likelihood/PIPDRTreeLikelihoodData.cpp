@@ -702,7 +702,9 @@ std::vector<size_t> PIPDRTreeLikelihoodData::initNumberOfNonGapChar()
     numChar.resize(nbDistinctSites_);
     for (size_t i = 0; i < nbDistinctSites_; i++) {
         Site columnSite = shrunkData_->getSite(i);
-//        std::cout << "COL" << i << " is: " << columnSite.toString() ;
+//        if (i<2)
+//            std::cout << "COL " << i << " is " << shrunkData_->getSitePositions()[i]
+//                      << " in the original data with following value: \n" << columnSite.toString() << std::endl;
 
         for (size_t s = 0; s < columnSite.size(); s++) {
             // Char state is not Gap:
