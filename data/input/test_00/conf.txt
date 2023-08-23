@@ -1,16 +1,16 @@
-analysis_name = TEST 0
+analysis_name=TEST 0
 alphabet=DNA
-input.sequence.file=../data/input/test_00/msa.fasta
+input.sequence.file=./data/input/test_00/msa.fasta
 input.sequence.sites_to_use=all
 init.tree=user
-input.tree.file=../data/input/test_00/tree.newick
+input.tree.file=./data/input/test_00/tree.newick
 model=PIP(model=JC69,lambda=10,mu=0.01)
 opt.seed=1
 opt.likelihood=0
 opt.pip_param_estimate=0
 rate_distribution=Constant
-output.msa.file=../data/output/test_00/msa.fasta
-output.tree.file=../data/output/test_00/tree.nwk
-output.ancestral.file=../data/output/test_00/anc.fasta
-output.node_rel.file=../data/output/test_00/node_rel.txt
-output.mlindelpoints.file=../data/output/test_00/mlindelpoints.txt
+output.msa.file=./data/output/test_00/msa.fasta
+output.tree.file=./data/output/test_00/tree.nwk
+output.ancestral.file=./data/output/test_00/anc.fasta
+output.node_rel.file=./data/output/test_00/node_rel.txt
+output.mlindelpoints.file=./data/output/test_00/mlindelpoints.txt
