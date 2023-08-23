@@ -143,7 +143,7 @@
 /**********************************************************************************************************************/
 
 int main(int argc, char *argv[]) {
-    FLAGS_log_dir = "../logs/";// "./logs/"
+    FLAGS_log_dir = "./logs/";// "../logs/"
 //    ::google::InitGoogleLogging(argv[2]); //--vmodule=mapreduce=2,file=1,gfs*=3 --v=0
     ::google::InitGoogleLogging(software::name.c_str());
     ::google::InstallFailureSignalHandler();
