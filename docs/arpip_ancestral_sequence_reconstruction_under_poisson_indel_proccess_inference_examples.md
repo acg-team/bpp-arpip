@@ -129,7 +129,7 @@ init.tree=auto
 init.tree=upgma
 model=PIP(model=WAG01,lambda=10, mu=0.01)
 rate_distribution=Constant
-output.ancestral.file=./data/output/test_03/anc.fasta********
+output.ancestral.file=./data/output/test_03/anc.fasta
 output.tree.file=./data/output/test_03/tree.nwk
 output.node_rel.file=./data/output/test_03/node_rel.txt
 output.mlindelpoints.file=./data/output/test_03/mlindelpoints.txt
