@@ -197,8 +197,9 @@ int main(int argc, char *argv[]) {
         double rand_seed = bpp::ApplicationTools::getDoubleParameter("opt.seed", arpipapp.getParams(), 1, "",
                                                                true, true);
         bpp::RandomTools::setSeed((unsigned)rand_seed);
-        double lambda = bpp::RandomTools::giveRandomNumberBetweenZeroAndEntry(1);
-        double mu = bpp::RandomTools::giveRandomNumberBetweenZeroAndEntry(1);
+        //todo: check how lambda and mu works for different scenarios
+        double lambda = bpp::RandomTools::giveRandomNumberBetweenZeroAndEntry(10); // except for brent optimization
+        double mu = bpp::RandomTools::giveRandomNumberBetweenZeroAndEntry(1); // except for brent optimization
         bool estimatedPIPParameters = false;
 
         std::string App_model_substitution = bpp::ApplicationTools::getStringParameter("model", arpipapp.getParams(),
