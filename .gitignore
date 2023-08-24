@@ -56,3 +56,5 @@ cmake-build-debug/
 /logs/
 *.INFO
 /data/
+/data/*
+/data/*/*
