@@ -105,7 +105,7 @@ namespace bpp {
         /**
          * @brief Destructor
          */
-         virtual ~PIPAncestralStateReconstruction(){}
+         virtual ~PIPAncestralStateReconstruction()= default;
 
          PIPAncestralStateReconstruction *clone()const { return new PIPAncestralStateReconstruction(*this); }
 
