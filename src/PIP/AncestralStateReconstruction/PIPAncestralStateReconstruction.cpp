@@ -62,7 +62,9 @@
 using namespace bpp;
 
 /************************************************* Constructor ********************************************************/
-PIPAncestralStateReconstruction::PIPAncestralStateReconstruction(const PIPDRTreeLikelihood *lik, const PIPMLIndelPoints *mlIndelPoints):
+PIPAncestralStateReconstruction::PIPAncestralStateReconstruction(const PIPDRTreeLikelihood *lik,
+                                                                 const PIPMLIndelPoints *mlIndelPoints,
+                                                                 const std::string &probProfileType) :
         likelihood_(lik),
         mlIndelPoints_(mlIndelPoints),
         tree_(lik->getTree()),
@@ -71,8 +73,10 @@ PIPAncestralStateReconstruction::PIPAncestralStateReconstruction(const PIPDRTree
         nbSites_(lik->getLikelihoodData()->getNumberOfSites()),
         nbDistinctSites_(lik->getLikelihoodData()->getNumberOfDistinctSites()),
         nbStates_(lik->getLikelihoodData()->getNumberOfStates()),
-        rootPatternLinks_(lik->getLikelihoodData()->getRootArrayPositions())
-{
+        rootPatternLinks_(lik->getLikelihoodData()->getRootArrayPositions()),
+        probabilityProfile_(0),
+        probProfileType_(probProfileType) {
+
     DLOG(INFO) << "[PIP ASR] PIPAncestralStateReconstruction object is constructed successfully.";
 }
 
@@ -86,7 +90,9 @@ PIPAncestralStateReconstruction::PIPAncestralStateReconstruction(const PIPAncest
         nbSites_(arpip.nbSites_),
         nbDistinctSites_(arpip.nbDistinctSites_),
         nbStates_(arpip.nbStates_),
-        rootPatternLinks_(arpip.rootPatternLinks_){}
+        rootPatternLinks_(arpip.rootPatternLinks_),
+        probabilityProfile_(arpip.probabilityProfile_),
+        probProfileType_(arpip.probProfileType_){}
 
 /********************************************* Operator overloading *******************************************************/
 
@@ -100,6 +106,8 @@ PIPAncestralStateReconstruction &PIPAncestralStateReconstruction::operator=(cons
     nbDistinctSites_    = arpip.nbDistinctSites_;
     nbStates_           = arpip.nbStates_;
     rootPatternLinks_   = arpip.rootPatternLinks_;
+    probabilityProfile_= arpip.probabilityProfile_;
+    probProfileType_    = arpip.probProfileType_;
 
     return *this;
 }

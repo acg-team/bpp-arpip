@@ -83,6 +83,8 @@ namespace bpp {
         size_t nbDistinctSites_;
         size_t nbStates_;
         std::vector<size_t> rootPatternLinks_;
+        VVVdouble probabilityProfile_;
+        std::string probProfileType_;
 //        std::vector<double> r_;
 //        std::vector<double> l_;
 
@@ -90,7 +92,8 @@ namespace bpp {
         /**
          * @brief Constructor
          */
-        PIPAncestralStateReconstruction(const PIPDRTreeLikelihood *lik, const PIPMLIndelPoints *mlIndelPoints);
+        PIPAncestralStateReconstruction(const PIPDRTreeLikelihood *lik, const PIPMLIndelPoints *mlIndelPoints,
+                                        const std::string &probProfileType = "raw");
 
         /**
          * @brief Copy Constructor
@@ -150,13 +153,23 @@ namespace bpp {
         /**
         * @brief Get Joint ancestral sequences for all nodes including gap (aka joint ancestral sequence reconstruction using DP approach with indel).
         *
-        * @note This method considers gap as an additional character.
+        * @note This method considers gap as an additional character. Moreover, you  can choose to have it with/without probability profile.
         *
         * Call the getAncestralSequences() method.
         * @return
         */
         AlignedSequenceContainer *JointAncestralSequencesReconstruction(){
-            return getAncestralSequences();
+            AlignedSequenceContainer *asc = new AlignedSequenceContainer(alphabet_);
+            if (probProfileType_ == "none"){
+                DLOG(INFO) << "[PIP ASR] Joint ancestral sequence reconstruction is called without probability profile.";
+                asc = getAncestralSequences();
+            }
+            else if (probProfileType_ != "none") {
+                // in the of probability profile we call the method with probability profile.
+                DLOG(INFO) << "[PIP ASR] Joint ancestral sequence reconstruction is called with probability profile.";
+                std::tie(asc,probabilityProfile_) = getAncestralSequencesWithProbability();
+            }
+            return asc;
         }
 
 
