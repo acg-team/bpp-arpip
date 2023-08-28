@@ -245,8 +245,63 @@ void ARPIPIOTools::writeInferredPIPParams(double lambda, double mu, long double 
 
 /******************************************************************************/
 
+void ARPIPIOTools::writeProbProfileToFile(bpp::PIPAncestralStateReconstruction *pipJar,
+                                          const std::vector<std::string> *alphabetLetters, std::string path) {
+
+    try {
+        // Get profile probabilities
+        bpp::VVVdouble pro = pipJar->getProbabilityProfileForAllSites();
+        // Open file and writing the content
+        std::ofstream output(path.c_str(), std::ios::out);
+        output
+                << "*****************************************************************************************\n"
+                   "ARPIP - Ancestral Sequence Reconstruction with indels under the Poisson Indel Process\n"
+                   "ARPIP likelihood and ancestral state values\n"
+                   " Description of data format:\n"
+                   " 1. Node: Node name\n"
+                   " 2. Site: Site number\n"
+                   " 3. Probability of each alphabet at this site with the following format:\n"
+                   "'dna': 'ACGT', 'protein': 'ACDEFGHIKLMNPQRSTVWY'\n"
+                   "*****************************************************************************************\n";
+        output << "Node \t Site \t";
+        // Print the alphabet letters:
+        for (size_t i{0}; i<alphabetLetters->size(); i++){
+            output << alphabetLetters->at(i) << "\t";
+        }
+        output << "-\t \n"; // + gap
+
+        // read the tree and its internal nodes:
+        bpp::TreeTemplate<bpp::Node> tree = pipJar->getTree();
+        std::vector<int> InternalNodes = tree.getInnerNodesId();
+        //for nodes in the tree, print the probability profile
+        for(size_t nbDistinct{0}; nbDistinct < pro.size(); nbDistinct++){
+            for(size_t nbNodes{0}; nbNodes<pro[nbDistinct].size(); nbNodes++){
+                output << tree.getNodeName(InternalNodes[nbNodes]) << "\t" << nbNodes << "\t";
+                for(size_t nbStates{0}; nbStates < pro[nbDistinct][nbNodes].size(); nbStates++){
+                    output << pro[nbDistinct][nbNodes][nbStates] << "\t";
+                }
+                output << "\n";
+            }
+        }
+        std::ostream_iterator<std::string> output_iterator(output, "\n");
+//        std::vector<std::string> probProfile = pipJar->getProbProfile();
+//        copy(probProfile.begin(), probProfile.end(), output_iterator);
+        output << std::endl;
+        output << "*****************************************************************************************\n";
+        output.close();
+        bpp::ApplicationTools::displayResult("Output ProbProfile file", path);
+    } catch (IOException &e) {
+        std::stringstream ss;
+        ss << e.what() << "\nProblem writing ProbProfile to file " << path
+           << "\n Is the file path correct and do you have the proper authorizations? ";
+        throw (IOException(ss.str()));
+    }
+}
+
+/******************************************************************************/
+
 void
-ARPIPIOTools::writeMLIndelPointsToFile(bpp::PIPMLIndelPoints *mlindelpoint, const std::string &path, bool overwrite,
+ARPIPIOTools::writeMLIndelPointsToFile(bpp::PIPMLIndelPoints *mlindelpoint, const std::string path, bool overwrite,
                                        bool verbose) {
 
     try {

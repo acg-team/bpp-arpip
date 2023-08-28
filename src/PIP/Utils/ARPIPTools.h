@@ -60,6 +60,7 @@
 #include <Bpp/Phyl/Node.h>
 
 #include "../Likelihood/PIPMLIndelPoints.h"
+#include "../AncestralStateReconstruction/PIPAncestralStateReconstruction.h"
 
 
 namespace PIPVectorTools {
@@ -74,7 +75,7 @@ namespace PIPVectorTools {
 namespace ARPIPIOTools {
     void writeNodeRelationToFile(std::vector< std::string>& params, std::string path);
 
-    void writeMLIndelPointsToFile(bpp::PIPMLIndelPoints *mlindelpoint, const std::string &path, bool overwrite = true,
+    void writeMLIndelPointsToFile(bpp::PIPMLIndelPoints *mlindelpoint, const std::string path, bool overwrite = true,
                                   bool verbose = 0);
 
     void writeInferredPIPParams(double lambda, double mu, long double logLikelihood, const std::string path,
@@ -85,6 +86,9 @@ namespace ARPIPIOTools {
      */
 
     std::vector<char*> ReadDirectory(char const * path);
+
+    void writeProbProfileToFile(bpp::PIPAncestralStateReconstruction *pipJar, const std::vector<std::string> *letters,
+                                const std::string path);
 }
 
 

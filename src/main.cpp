@@ -790,6 +790,15 @@ int main(int argc, char *argv[]) {
             }
         }
 
+        ////////////////////////// Write the probability profile of each ancestral state:
+
+        if (profProbOpt != "none") {
+            // get the letters of the alphabet of the model
+            const std::vector<std::string> *letters = &(sModel->getAlphabet()->getResolvedChars());
+            ARPIPIOTools::writeProbProfileToFile(&jarPIP, letters, arpipapp.getParam("output.prob_profile.file"));
+            DLOG(INFO) << "[PIP ASR] Probability profile is written successfully.";
+        }
+
         /**************************************** Deleting the pointers ***********************************************/
 
         delete mlIndePoints;
