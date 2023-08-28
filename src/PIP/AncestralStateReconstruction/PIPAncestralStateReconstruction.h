@@ -147,7 +147,7 @@ namespace bpp {
         * @return A map with nodes id as key, and a vector of states indices as value.
         * @see JointAncestralSequenceReconstruction and [Pupko, et al., 2000, Molecular biology and evolution]
         */
-        std::map<int, std::vector<int>> getAllAncestralStatesWGap() const;
+        std::tuple<std::map<int, std::vector<int>>, VVVdouble>  getAllAncestralStatesWGap() const;
 
 
         /**
@@ -220,6 +220,37 @@ namespace bpp {
         * @return A new SiteContainer object containing joint ancestral sequences.
         */
         AlignedSequenceContainer *getAncestralSequences() const ;
+
+
+        /**
+        * @brief Get Joint ancestral sequences for all nodes including gap (aka joint ancestral sequence reconstruction using DP approach with indel).
+        *
+        * @note This method considers gap as an additional character.
+        *
+        * Call the getAllAncestralStates() method and map the sites to the original one.
+        * @return A new SiteContainer object containing joint ancestral sequences.
+        */
+        std::tuple<AlignedSequenceContainer *, VVVdouble> getAncestralSequencesWithProbability() const ;
+
+
+        /**
+         * @brief Get the probability profile for a given all sites.
+         */
+         VVVdouble getProbabilityProfileForAllSites() const;
+
+        /**
+         * @brief Set the probability profile for a given site.
+         */
+        void computeProbabilityProfileForAllSites(VVVdouble &likelihoodArray, VVVdouble &ProbabilityProfile) const;
+
+
+
+        /**
+         * @brief Get the tree associated to this object.
+         * @return A pointer toward the tree associated to this object.
+         */
+        TreeTemplate<Node> getTree() const{ return tree_; }
+
 
 
     private:

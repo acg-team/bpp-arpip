@@ -133,7 +133,7 @@ void PIPAncestralStateReconstruction::getAncestralStatesForSite(const Node *node
 }
 /**********************************************************************************************************************/
 
-std::map<int, std::vector<int>> PIPAncestralStateReconstruction::getAllAncestralStatesWGap() const {
+std::tuple<std::map<int, std::vector<int>>, VVVdouble> PIPAncestralStateReconstruction::getAllAncestralStatesWGap() const{
 
     std::map<int, std::vector<int>> ancestors;
 
@@ -203,7 +203,7 @@ std::map<int, std::vector<int>> PIPAncestralStateReconstruction::getAllAncestral
         delete newRoot;
     }
     delete data;
-    return ancestors;
+    return std::make_tuple(ancestors, likelihoodArray);
 }
 /**********************************************************************************************************************/
 
@@ -266,7 +266,9 @@ Sequence *PIPAncestralStateReconstruction::getAncestralSequenceForNode(int nodeI
     }
 
     // Do the joint reconstruction:
-    std::map<int, std::vector<int> > allNodes = getAllAncestralStatesWGap();
+    std::map<int, std::vector<int> > allNodes{};
+    VVVdouble probabilityProfile {};
+    tie(allNodes, probabilityProfile) = getAllAncestralStatesWGap();
     //Allocating the new array for sequence:
     std::vector<int> allStates(nbSites_);
 
@@ -312,7 +314,9 @@ Sequence *PIPAncestralStateReconstruction::getAncestralSequenceForNode(int nodeI
 AlignedSequenceContainer *PIPAncestralStateReconstruction::getAncestralSequences() const {
 
     // Do the joint reconstruction:
-    std::map<int, std::vector<int>> allNodesAllStates = getAllAncestralStatesWGap();
+    VVVdouble probPorfile {};
+    std::map<int, std::vector<int>> allNodesAllStates{};
+    tie(allNodesAllStates, probPorfile) = getAllAncestralStatesWGap();
     DLOG(INFO) << "[PIP ASR] Joint Ancestral Sequence Reconstruction is done successfully.";
 
     // Allocate the new array for Sequences:
@@ -357,4 +361,159 @@ AlignedSequenceContainer *PIPAncestralStateReconstruction::getAncestralSequences
 
     return asc;
 }
+
+/**********************************************************************************************************************/
+
+std::tuple<AlignedSequenceContainer *, VVVdouble> PIPAncestralStateReconstruction::getAncestralSequencesWithProbability() const {
+
+    // Do the joint reconstruction:
+    VVVdouble PupkoLiklihood {};
+    std::map<int, std::vector<int>> allNodesAllStates{};
+    tie(allNodesAllStates, PupkoLiklihood) = getAllAncestralStatesWGap();
+    DLOG(INFO) << "[PIP ASR] Joint Ancestral Sequence Reconstruction is done successfully.";
+
+
+    // compute the profile probability for ancestral nodes:
+    VVVdouble probabilityProfile {};
+    probabilityProfile.resize(nbDistinctSites_);
+    computeProbabilityProfileForAllSites(PupkoLiklihood, probabilityProfile);
+
+    // Allocate the new array for Sequences:
+    AlignedSequenceContainer *asc = new AlignedSequenceContainer(alphabet_);
+
+    // List of internal nodes:
+    std::vector<int> internalNodesIndex = tree_.getInnerNodesId();
+
+    for (size_t nodeIId = 0; nodeIId < nbInnerNodes_; nodeIId++) {
+
+        size_t currentNodeId = internalNodesIndex[nodeIId];
+
+        DVLOG(2) << "[PIP ASR] Ancestral Sequence for node (" << nodeIId << ") @node ";
+        std::string name = tree_.hasNodeName(currentNodeId) ? tree_.getNodeName(currentNodeId) : ("" +
+                                                                                                  TextTools::toString(currentNodeId));
+
+        std::vector<int> allStates;
+        allStates.empty();
+        allStates.resize(nbSites_);
+        // Mapping the shrunk data to the normal one:
+        for (size_t i = 0; i < nbSites_; i++) {
+
+            DVLOG(2) << "[PIP ASR] " << "COL " << i << " is: "
+                     << (mlIndelPoints_->getShrunkData()->getSite(i)).toString() << std::endl;// check if it should be likelihood_
+
+            size_t rootIndex = rootPatternLinks_[i];
+
+            // Extracting the position of the site in the shrunkData
+            allStates[i] = allNodesAllStates[currentNodeId][rootIndex];
+
+            DVLOG(2) << "[PIP ASR] Ancestral Sequence reconstruction for Site (" << i << ") in Shrunk data ("
+                     << rootIndex << ")" << " is: " << allStates.at(i);
+        }
+
+        BasicSequence *seq = new BasicSequence(name, allStates, alphabet_);
+
+        asc->addSequence(*seq);
+        DVLOG(2) << "[PIP ASR] Ancestral states for sequence number (node)" << nodeIId << "is" << seq;
+        delete seq;
+    }
+    DLOG(INFO)<< "[PIP ASR] Ancestral sequences were mapped to the original order with "<< asc->getNumberOfSites() << "sites.";
+
+    return make_tuple(asc, probabilityProfile);
+}
+
+/**********************************************************************************************************************/
+
+VVVdouble PIPAncestralStateReconstruction::getProbabilityProfileForAllSites() const{
+    return probabilityProfile_;
+}
+
+/**********************************************************************************************************************/
+
+void PIPAncestralStateReconstruction::computeProbabilityProfileForAllSites(VVVdouble &likelihoodArray, VVVdouble &probability) const {
+
+//    *prob &likelihoodArray;
+//    // get the internal nodes:
+    std::vector<int> nodeIds = tree_.getInnerNodesId();
+    auto m = mlIndelPoints_->getDeletionPoints();
+
+    if (probProfileType_ == "raw") {
+        VVVdouble *oLik = &likelihoodArray;
+        VVVdouble *oProb = &probability;
+        for (size_t s = 0; s < nbDistinctSites_ ; s++) {
+            VVdouble *likelihoodArray_s = &(*oLik)[s];
+            VVdouble *probability_s = &(*oProb)[s];
+            probability_s->resize(nbInnerNodes_);
+            for (size_t n = 0; n < nbInnerNodes_ ; n++) {
+                //check to see if the vector is empty or not:
+                if (!(&(*likelihoodArray_s)[nodeIds[n]])->empty()) {
+                    Vdouble *likelihoodArray_s_n = &(*likelihoodArray_s)[nodeIds[n]];
+                    Vdouble *probability_s_n  = &(*probability_s)[n];
+                    probability_s_n ->resize(nbStates_);
+                    for (size_t x = 0; x < nbStates_; x++) {
+                        (*probability_s_n)[x] = (*likelihoodArray_s_n)[x];
+                    }
+                }
+            }
+        }
+
+    } else if(probProfileType_ == "normalized"){ // normalizing probabilities:
+        VVVdouble *oLik = &likelihoodArray;
+        VVVdouble *oProb = &probability;
+        for (size_t s = 0; s < nbDistinctSites_ ; s++) {
+            VVdouble *likelihoodArray_s = &(*oLik)[s];
+            VVdouble *probability_s = &(*oProb)[s];
+            probability_s->resize(nbInnerNodes_);
+            for (size_t n = 0; n < nbInnerNodes_ ; n++) {
+                //check to see if the vector is empty or not:
+                if (!(&(*likelihoodArray_s)[nodeIds[n]])->empty()) {
+                    Vdouble *likelihoodArray_s_n = &(*likelihoodArray_s)[nodeIds[n]];
+                    Vdouble *probability_s_n  = &(*probability_s)[n];
+                    probability_s_n ->resize(nbStates_);
+                    // divide each element by the sum of likelihoodArray_s_n:
+                    double sumLikelihoods = std::accumulate(likelihoodArray_s_n->begin(), likelihoodArray_s_n->end(), 0.0);
+                    for (size_t x = 0; x < nbStates_; x++) {
+                        (*probability_s_n)[x] = (*likelihoodArray_s_n)[x] / sumLikelihoods;
+                    }
+                }
+            }
+        }
+
+    } else if(probProfileType_ == "naive_posterior"){ // compute naive posterior probabilities:
+
+        // get background frequencies for the substitution model:
+        const Vdouble *p = &mlIndelPoints_->getModel()->getFrequencies();
+        VVVdouble *oLik = &likelihoodArray;
+        VVVdouble *oProb = &probability;
+        for (size_t s = 0; s < nbDistinctSites_ ; s++) {
+            VVdouble *likelihoodArray_s = &(*oLik)[s];
+            VVdouble *probability_s = &(*oProb)[s];
+            probability_s->resize(nbInnerNodes_);
+            for (size_t n = 0; n < nbInnerNodes_ ; n++) {
+                //check to see if the vector is empty or not:
+                if (!(&(*likelihoodArray_s)[nodeIds[n]])->empty()) {
+                    Vdouble *likelihoodArray_s_n = &(*likelihoodArray_s)[nodeIds[n]];
+                    Vdouble *probability_s_n = &(*probability_s)[n];
+                    probability_s_n->resize(nbStates_);
+                    // divide each element by the sum product of p and likelihoodArray_s_n:
+                    double sum_product {0};
+                    for (size_t x = 0; x < nbStates_; x++) {
+                        (*probability_s_n)[x] = (*likelihoodArray_s_n)[x] * p->at(x);
+                        sum_product += (*probability_s_n)[x];
+                    }
+                    for(size_t y=0; y<nbStates_; y++){
+                        (*probability_s_n)[y] = (*probability_s_n)[y] / sum_product;
+                    }
+                }
+            }
+        }
+
+    } else {
+
+        throw Exception("PIPAncestralStateReconstruction::computeProbabilityProfileForAllSites. Error, unknown profile type!");
+        LOG(ERROR)<< "[PIP ASR] Error, unknown profile type!";
+
+    }
+    DLOG(INFO) << "[PIP ASR] Probability profile for all sites is computed successfully.";
+}
+
 /**********************************************************************************************************************/
