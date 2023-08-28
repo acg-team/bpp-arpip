@@ -351,6 +351,13 @@ void PIPDRHomogeneousTreeLikelihood::computePIPLikelihoodForNonEmptySitesAtNode_
     const double *beta_node_n = &(likelihoodData_->getPipParam().getNodeBetaData(nodeId));
     const double *iota_node_n = &(likelihoodData_->getPipParam().getNodeIotaData(nodeId));
 
+//    //check if beta or iota is zero
+//    if (*iota_node_n == 0 || *beta_node_n == 0) {
+//        std::cout
+//                << "PIPDRHomogeneousTreeLikelihood::computePIPLikelihoodForNonEmptySitesAtNode_: iota or beta is zero!"
+//                << "node" << nodeId << "iota value" << *iota_node_n << "beta value " << *beta_node_n << std::endl;
+//        LOG(FATAL)<<"[PIPDRHomogeneousTreeLikelihood] computePIPLikelihoodForNonEmptySitesAtNode_: iota_node_n is zero.";
+//    }
     //initialize the likelihood array
     if (node->isLeaf()) {
 
@@ -465,11 +472,16 @@ void PIPDRHomogeneousTreeLikelihood::computePIPLikelihoodForNonEmptySitesAtNode_
         if (tree_->getRootNode() == node) {
             (*fValue_node_i) = *sumFTilde_node_i;
         } else if ((*setA_node)[i]) {
+//            std::cout << "node id: " << nodeId << " and site number is: " << i << std::endl;
+//            std::cout << "setA value" << (*setA_node)[i] << std::endl;
             (*fValue_node_i) = (*sumFTilde_node_i) * (*beta_node_n);
         } else {
             (*fValue_node_i) = 0;
         }
         (*p_c_i) += (*fValue_node_i) * (*iota_node_n);
+//        if (isnan(*p_c_i)) {
+//            std::cout<< "node id: " << node->getId() <<" and site number is: "<<i<< std::endl;
+//        }
     }
 }
 
@@ -519,6 +531,28 @@ long double PIPDRHomogeneousTreeLikelihood::computePIPTreeLikelihood(const doubl
 
     // For non-empty sites and all nodes in the MSA
     computePIPLikelihoodForNonEmptySitesAtNode_(tree_->getRootNode());
+//    for (size_t i = 0; i < nbDistinctSites_; i++) {
+//        if (iszero(p_c_[i])) {
+//            std::cout << "Lambda=" << likelihoodData_->getPipParam().getLambda() << "and Mu="
+//                      << likelihoodData_->getPipParam().getMu() << std::endl;
+//
+//            std::cout << "Sites with zero values: " << likelihoodData_->getShrunkData()->getSitePositions()[i]
+//                      << " = the position in the likelihood data " << i << std::endl;
+//            // print the content of the data:
+//            Site columnSite = likelihoodData_->getShrunkData()->getSite(i);
+//            std::cout<< "The content of the data is: " << columnSite.toString() << std::endl;
+//        }
+//        if (isnan(p_c_[i])){
+//            std::cout << "Lambda=" << likelihoodData_->getPipParam().getLambda() << "and Mu="
+//                      << likelihoodData_->getPipParam().getMu() << std::endl;
+//
+//            std::cout << "Sites with nan values: " << likelihoodData_->getShrunkData()->getSitePositions()[i]
+//                      << " = the position in the likelihood data " << i << std::endl;
+//            // print the content of the data:
+//            Site columnSite = likelihoodData_->getShrunkData()->getSite(i);
+//            std::cout<< "The content of the data is: " << columnSite.toString() << std::endl;
+//        }
+//    }
 
     // Reset Fv values since they are used again for empty sites
     resetFVArrays_(tree_->getRootNode());
@@ -535,6 +569,12 @@ long double PIPDRHomogeneousTreeLikelihood::computePIPTreeLikelihood(const doubl
     for (int i = 0; i < nbDistinctSites_; i++) {
 
         lk_sites[i] = log(p_c_[i]) * siteWeight->at(i);
+//        if(isinf(lk_sites[i])) {
+//            DLOG(ERROR) << "[DR homogeneous tree likelihood::computePIPTreeLikelihood] The log likelihood value of site "
+//                       << likelihoodData_->getShrunkData()->getSitePositions()[i] << " in your data = site log_lk[" << i << "]=" << lk_sites[i] << std::endl;
+//            throw Exception(
+//                    "[PIPDRHomogeneousTreeLikelihood::computePIPTreeLikelihood]: Log likelihood for one site is not valid.");
+//        }
         DVLOG(2) << "[DR homogeneous tree likelihood] site log_lk[" << i << "]=" << std::setprecision(18) << lk_sites[i] << std::endl;
 
     }
@@ -542,9 +582,9 @@ long double PIPDRHomogeneousTreeLikelihood::computePIPTreeLikelihood(const doubl
     // Sum all the values stored in the lk vector
     logLK = std::accumulate(lk_sites.begin(), lk_sites.end(), decltype(lk_sites)::value_type(0));
     if (isinf(logLK)) {
+        LOG(ERROR) << "[DR homogeneous tree likelihood] log likelihood value is " << logLK << " and not valid.";
         throw Exception(
-                "PIPDRHomogeneousTreeLikelihood::computePIPTreeLikelihood: Log likelihood value is not valid.");
-        DLOG(INFO) << "[DR homogeneous tree likelihood] log likelihood value is " << logLK << " and not valid.";
+                "[PIPDRHomogeneousTreeLikelihood::computePIPTreeLikelihood]: Log likelihood value is not valid.");
     }
     DVLOG(2) << "LK Sites [BPP] " << std::setprecision(18) << logLK;
 
@@ -620,7 +660,9 @@ void PIPDRHomogeneousTreeLikelihood::setData(const SiteContainer& sites) {
         likelihoodData_->setPIPTopologicalFlags();
 
     // We need shrunk data:
-    shrunkData_ = PatternTools::shrinkSiteSet(*data_);
+//    shrunkData_ = PatternTools::shrinkSiteSet(*data_); // This shrunk data is different from the one in the likelihoodData_.
+    const SiteContainer *shrunkData_ = likelihoodData_->getShrunkData();
+    std::cout<< shrunkData_->getSitePositions()[1];
 
 //    // Fill the pxy_, dpxy_ and d2pxy_ arrays for all nodes
 //    computeAllTransitionProbabilities();
@@ -909,7 +951,6 @@ void PIPDRHomogeneousTreeLikelihood::computeLikelihoodAtSite_(const Node *node,
     } else {
         // Otherwise:
         // Set all likelihoods to 1 for a start:
-
         Vdouble *likelihoodArray_i = &likelihoodArray[nodeId];
         Vdouble *characterArray_i = &characterArray[nodeId];
         likelihoodArray_i->resize(nbStates_);
