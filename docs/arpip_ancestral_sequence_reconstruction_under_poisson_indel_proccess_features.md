@@ -74,7 +74,16 @@ title: Features and project structure
     opt.combine_msa_asr={0|1}                               1: The user can see the result along with their corresponding MSA.
                                                             It is recommended that user to activate this flag when using 
                                                             'unknown_as_gap'. In the case of having column full of gap the length
-                                                            of input MSA and ASR are not the same. By default this flag is 0.                                                        
+                                                            of input MSA and ASR are not the same. By default this flag is 0.
+    
+    opt.asr.prob_profile={none|raw|normalized|naive_posterior}   
+                                                            none: The user explicitly asks to not comput the pobability porofile.
+                                                            raw: The user can see the raw probability of each character in each
+                                                            position. normalized: The user can see the normalized probability
+                                                            of each character in each position. naive_posterior: The user can
+                                                            see the normalized probability of each character in each position
+                                                            with respect to the background probability. By default this flag is
+                                                            'raw'.
     
     
 ---
@@ -174,3 +183,4 @@ Please note that this algorithm is designed to work the 'PIP13' model.
     output.node_rel.file={path}                               Write the relation of nodes. It is important to idendifying the internal nodes.
     output.mlindelpoints.file={path}                          Write the inferred indel points.
     output.pipparams.file={path}                              Write the estimated PIP parameters if the user set opt.likelihood=1
+    output.prob_profile.file={path}                           Write the probability profile of each character of ancestral seqeunce.
