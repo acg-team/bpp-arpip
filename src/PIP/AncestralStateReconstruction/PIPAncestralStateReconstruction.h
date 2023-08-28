@@ -111,7 +111,7 @@ namespace bpp {
 
     public:
 
-        /****************************************** PIP based functions **********************************************/
+        /****************************************** PIP base functions **********************************************/
 
 
         /**
@@ -165,9 +165,9 @@ namespace bpp {
                                               VVdouble &likelihoodArray, VVdouble &characterArray,
                                               const size_t siteNumber, const int newRootId) const;
 
-        /****************************************** Based class functions **********************************************/
+        /****************************************** Base class functions **********************************************/
 
-        std::map<int, std::vector<size_t>> getAllAncestralStates() const override {};
+        std::map<int, std::vector<size_t>> getAllAncestralStates() const override { std::map<int, std::vector<size_t>>  ret_val; return ret_val;};
         // We can not use this definition because of "std::vector<size_t>": for gap state we have -1 which need int type.
 
         /**
@@ -193,7 +193,7 @@ namespace bpp {
         * @return A vector of states indices.
         * @see getAncestralSequenceForNode
         */
-        std::vector<size_t> getAncestralStatesForNode(int nodeId) const {};// todo: Marginal should be implemented and this bug should be fixed.
+        std::vector<size_t> getAncestralStatesForNode(int nodeId) const final {std::vector<size_t> ret_val; return ret_val;};// todo: Marginal should be implemented and this bug should be fixed.
         // We can not use this definition cause "std::vector<size_t>": for gap state we have -1 which need int type.
 
 
