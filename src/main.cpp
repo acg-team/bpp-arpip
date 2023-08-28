@@ -707,10 +707,14 @@ int main(int argc, char *argv[]) {
 
         /************************************* Ancestral Sequence Reconstruction **************************************/
 
+        std::string profProbOpt = bpp::ApplicationTools::getStringParameter("opt.asr.prob_profile",
+                                                                            arpipapp.getParams(), "none",
+                                                                            "", false, 1);
+
         bpp::ApplicationTools::displayMessage("\n[Computing join ancestral sequences reconstruction]");
 
 
-        bpp::PIPAncestralStateReconstruction jarPIP(likFunctionPIP20, mlIndePoints);
+        bpp::PIPAncestralStateReconstruction jarPIP(likFunctionPIP20, mlIndePoints, profProbOpt);
 
         bpp::ApplicationTools::displayTask("Ancestral sequence reconstruction");
         bpp::AlignedSequenceContainer *asr = jarPIP.JointAncestralSequencesReconstruction();
