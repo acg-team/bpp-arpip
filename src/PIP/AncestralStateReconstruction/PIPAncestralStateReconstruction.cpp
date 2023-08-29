@@ -444,13 +444,19 @@ void PIPAncestralStateReconstruction::computeProbabilityProfileForAllSites(VVVdo
             VVdouble *probability_s = &(*oProb)[s];
             probability_s->resize(nbInnerNodes_);
             for (size_t n = 0; n < nbInnerNodes_ ; n++) {
-                //check to see if the vector is empty or not:
+                //check to see if the vector is empty or not: This happens when there is no data for an internal node.
                 if (!(&(*likelihoodArray_s)[nodeIds[n]])->empty()) {
                     Vdouble *likelihoodArray_s_n = &(*likelihoodArray_s)[nodeIds[n]];
                     Vdouble *probability_s_n  = &(*probability_s)[n];
                     probability_s_n ->resize(nbStates_);
                     for (size_t x = 0; x < nbStates_; x++) {
                         (*probability_s_n)[x] = (*likelihoodArray_s_n)[x];
+                    }
+                }else{
+                    Vdouble *probability_s_n  = &(*probability_s)[n];
+                    probability_s_n ->resize(nbStates_);
+                    for (size_t x = 0; x < nbStates_; x++) {
+                        (*probability_s_n)[x] = 0;
                     }
                 }
             }
@@ -464,7 +470,7 @@ void PIPAncestralStateReconstruction::computeProbabilityProfileForAllSites(VVVdo
             VVdouble *probability_s = &(*oProb)[s];
             probability_s->resize(nbInnerNodes_);
             for (size_t n = 0; n < nbInnerNodes_ ; n++) {
-                //check to see if the vector is empty or not:
+                //check to see if the vector is empty or not: This happens when there is no data for an internal node.
                 if (!(&(*likelihoodArray_s)[nodeIds[n]])->empty()) {
                     Vdouble *likelihoodArray_s_n = &(*likelihoodArray_s)[nodeIds[n]];
                     Vdouble *probability_s_n  = &(*probability_s)[n];
@@ -473,6 +479,12 @@ void PIPAncestralStateReconstruction::computeProbabilityProfileForAllSites(VVVdo
                     double sumLikelihoods = std::accumulate(likelihoodArray_s_n->begin(), likelihoodArray_s_n->end(), 0.0);
                     for (size_t x = 0; x < nbStates_; x++) {
                         (*probability_s_n)[x] = (*likelihoodArray_s_n)[x] / sumLikelihoods;
+                    }
+                }else{
+                    Vdouble *probability_s_n  = &(*probability_s)[n];
+                    probability_s_n ->resize(nbStates_);
+                    for (size_t x = 0; x < nbStates_; x++) {
+                        (*probability_s_n)[x] = 0;
                     }
                 }
             }
@@ -489,7 +501,7 @@ void PIPAncestralStateReconstruction::computeProbabilityProfileForAllSites(VVVdo
             VVdouble *probability_s = &(*oProb)[s];
             probability_s->resize(nbInnerNodes_);
             for (size_t n = 0; n < nbInnerNodes_ ; n++) {
-                //check to see if the vector is empty or not:
+                //check to see if the vector is empty or not: This happens when there is no data for an internal node.
                 if (!(&(*likelihoodArray_s)[nodeIds[n]])->empty()) {
                     Vdouble *likelihoodArray_s_n = &(*likelihoodArray_s)[nodeIds[n]];
                     Vdouble *probability_s_n = &(*probability_s)[n];
@@ -502,6 +514,12 @@ void PIPAncestralStateReconstruction::computeProbabilityProfileForAllSites(VVVdo
                     }
                     for(size_t y=0; y<nbStates_; y++){
                         (*probability_s_n)[y] = (*probability_s_n)[y] / sum_product;
+                    }
+                }else{
+                    Vdouble *probability_s_n  = &(*probability_s)[n];
+                    probability_s_n ->resize(nbStates_);
+                    for (size_t x = 0; x < nbStates_; x++) {
+                        (*probability_s_n)[x] = 0;
                     }
                 }
             }
