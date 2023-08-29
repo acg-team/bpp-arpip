@@ -631,6 +631,7 @@ int main(int argc, char *argv[]) {
                 bpp::ApplicationTools::displayTaskDone();
                 DLOG(INFO) << "[PIP model] Estimated PIP parameters from data using input sequences (lambda=" <<
                            lambda << ",mu=" << mu << "," "I=" << lambda * mu << ")";
+                estimatedPIPParameters = true;
                 delete PIPIndelParam;
             }
         } else {
@@ -666,11 +667,12 @@ int main(int argc, char *argv[]) {
         DLOG(INFO) << "[Substitution model] Substitution model is " << sModel->getName() << " model with mu="
                    << parameters.getParameter("PIP13.mu").getValue();
 
-        bpp::ApplicationTools::displayMessage("Equilibrium frequency of substitution model:");
-        for (size_t i = 0; i < sModel->getFrequencies().size(); i++) {
+        bpp::ApplicationTools::displayMessage("Equilibrium frequency of substitution model:"); //todo: add custom freq
+        for (size_t i = 0; i < sModel->getFrequencies().size()-1; i++) {
             bpp::ApplicationTools::displayResult("eq.freq(" + sModel->getAlphabet()->getName(i) + ")",
                                                  bpp::TextTools::toString(sModel->getFrequencies()[i], 4));
         }
+        bpp::ApplicationTools::displayResult("eq.freq( Gap/- )",bpp::TextTools::toString(0, 4));
 
         bpp::StdStr s1;
         bpp::PhylogeneticsApplicationTools::printParameters(sModel, s1, 1, true);
