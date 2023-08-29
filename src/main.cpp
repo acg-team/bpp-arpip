@@ -776,11 +776,11 @@ int main(int argc, char *argv[]) {
         else{
             try{
                 fastaWtiter.writeSequences(arpipapp.getParam("output.ancestral.file"), *asr);
-                LOG(INFO) << "[PIP ASR] File is written successfully.";
+                LOG(INFO) << "[PIP ASR] ASR file is written successfully.";
                 bpp::ApplicationTools::displayResult("Output ancestral sequence file", arpipapp.getParam("output.ancestral.file"));
 
                 fastaWtiter.writeSequences(arpipapp.getParam("output.msa.file"), *sites);
-                LOG(INFO) << "[PIP MSA] File is written successfully.";
+                LOG(INFO) << "[PIP ASR] MSA ile is written successfully.";
                 bpp::ApplicationTools::displayResult("Output MSA file", arpipapp.getParam("output.msa.file"));
             } catch (bpp::Exception &ex) {
                 std::cout << "Make sure you set the output.msa.file or use opt.combine_msa_asr" << std::endl;
@@ -791,12 +791,11 @@ int main(int argc, char *argv[]) {
         }
 
         ////////////////////////// Write the probability profile of each ancestral state:
-
         if (profProbOpt != "none") {
             // get the letters of the alphabet of the model
             const std::vector<std::string> *letters = &(sModel->getAlphabet()->getResolvedChars());
             ARPIPIOTools::writeProbProfileToFile(&jarPIP, letters, arpipapp.getParam("output.prob_profile.file"));
-            DLOG(INFO) << "[PIP ASR] Probability profile is written successfully.";
+            DLOG(INFO) << "[PIP ASR] Probability profile file is written successfully.";
         }
 
         /**************************************** Deleting the pointers ***********************************************/
