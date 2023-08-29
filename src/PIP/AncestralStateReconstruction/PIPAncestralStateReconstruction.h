@@ -93,7 +93,7 @@ namespace bpp {
          * @brief Constructor
          */
         PIPAncestralStateReconstruction(const PIPDRTreeLikelihood *lik, const PIPMLIndelPoints *mlIndelPoints,
-                                        const std::string &probProfileType = "raw");
+                                        const std::string &probProfileType = "none");
 
         /**
          * @brief Copy Constructor
