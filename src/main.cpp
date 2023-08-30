@@ -669,7 +669,7 @@ int main(int argc, char *argv[]) {
         DLOG(INFO) << "[Substitution model] Substitution model is " << sModel->getName() << " model with mu="
                    << parameters.getParameter("PIP13.mu").getValue();
 
-        bpp::ApplicationTools::displayMessage("Equilibrium frequency of substitution model:"); //todo: add custom freq
+        bpp::ApplicationTools::displayMessage("Equilibrium frequency of substitution model:");
         for (size_t i = 0; i < sModel->getFrequencies().size()-1; i++) {
             bpp::ApplicationTools::displayResult("eq.freq(" + sModel->getAlphabet()->getName(i) + ")",
                                                  bpp::TextTools::toString(sModel->getFrequencies()[i], 4));
