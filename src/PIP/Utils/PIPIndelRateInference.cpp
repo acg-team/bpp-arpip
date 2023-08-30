@@ -272,7 +272,8 @@ void PIPIndelRateInference::inferIndelRateFromSequences(PIPDRHomogeneousTreeLike
                                                         double tolerance) {
     OptimizationFunction func(&likelihood);
 
-    ApplicationTools::displayResult("Starting -log Likelihood value", func.getValue());
+    DLOG(INFO) << "[PIP Parameter Inference] Start the Brent Multi-Dimensional optimization method to infer the indel parameters.";
+    DLOG(INFO) << "[PIP Parameter Inference] Starting -log Likelihood value = "<< func.getValue()<< ".";
 
     // Brent method:
     SimpleMultiDimensions optimizer(&func);
@@ -292,7 +293,11 @@ void PIPIndelRateInference::inferIndelRateFromSequences(PIPDRHomogeneousTreeLike
     mu_ = func.getParameterValue("mu");
     lambda_ = func.getParameterValue("lambda");
 
-    DLOG(INFO) << "The Brent Multi-Dimensional optimization method inferred the indel parameters.";
+    DLOG(INFO)
+            << "[PIP Parameter Inference] The Brent Multi-Dimensional optimization method is done with the new indel parameters"
+            << " mu = "  << mu_ << " and lambda = " << lambda_ << ".";
+
+    DLOG(INFO) << "[PIP Parameter Inference] The final -logLikelihood value = " << minf << ".";
 
     ApplicationTools::displayResult("The new Mu", mu_);
     ApplicationTools::displayResult("The new lambda", lambda_);
