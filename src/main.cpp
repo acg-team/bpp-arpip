@@ -587,16 +587,16 @@ int main(int argc, char *argv[]) {
         }
 
         if (computeFreqFromData) {
+            bpp::ApplicationTools::displayTask("Set the equilibrium frequency from data");
             sModel->setFreqFromData(*sites, 0.01);
             DLOG(INFO) << "[Substitution model] Base substitution model used frequency from data";
-            bpp::ApplicationTools::displayMessage("Set the frequency from data");
+            bpp::ApplicationTools::displayTaskDone();
         }
 
 
         /////////////////////////////
         // Estimate PIP Parameters: inference of Indel rates
         if (estimatedPIPParameters) {
-            bpp::ApplicationTools::displayTask("The PIP parameter estimation");
 
             // Handling no gap in MSA but the user asked for indel inference
             std::size_t numbGapSite{0};
@@ -621,11 +621,13 @@ int main(int argc, char *argv[]) {
                         << lambda << ",mu=" << mu << "," "I=" << lambda * mu << ")";
                 estimatedPIPParameters = 0;// the parameter is not the estimated one.
             } else {
-
+                bpp::ApplicationTools::displayMessage("Starting Brent for indel rate inference:");
+                DLOG(INFO) << "[Substitution model] Starting Brent multidimensional optimization method for indel rate inference.";
                 bpp::PIPIndelRateInference *PIPIndelParam = new bpp::PIPIndelRateInference(*sites, *ttree_,
                                                                                            modelMap,
                                                                                            &lambda,
                                                                                            &mu);
+                bpp::ApplicationTools::displayTask("The PIP parameter estimation");
                 lambda = PIPIndelParam->getLambda();
                 mu = PIPIndelParam->getMu();
                 bpp::ApplicationTools::displayTaskDone();

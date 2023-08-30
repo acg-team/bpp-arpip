@@ -86,11 +86,11 @@ using namespace bpp;
 OptimizationFunction::OptimizationFunction(PIPDRHomogeneousTreeLikelihood *likeFunObj) :
         AbstractParametrizable(""), fValue_(0), likeFunData_(likeFunObj) {
 
-            //We declare parameters here:
-            addParameter_(new Parameter("lambda", bpp::RandomTools::giveRandomNumberBetweenZeroAndEntry(10),
-                                        &Parameter::R_PLUS_STAR));
+    //We declare parameters here:
+    addParameter_(new Parameter("lambda", bpp::RandomTools::giveRandomNumberBetweenZeroAndEntry(10),
+                                &Parameter::R_PLUS_STAR));
 //            addParameter_(new Parameter("lambda", bpp::RandomTools::giveRandomNumberBetweenZeroAndEntry(10)));
-            addParameter_(new Parameter("mu", bpp::RandomTools::giveRandomNumberBetweenZeroAndEntry(10),
+    addParameter_(new Parameter("mu", bpp::RandomTools::giveRandomNumberBetweenZeroAndEntry(10),
                                 new IntervalConstraint(0.0001, 100, false, true)));
 
     ApplicationTools::displayResult("The initial Mu", getParameterValue("mu"));
