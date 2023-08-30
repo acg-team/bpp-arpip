@@ -49,7 +49,10 @@ cmake-build-debug/
 
 #I/O
 *.txt
+*.nwk
+*.fasta
 
 #data/
 /logs/
 *.INFO
+/data/*

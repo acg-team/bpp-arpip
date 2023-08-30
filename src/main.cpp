@@ -143,7 +143,7 @@
 /**********************************************************************************************************************/
 
 int main(int argc, char *argv[]) {
-    FLAGS_log_dir = "../logs/";// "./logs/"
+    FLAGS_log_dir = "./logs/";// "../logs/"
 //    ::google::InitGoogleLogging(argv[2]); //--vmodule=mapreduce=2,file=1,gfs*=3 --v=0
     ::google::InitGoogleLogging(software::name.c_str());
     ::google::InstallFailureSignalHandler();
@@ -197,8 +197,9 @@ int main(int argc, char *argv[]) {
         double rand_seed = bpp::ApplicationTools::getDoubleParameter("opt.seed", arpipapp.getParams(), 1, "",
                                                                true, true);
         bpp::RandomTools::setSeed((unsigned)rand_seed);
-        double lambda = bpp::RandomTools::giveRandomNumberBetweenZeroAndEntry(1);
-        double mu = bpp::RandomTools::giveRandomNumberBetweenZeroAndEntry(1);
+        //todo: check how lambda and mu works for different scenarios
+        double lambda = bpp::RandomTools::giveRandomNumberBetweenZeroAndEntry(10); // except for brent optimization
+        double mu = bpp::RandomTools::giveRandomNumberBetweenZeroAndEntry(1); // except for brent optimization
         bool estimatedPIPParameters = false;
 
         std::string App_model_substitution = bpp::ApplicationTools::getStringParameter("model", arpipapp.getParams(),
@@ -476,15 +477,29 @@ int main(int argc, char *argv[]) {
             DLOG(INFO)
                     << "[Input tree parser] The input tree is not rooted, the tree must have a root in PIP model!!!!"
                     << endl;
-//            int root = ttree_->getRootId();
+            string reRootOption = bpp::ApplicationTools::getStringParameter("opt.tree.re_root", arpipapp.getParams(),
+                                                                            "long", "", false, 1);
+//            if (reRootOption == "long") {
+//                std::vector<double> nodeBr = ttree_->getBranchLengths();
+//                size_t newRoot = ARPIPTreeTools::getLongestBranchesNodeId(ttree_);
+//                ttree_->newOutGroup(newRoot);// it should be the node with the longest branch!
+//            } else if (reRootOption == "rand") {
+//                std::vector<int> allNodeIds = ttree_->getNodesId();
+//                int rnNodeId = std::rand() % allNodeIds.size();
+//                size_t newRoot = rnNodeId;
+//                ttree_->newOutGroup(newRoot);// it should be a random node!
+//            } else{
+//                size_t newRoot = 1;
+//            }
             std::vector<double> nodeBr = ttree_->getBranchLengths();
             size_t newRoot = ARPIPTreeTools::getLongestBranchesNodeId(ttree_);
-            ttree_->newOutGroup(newRoot);// it should be a random node!
+            ttree_->newOutGroup(newRoot);// it should be the node with the longest branch!
+
             if (ttree_->isRooted()) {
                 bpp::ApplicationTools::displayResult("New random root is", newRoot);
                 DLOG(INFO) << "[Input tree parser] Now, the tree is rooted....." << "(node " << newRoot
                            << " is the new root)" << endl;
-            } else throw bpp::Exception("Tree is not rooted yet.");
+            } else throw bpp::Exception("Tree is not yet rooted.");
         }
 
 
