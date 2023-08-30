@@ -314,9 +314,9 @@ Sequence *PIPAncestralStateReconstruction::getAncestralSequenceForNode(int nodeI
 AlignedSequenceContainer *PIPAncestralStateReconstruction::getAncestralSequences() const {
 
     // Do the joint reconstruction:
-    VVVdouble probPorfile {};
+    VVVdouble probProfile {};
     std::map<int, std::vector<int>> allNodesAllStates{};
-    tie(allNodesAllStates, probPorfile) = getAllAncestralStatesWGap();
+    tie(allNodesAllStates, probProfile) = getAllAncestralStatesWGap(); // needs to define another function for AS without prob.
     DLOG(INFO) << "[PIP ASR] Joint Ancestral Sequence Reconstruction is done successfully.";
 
     // Allocate the new array for Sequences:
