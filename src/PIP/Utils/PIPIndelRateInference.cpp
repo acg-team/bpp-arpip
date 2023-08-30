@@ -84,8 +84,7 @@ using namespace bpp;
 /******************************************************************************/
 /******************************** Constructor *********************************/
 OptimizationFunction::OptimizationFunction(PIPDRHomogeneousTreeLikelihood *likeFunObj) :
-        AbstractParametrizable(""), fValue_(0), likeFunData_(likeFunObj)
-        {
+        AbstractParametrizable(""), fValue_(0), likeFunData_(likeFunObj) {
 
             //We declare parameters here:
             addParameter_(new Parameter("lambda", bpp::RandomTools::giveRandomNumberBetweenZeroAndEntry(10),
