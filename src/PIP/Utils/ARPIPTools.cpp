@@ -261,9 +261,9 @@ void ARPIPIOTools::writeProbProfileToFile(bpp::PIPAncestralStateReconstruction *
                    " 1. Node: Node name\n"
                    " 2. Site: Site number\n"
                    " 3. Probability of each alphabet at this site with the following format:\n"
-                   "'dna': 'ACGT', 'protein': 'ACDEFGHIKLMNPQRSTVWY'\n"
+                   "'dna': 'ACGT-', 'protein': 'ARNDCQEGHILKMFPSTWYV-'\n"
                    "*****************************************************************************************\n";
-        output << "Node \t Site \t";
+        output << "Site\tNode\t";
         // Print the alphabet letters:
         for (size_t i{0}; i<alphabetLetters->size(); i++){
             output << alphabetLetters->at(i) << "\t";
@@ -276,17 +276,15 @@ void ARPIPIOTools::writeProbProfileToFile(bpp::PIPAncestralStateReconstruction *
         //for nodes in the tree, print the probability profile
         for(size_t nbDistinct{0}; nbDistinct < pro.size(); nbDistinct++){
             for(size_t nbNodes{0}; nbNodes<pro[nbDistinct].size(); nbNodes++){
-                output << tree.getNodeName(InternalNodes[nbNodes]) << "\t" << nbNodes << "\t";
+                output << nbDistinct << "\t" << tree.getNodeName(InternalNodes[nbNodes]) << "\t";
                 for(size_t nbStates{0}; nbStates < pro[nbDistinct][nbNodes].size(); nbStates++){
                     output << pro[nbDistinct][nbNodes][nbStates] << "\t";
                 }
                 output << "\n";
             }
+            output << "\n";
         }
         std::ostream_iterator<std::string> output_iterator(output, "\n");
-//        std::vector<std::string> probProfile = pipJar->getProbProfile();
-//        copy(probProfile.begin(), probProfile.end(), output_iterator);
-        output << std::endl;
         output << "*****************************************************************************************\n";
         output.close();
         bpp::ApplicationTools::displayResult("Output ProbProfile file", path);
