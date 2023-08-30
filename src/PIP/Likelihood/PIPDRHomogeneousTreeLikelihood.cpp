@@ -527,7 +527,7 @@ long double PIPDRHomogeneousTreeLikelihood::computePIPTreeLikelihood(const doubl
 
     // Update the PIP parameters
     firePIPParameterChanged_(lambda, mu);
-    DLOG(INFO)<< "[DR homogeneous tree likelihood] PIP's parameters (including transition probabilities) is now updated.";
+    DVLOG(2) << "[DR homogeneous tree likelihood] PIP's parameters (including transition probabilities) is now updated.";
 
     // For non-empty sites and all nodes in the MSA
     computePIPLikelihoodForNonEmptySitesAtNode_(tree_->getRootNode());
@@ -593,7 +593,7 @@ long double PIPDRHomogeneousTreeLikelihood::computePIPTreeLikelihood(const doubl
 
     // Calls the routine to compute the FV values
     minusLogLik_ = -logLK;
-    DLOG(INFO) << "[DR homogeneous tree likelihood] PIP likelihood is computed now with value " << logLK;
+    DVLOG(2) << "[DR homogeneous tree likelihood] PIP likelihood is computed now with value " << logLK;
 
     return logLK;
 
@@ -1093,87 +1093,3 @@ void PIPDRHomogeneousTreeLikelihood::computeLikelihoodFromArrays(
     (*oCLike_i)[nbStates-1] = nbStates-1;
 
 }
-/*******************************************************************************/
-/**
-void PIPDRHomogeneousTreeLikelihood::computeLikelihoodAtNode_(const Node *node, VVVdouble &likelihoodArray, const Node *sonNode) const {
-    // const Node* node = tree_->getId();
-    int nodeId = node->getId();
-    likelihoodArray.resize(nbDistinctSites_);
-    map<int, VVVdouble> *likelihoods_node = &likelihoodData_->getLikelihoodArrays(nodeId);
-
-    // Initialize likelihood array:
-    if (node->isLeaf()) {
-        VVdouble *leavesLikelihoods_node = &likelihoodData_->getLeafLikelihoods(nodeId);
-        for (size_t i = 0; i < nbDistinctSites_; i++) {
-            VVdouble *likelihoodArray_i = &likelihoodArray[i];
-            Vdouble *leavesLikelihoods_node_i = &(*leavesLikelihoods_node)[i];
-            likelihoodArray_i->resize(nbClasses_);
-            for (size_t c = 0; c < nbClasses_; c++) {
-                Vdouble *likelihoodArray_i_c = &(*likelihoodArray_i)[c];
-                likelihoodArray_i_c->resize(nbStates_);
-                for (size_t x = 0; x < nbStates_; x++) {
-                    (*likelihoodArray_i_c)[x] = (*leavesLikelihoods_node_i)[x];
-                }
-            }
-        }
-
-    } else {
-        // Otherwise:
-        // Set all likelihoods to 1 for a start:
-        for (size_t i = 0; i < nbDistinctSites_; i++) {
-            VVdouble *likelihoodArray_i = &likelihoodArray[i];
-            likelihoodArray_i->resize(nbClasses_);
-            for (size_t c = 0; c < nbClasses_; c++) {
-                Vdouble *likelihoodArray_i_c = &(*likelihoodArray_i)[c];
-                likelihoodArray_i_c->resize(nbStates_);
-                for (size_t x = 0; x < nbStates_; x++) {
-                    (*likelihoodArray_i_c)[x] = 1.;
-                }
-            }
-        }
-    }
-    size_t nbNodes = node->getNumberOfSons();
-
-    vector<const VVVdouble *> iLik;
-    vector<const VVVdouble *> tProb;
-    bool test = false;
-    for (size_t n = 0; n < nbNodes; n++) {
-        const Node *son = node->getSon(n);
-        if (son != sonNode) {
-            tProb.push_back(&pxy_[son->getId()]);// all zero AbstractHomogeneousTreeLikelihood-> solved in PIPDRHomogeneousTreeLikelihood::init
-            iLik.push_back(&(*likelihoods_node)[son->getId()]);// all one
-        } else {
-            test = true;
-        }
-    }
-    if (sonNode) {
-        if(test)
-            nbNodes--;
-        else
-            throw ("PIPDRHomogeneousTreeLikelihood::computeLikelihoodAtNode_(...). 'sonNode' not found as a son of 'node'.");
-    }
-
-    if (node->hasFather()) {
-        const Node *father = node->getFather();
-        computeLikelihoodFromArrays(iLik, tProb, &(*likelihoods_node)[father->getId()], &pxy_[nodeId], likelihoodArray,
-                                    nbNodes, nbDistinctSites_, nbClasses_, nbStates_,
-                                    false);
-
-    } else {
-        computeLikelihoodFromArrays(iLik, tProb, likelihoodArray, nbNodes, nbDistinctSites_, nbClasses_, nbStates_,
-                                    false);
-        // We have to account for the equilibrium frequencies:
-        for (size_t i = 0; i < nbDistinctSites_; i++) {
-            VVdouble *likelihoodArray_i = &likelihoodArray[i];
-            for (size_t c = 0; c < nbClasses_; c++) {
-                Vdouble *likelihoodArray_i_c = &(*likelihoodArray_i)[c];
-                for (size_t x = 0; x < nbStates_; x++) {
-                    (*likelihoodArray_i_c)[x] *= rootFreqs_[x];
-                }
-            }
-        }
-    }
-}
-**/
-/******************************************************************************/
-
