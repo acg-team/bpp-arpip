@@ -706,7 +706,7 @@ int main(int argc, char *argv[]) {
 
         // Write down the output of the algorithm to a single file
         ARPIPIOTools::writeMLIndelPointsToFile(mlIndePoints, arpipapp.getParam("output.mlindelpoints.file"));
-        DLOG(INFO) << "[Indel Points] File is written successfully.";
+        DLOG(INFO) << "[Indel Points] Most likely indel point file is written successfully.";
 
 
         /************************************* Ancestral Sequence Reconstruction **************************************/
@@ -774,7 +774,7 @@ int main(int argc, char *argv[]) {
                 }
             }
             fastaWtiter.writeSequences(arpipapp.getParam("output.ancestral.file"), *combined_msa_asr);
-            LOG(INFO) << "[PIP ASR] File is written successfully.";
+            LOG(INFO) << "[PIP ASR] ASR file is written successfully.";
             bpp::ApplicationTools::displayResult("Output ancestral sequence file", arpipapp.getParam("output.ancestral.file"));
         }
         else{
