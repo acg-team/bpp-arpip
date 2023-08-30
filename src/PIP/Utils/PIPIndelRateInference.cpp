@@ -93,8 +93,11 @@ OptimizationFunction::OptimizationFunction(PIPDRHomogeneousTreeLikelihood *likeF
             addParameter_(new Parameter("mu", bpp::RandomTools::giveRandomNumberBetweenZeroAndEntry(10),
                                 new IntervalConstraint(0.0001, 100, false, true)));
 
-            fireParameterChanged(getParameters());
-        }
+    ApplicationTools::displayResult("The initial Mu", getParameterValue("mu"));
+    ApplicationTools::displayResult("The initial Lambda", getParameterValue("lambda"));
+
+    fireParameterChanged(getParameters());
+}
 
 /******************************** Copy constructor *********************************/
 
