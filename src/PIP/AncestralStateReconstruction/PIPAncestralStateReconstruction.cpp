@@ -435,103 +435,144 @@ void PIPAncestralStateReconstruction::computeProbabilityProfileForAllSites(VVVdo
 //    // get the internal nodes:
     std::vector<int> nodeIds = tree_.getInnerNodesId();
     auto m = mlIndelPoints_->getDeletionPoints();
+    try {
 
-    if (probProfileType_ == "raw") {
-        VVVdouble *oLik = &likelihoodArray;
-        VVVdouble *oProb = &probability;
-        for (size_t s = 0; s < nbDistinctSites_ ; s++) {
-            VVdouble *likelihoodArray_s = &(*oLik)[s];
-            VVdouble *probability_s = &(*oProb)[s];
-            probability_s->resize(nbInnerNodes_);
-            for (size_t n = 0; n < nbInnerNodes_ ; n++) {
-                //check to see if the vector is empty or not: This happens when there is no data for an internal node.
-                if (!(&(*likelihoodArray_s)[nodeIds[n]])->empty()) {
-                    Vdouble *likelihoodArray_s_n = &(*likelihoodArray_s)[nodeIds[n]];
-                    Vdouble *probability_s_n  = &(*probability_s)[n];
-                    probability_s_n ->resize(nbStates_);
-                    for (size_t x = 0; x < nbStates_; x++) {
-                        (*probability_s_n)[x] = (*likelihoodArray_s_n)[x];
+
+        if (probProfileType_ == "raw") {
+            VVVdouble *oLik = &likelihoodArray;
+            VVVdouble *oProb = &probability;
+            for (size_t s = 0; s < nbDistinctSites_; s++) {
+                VVdouble *likelihoodArray_s = &(*oLik)[s];
+                // if the insertion happens at the leave, the likelihoodArray_s is empty.
+                if (!(&(*likelihoodArray_s))->empty()) {
+                    VVdouble *probability_s = &(*oProb)[s];
+                    probability_s->resize(nbInnerNodes_);
+                    for (size_t n = 0; n < nbInnerNodes_; n++) {
+                        //check to see if the vector is empty or not: This happens when there is no data for an internal node.
+                        if (!(&(*likelihoodArray_s)[nodeIds[n]])->empty()) {
+                            Vdouble *likelihoodArray_s_n = &(*likelihoodArray_s)[nodeIds[n]];
+                            Vdouble *probability_s_n = &(*probability_s)[n];
+                            probability_s_n->resize(nbStates_);
+                            for (size_t x = 0; x < nbStates_; x++) {
+                                (*probability_s_n)[x] = (*likelihoodArray_s_n)[x];
+                            }
+                        } else {
+                            // for empty nodes:
+                            Vdouble *probability_s_n = &(*probability_s)[n];
+                            probability_s_n->resize(nbStates_);
+                        }
                     }
                 }else{
-                    Vdouble *probability_s_n  = &(*probability_s)[n];
-                    probability_s_n ->resize(nbStates_);
-                    for (size_t x = 0; x < nbStates_; x++) {
-                        (*probability_s_n)[x] = 0;
+                    //  for the case that the likelihoodArray_s is empty, meaning the insertion point was a leave.
+                    VVdouble *probability_s = &(*oProb)[s];
+                    probability_s->resize(nbInnerNodes_);
+                    for (size_t n = 0; n < nbInnerNodes_; n++) {
+                        Vdouble *probability_s_n = &(*probability_s)[n];
+                        probability_s_n->resize(nbStates_);
                     }
                 }
             }
-        }
 
-    } else if(probProfileType_ == "normalized"){ // normalizing probabilities:
-        VVVdouble *oLik = &likelihoodArray;
-        VVVdouble *oProb = &probability;
-        for (size_t s = 0; s < nbDistinctSites_ ; s++) {
-            VVdouble *likelihoodArray_s = &(*oLik)[s];
-            VVdouble *probability_s = &(*oProb)[s];
-            probability_s->resize(nbInnerNodes_);
-            for (size_t n = 0; n < nbInnerNodes_ ; n++) {
-                //check to see if the vector is empty or not: This happens when there is no data for an internal node.
-                if (!(&(*likelihoodArray_s)[nodeIds[n]])->empty()) {
-                    Vdouble *likelihoodArray_s_n = &(*likelihoodArray_s)[nodeIds[n]];
-                    Vdouble *probability_s_n  = &(*probability_s)[n];
-                    probability_s_n ->resize(nbStates_);
-                    // divide each element by the sum of likelihoodArray_s_n:
-                    double sumLikelihoods = std::accumulate(likelihoodArray_s_n->begin(), likelihoodArray_s_n->end(), 0.0);
-                    for (size_t x = 0; x < nbStates_; x++) {
-                        (*probability_s_n)[x] = (*likelihoodArray_s_n)[x] / sumLikelihoods;
-                    }
-                }else{
-                    Vdouble *probability_s_n  = &(*probability_s)[n];
-                    probability_s_n ->resize(nbStates_);
-                    for (size_t x = 0; x < nbStates_; x++) {
-                        (*probability_s_n)[x] = 0;
-                    }
-                }
-            }
-        }
+        } else if (probProfileType_ == "normalized") {
+            // normalizing probabilities:
+            VVVdouble *oLik = &likelihoodArray;
+            VVVdouble *oProb = &probability;
 
-    } else if(probProfileType_ == "naive_posterior"){ // compute naive posterior probabilities:
-
-        // get background frequencies for the substitution model:
-        const Vdouble *p = &mlIndelPoints_->getModel()->getFrequencies();
-        VVVdouble *oLik = &likelihoodArray;
-        VVVdouble *oProb = &probability;
-        for (size_t s = 0; s < nbDistinctSites_ ; s++) {
-            VVdouble *likelihoodArray_s = &(*oLik)[s];
-            VVdouble *probability_s = &(*oProb)[s];
-            probability_s->resize(nbInnerNodes_);
-            for (size_t n = 0; n < nbInnerNodes_ ; n++) {
-                //check to see if the vector is empty or not: This happens when there is no data for an internal node.
-                if (!(&(*likelihoodArray_s)[nodeIds[n]])->empty()) {
-                    Vdouble *likelihoodArray_s_n = &(*likelihoodArray_s)[nodeIds[n]];
-                    Vdouble *probability_s_n = &(*probability_s)[n];
-                    probability_s_n->resize(nbStates_);
-                    // divide each element by the sum product of p and likelihoodArray_s_n:
-                    double sum_product {0};
-                    for (size_t x = 0; x < nbStates_; x++) {
-                        (*probability_s_n)[x] = (*likelihoodArray_s_n)[x] * p->at(x);
-                        sum_product += (*probability_s_n)[x];
+            for (size_t s = 0; s < nbDistinctSites_; s++) {
+                VVdouble *likelihoodArray_s = &(*oLik)[s];
+                // if the insertion happens at the leave, the likelihoodArray_s is empty.
+                if (!(&(*likelihoodArray_s))->empty()) {
+                    VVdouble *probability_s = &(*oProb)[s];
+                    probability_s->resize(nbInnerNodes_);
+                    for (size_t n = 0; n < nbInnerNodes_; n++) {
+                        //check to see if the vector is empty or not: This happens when there is no data for an internal node.
+                        if (!(&(*likelihoodArray_s)[nodeIds[n]])->empty()) {
+                            Vdouble *likelihoodArray_s_n = &(*likelihoodArray_s)[nodeIds[n]];
+                            Vdouble *probability_s_n = &(*probability_s)[n];
+                            probability_s_n->resize(nbStates_);
+                            // divide each element by the sum of likelihoodArray_s_n:
+                            double sumLikelihoods = std::accumulate(likelihoodArray_s_n->begin(),
+                                                                    likelihoodArray_s_n->end(), 0.0);
+                            for (size_t x = 0; x < nbStates_; x++) {
+                                (*probability_s_n)[x] = (*likelihoodArray_s_n)[x] / sumLikelihoods;
+                            }
+                        } else {
+                            // for empty nodes:
+                            Vdouble *probability_s_n = &(*probability_s)[n];
+                            probability_s_n->resize(nbStates_);
+                        }
                     }
-                    for(size_t y=0; y<nbStates_; y++){
-                        (*probability_s_n)[y] = (*probability_s_n)[y] / sum_product;
-                    }
-                }else{
-                    Vdouble *probability_s_n  = &(*probability_s)[n];
-                    probability_s_n ->resize(nbStates_);
-                    for (size_t x = 0; x < nbStates_; x++) {
-                        (*probability_s_n)[x] = 0;
+            } else{
+                    //  for the case that the likelihoodArray_s is empty, meaning the insertion point was a leave.
+                    VVdouble *probability_s = &(*oProb)[s];
+                    probability_s->resize(nbInnerNodes_);
+                    for (size_t n = 0; n < nbInnerNodes_; n++) {
+                        Vdouble *probability_s_n = &(*probability_s)[n];
+                        probability_s_n->resize(nbStates_);
                     }
                 }
             }
+
+        } else if (probProfileType_ == "naive_posterior") {
+            // compute naive posterior probabilities:
+            // get background frequencies for the substitution model:
+            const Vdouble *p = &mlIndelPoints_->getModel()->getFrequencies();
+
+            VVVdouble *oLik = &likelihoodArray;
+            VVVdouble *oProb = &probability;
+
+            for (size_t s = 0; s < nbDistinctSites_; s++) {
+                VVdouble *likelihoodArray_s = &(*oLik)[s];
+                if (!(&(*likelihoodArray_s))->empty()) {// if the insertion happens at the leave, the likelihoodArray_s is empty.
+                    VVdouble *probability_s = &(*oProb)[s];
+                    probability_s->resize(nbInnerNodes_);
+                    for (size_t n = 0; n < nbInnerNodes_; n++) {
+                        //check to see if the vector is empty or not: This happens when there is no data for an internal node.
+                        if (!(&(*likelihoodArray_s)[nodeIds[n]])->empty()) {
+                            Vdouble *likelihoodArray_s_n = &(*likelihoodArray_s)[nodeIds[n]];
+                            Vdouble *probability_s_n = &(*probability_s)[n];
+                            probability_s_n->resize(nbStates_);
+                            // divide each element by the sum product of p and likelihoodArray_s_n:
+                            double sum_product{0};
+                            for (size_t x = 0; x < nbStates_; x++) {
+                                (*probability_s_n)[x] = (*likelihoodArray_s_n)[x] * p->at(x);
+                                sum_product += (*probability_s_n)[x];
+                            }
+                            // dividing each element by the sum of product:
+                            for (size_t y = 0; y < nbStates_; y++) {
+                                (*probability_s_n)[y] = (*probability_s_n)[y] / sum_product;
+                            }
+                        } else {
+                            // for empty nodes:
+                            Vdouble *probability_s_n = &(*probability_s)[n];
+                            probability_s_n->resize(nbStates_);
+                        }
+                    }
+                } else{
+                    //  for the case that the likelihoodArray_s is empty, meaning the insertion point was a leave.
+                    VVdouble *probability_s = &(*oProb)[s];
+                    probability_s->resize(nbInnerNodes_);
+                    for (size_t n = 0; n < nbInnerNodes_; n++) {
+                        Vdouble *probability_s_n = &(*probability_s)[n];
+                        probability_s_n->resize(nbStates_);
+                    }
+                }
+            }
+
+        } else {
+
+            throw Exception(
+                    "PIPAncestralStateReconstruction::computeProbabilityProfileForAllSites. Error, unknown profile type!");
+            LOG(ERROR) << "[PIP ASR] Error, unknown profile type!";
+
         }
+        DLOG(INFO) << "[PIP ASR] Probability profile for all sites is computed successfully.";
 
-    } else {
-
-        throw Exception("PIPAncestralStateReconstruction::computeProbabilityProfileForAllSites. Error, unknown profile type!");
-        LOG(ERROR)<< "[PIP ASR] Error, unknown profile type!";
-
+    }catch (Exception &e) {
+        std::cout << "PIPAncestralStateReconstruction::computeProbabilityProfileForAllSites. Error while computing probability profile: " << std::endl;
+        throw Exception(  e.what());
+        LOG(ERROR) << "[PIP ASR] Error, " << e.what();
     }
-    DLOG(INFO) << "[PIP ASR] Probability profile for all sites is computed successfully.";
 }
 
 /**********************************************************************************************************************/
