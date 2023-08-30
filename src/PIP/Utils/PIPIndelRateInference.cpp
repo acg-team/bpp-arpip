@@ -286,7 +286,7 @@ void PIPIndelRateInference::inferIndelRateFromSequences(PIPDRHomogeneousTreeLike
     optimizer.init(func.getParameters());
     optimizer.optimize();
     optimizer.getProfiler(); // activate the profiler again to display the results
-    ApplicationTools::displayMessage("\nThe Brent Multidimensional optimization used.");
+    ApplicationTools::displayMessage("Inferred PIP parameters using Brent optimization");
 
     double minf = func.getValue();
 
@@ -300,8 +300,8 @@ void PIPIndelRateInference::inferIndelRateFromSequences(PIPDRHomogeneousTreeLike
     DLOG(INFO) << "[PIP Parameter Inference] The final -logLikelihood value = " << minf << ".";
 
     ApplicationTools::displayResult("The new Mu", mu_);
-    ApplicationTools::displayResult("The new lambda", lambda_);
-    ApplicationTools::displayResult("-logLikelihood value", minf);
+    ApplicationTools::displayResult("The new Lambda", lambda_);
+    ApplicationTools::displayResult("logLikelihood", -minf);
 
 }
 
