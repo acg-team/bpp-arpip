@@ -375,7 +375,7 @@ std::tuple<AlignedSequenceContainer *, VVVdouble> PIPAncestralStateReconstructio
 
     // compute the profile probability for ancestral nodes:
     VVVdouble probabilityProfile {};
-    probabilityProfile.resize(nbDistinctSites_);
+    probabilityProfile.resize(nbSites_);
     computeProbabilityProfileForAllSites(PupkoLiklihood, probabilityProfile);
 
     // Allocate the new array for Sequences:
@@ -435,14 +435,14 @@ void PIPAncestralStateReconstruction::computeProbabilityProfileForAllSites(VVVdo
 //    // get the internal nodes:
     std::vector<int> nodeIds = tree_.getInnerNodesId();
     auto m = mlIndelPoints_->getDeletionPoints();
-    try {
 
+    try {
 
         if (probProfileType_ == "raw") {
             VVVdouble *oLik = &likelihoodArray;
             VVVdouble *oProb = &probability;
-            for (size_t s = 0; s < nbDistinctSites_; s++) {
-                VVdouble *likelihoodArray_s = &(*oLik)[s];
+            for (size_t s = 0; s < nbSites_; s++) {
+                VVdouble *likelihoodArray_s = &(*oLik)[rootPatternLinks_[s]]; // mapping the shrunk data to the normal one.
                 // if the insertion happens at the leave, the likelihoodArray_s is empty.
                 if (!(&(*likelihoodArray_s))->empty()) {
                     VVdouble *probability_s = &(*oProb)[s];
@@ -478,8 +478,8 @@ void PIPAncestralStateReconstruction::computeProbabilityProfileForAllSites(VVVdo
             VVVdouble *oLik = &likelihoodArray;
             VVVdouble *oProb = &probability;
 
-            for (size_t s = 0; s < nbDistinctSites_; s++) {
-                VVdouble *likelihoodArray_s = &(*oLik)[s];
+            for (size_t s = 0; s < nbSites_; s++) {
+                VVdouble *likelihoodArray_s = &(*oLik)[rootPatternLinks_[s]]; // mapping the shrunk data to the normal one.
                 // if the insertion happens at the leave, the likelihoodArray_s is empty.
                 if (!(&(*likelihoodArray_s))->empty()) {
                     VVdouble *probability_s = &(*oProb)[s];
@@ -521,8 +521,8 @@ void PIPAncestralStateReconstruction::computeProbabilityProfileForAllSites(VVVdo
             VVVdouble *oLik = &likelihoodArray;
             VVVdouble *oProb = &probability;
 
-            for (size_t s = 0; s < nbDistinctSites_; s++) {
-                VVdouble *likelihoodArray_s = &(*oLik)[s];
+            for (size_t s = 0; s < nbSites_; s++) {
+                VVdouble *likelihoodArray_s = &(*oLik)[rootPatternLinks_[s]]; // mapping the shrunk data to the normal one.
                 if (!(&(*likelihoodArray_s))->empty()) {// if the insertion happens at the leave, the likelihoodArray_s is empty.
                     VVdouble *probability_s = &(*oProb)[s];
                     probability_s->resize(nbInnerNodes_);
