@@ -22,13 +22,9 @@ ancestral characters on the pruned subtrees in a manner similar to FastML (Pupko
 
 #### Citation
 
-When using ARPIP, please cite [this paper](https://academic.oup.com/sysbio/advance-article-abstract/doi/10.1093/sysbio/syac050/6648472):
-
-Gholamhossein Jowkar, Julija Pecerska, Manuel Gil, and Maria Anisimova 
+Gh. Jowkar, et al. 2022.
 **ARPIP: Ancestral sequence Reconstruction with insertions and deletions under the Poisson Indel Process.** 
-*Systematic Biology, 2022;* 
-doi:[https://doi.org/10.1093/sysbio/syac050](https://doi.org/10.1093/sysbio/syac050)
-
+*Systematic Biology, 2022;* syac050, https://doi.org/10.1093/sysbio/syac050
 ---
 
 #### Licence
