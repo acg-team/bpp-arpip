@@ -811,10 +811,17 @@ int main(int argc, char *argv[]) {
 
         ////////////////////////// Write the probability profile of each ancestral state:
         if (profProbOpt != "none") {
-            // get the letters of the alphabet of the model
-            const std::vector<std::string> *letters = &(sModel->getAlphabet()->getResolvedChars());
-            ARPIPIOTools::writeProbProfileToFile(&jarPIP, letters, arpipapp.getParam("output.prob_profile.file"));
-            DLOG(INFO) << "[PIP ASR] Probability profile file is written successfully.";
+            try{
+                // get the letters of the alphabet of the model
+                const std::vector<std::string> *letters = &(sModel->getAlphabet()->getResolvedChars());
+                ARPIPIOTools::writeProbProfileToFile(&jarPIP, letters, arpipapp.getParam("output.prob_profile.file"));
+                DLOG(INFO) << "[PIP ASR] Probability profile file is written successfully.";
+            }catch (bpp::Exception &ex) {
+                std::cout << "Make sure you set the output.prob_profile.file or use valid opt.asr.prob_profile" << std::endl;
+                LOG(FATAL) << "[PIP MSA ASR] Error in writing the probability profile when" << ex.message() << endl
+                           << "Make sure you set the output.msa.file or use opt.combine_msa_asr";
+                cerr << ex.what() << endl;
+            }
         }
 
         /**************************************** Deleting the pointers ***********************************************/

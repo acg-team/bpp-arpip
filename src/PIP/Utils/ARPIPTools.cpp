@@ -256,7 +256,7 @@ void ARPIPIOTools::writeProbProfileToFile(bpp::PIPAncestralStateReconstruction *
         output
                 << "*****************************************************************************************\n"
                    "ARPIP - Ancestral Sequence Reconstruction with indels under the Poisson Indel Process\n"
-                   "ARPIP likelihood and ancestral state values\n"
+                   "ARPIP likelihood values for each state\n"
                    " Description of data format:\n"
                    " 1. Node: Node name\n"
                    " 2. Site: Site number\n"
@@ -264,11 +264,23 @@ void ARPIPIOTools::writeProbProfileToFile(bpp::PIPAncestralStateReconstruction *
                    "'dna': 'ACGT-', 'protein': 'ARNDCQEGHILKMFPSTWYV-'\n"
                    "*****************************************************************************************\n";
         output << "Site\tNode\t";
-        // Print the alphabet letters:
-        for (size_t i{0}; i<alphabetLetters->size(); i++){
-            output << alphabetLetters->at(i) << "\t";
+        // Print the alphabet letters and check the size of the alphabet:
+        if (alphabetLetters->size() == 4){
+            for (size_t i{0}; i < alphabetLetters->size(); i++) {
+                output << alphabetLetters->at(i) << "\t";
+            }
+            output << "-\t \n"; // + gap
+            //output << "A\tC\tG\tT\t-\t \n"; // + gap
         }
-        output << "-\t \n"; // + gap
+        else if (alphabetLetters->size() == 21) {
+            for (size_t i{0}; i < alphabetLetters->size() - 1; i++) {
+                output << alphabetLetters->at(i) << "\t";
+            }
+            output << "-\t \n"; // + gap
+            //output << "A\tR\tN\tD\tC\tQ\tE\tG\tH\tI\tL\tK\tM\tF\tP\tS\tT\tW\tY\tV\t-\t \n"; // + gap
+        } else
+            throw (Exception("The alphabet size is not supported!"));
+
 
         // read the tree and its internal nodes:
         bpp::TreeTemplate<bpp::Node> tree = pipJar->getTree();
