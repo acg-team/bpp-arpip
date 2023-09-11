@@ -273,7 +273,7 @@ void ARPIPIOTools::writeProbProfileToFile(bpp::PIPAncestralStateReconstruction *
             //output << "A\tC\tG\tT\t-\t \n"; // + gap
         }
         else if (alphabetLetters->size() == 21) {
-            for (size_t i{0}; i < alphabetLetters->size() - 1; i++) {
+            for (size_t i{0}; i < alphabetLetters->size() - 1; i++) { // removing * from the alphabet
                 output << alphabetLetters->at(i) << "\t";
             }
             output << "-\t \n"; // + gap
