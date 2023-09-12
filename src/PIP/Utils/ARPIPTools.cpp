@@ -269,14 +269,14 @@ void ARPIPIOTools::writeProbProfileToFile(bpp::PIPAncestralStateReconstruction *
             for (size_t i{0}; i < alphabetLetters->size(); i++) {
                 output << alphabetLetters->at(i) << "\t";
             }
-            output << "-\t \n"; // + gap
+            output << "-\n"; // + gap
             //output << "A\tC\tG\tT\t-\t \n"; // + gap
         }
         else if (alphabetLetters->size() == 21) {
             for (size_t i{0}; i < alphabetLetters->size() - 1; i++) { // removing * from the alphabet
                 output << alphabetLetters->at(i) << "\t";
             }
-            output << "-\t \n"; // + gap
+            output << "-\n"; // + gap
             //output << "A\tR\tN\tD\tC\tQ\tE\tG\tH\tI\tL\tK\tM\tF\tP\tS\tT\tW\tY\tV\t-\t \n"; // + gap
         } else
             throw (Exception("The alphabet size is not supported!"));
@@ -297,7 +297,7 @@ void ARPIPIOTools::writeProbProfileToFile(bpp::PIPAncestralStateReconstruction *
             output << "\n";
         }
         std::ostream_iterator<std::string> output_iterator(output, "\n");
-        output << "*****************************************************************************************\n";
+//        output << "*****************************************************************************************\n";
         output.close();
         bpp::ApplicationTools::displayResult("Output ProbProfile file", path);
     } catch (IOException &e) {
