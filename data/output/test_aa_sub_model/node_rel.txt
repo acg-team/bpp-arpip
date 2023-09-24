@@ -1,0 +1,16 @@
+Name 	 Parent 	 Child 
+leaf_1	V2
+leaf_6	V2
+V2	V8	leaf_1	leaf_6
+leaf_5	V5
+leaf_7	V5
+V5	V7	leaf_5	leaf_7
+leaf_3	V7
+V7	V8	V5	leaf_3
+V8	root	V2	V7
+leaf_2	V13
+leaf_0	V12
+leaf_4	V12
+V12	V13	leaf_0	leaf_4
+V13	root	leaf_2	V12
+root	--	V8	V13

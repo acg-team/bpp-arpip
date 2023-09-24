@@ -1,0 +1,16 @@
+analysis_name=TEST LG08
+alphabet=Protein
+input.sequence.file=./data/input/test_aa_sub_model/sim-0_msa_new.fasta
+input.sequence.sites_to_use=all
+init.tree=user
+input.tree.file=./data/input/test_aa_sub_model/sim-0_new.newick
+model=PIP(model=LG08,lambda=10,mu=0.01)
+opt.seed=1
+opt.pip_param_estimate=0
+opt.ancestral.prob_profile=naive_posterior
+output.msa.file=./data/output/test_aa_sub_model/msa.fasta
+output.tree.file=./data/output/test_aa_sub_model/tree.nwk
+output.ancestral.file=./data/output/test_aa_sub_model/anc.fasta
+output.node_rel.file=./data/output/test_aa_sub_model/node_rel.txt
+output.mlindelpoints.file=./data/output/test_aa_sub_model/mlindelpoints.txt
+output.ancestral.prob_profile.file=./data/output/test_aa_sub_model/asr_prob.txt
