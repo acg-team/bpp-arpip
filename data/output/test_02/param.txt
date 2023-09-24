@@ -1,0 +1,4 @@
+Lambda:10.8793
+Mu:0.102495
+Loglikelihood:-2490.58
+
