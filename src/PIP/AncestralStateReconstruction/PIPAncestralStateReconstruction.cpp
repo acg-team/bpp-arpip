@@ -398,22 +398,19 @@ std::tuple<AlignedSequenceContainer *, VVVdouble> PIPAncestralStateReconstructio
         // Mapping the shrunk data to the normal one:
         for (size_t i = 0; i < nbSites_; i++) {
 
-            DVLOG(2) << "[PIP ASR] " << "COL " << i << " is: "
-                     << (mlIndelPoints_->getShrunkData()->getSite(i)).toString() << std::endl;// check if it should be likelihood_
-
             size_t rootIndex = rootPatternLinks_[i];
 
             // Extracting the position of the site in the shrunkData
             allStates[i] = allNodesAllStates[currentNodeId][rootIndex];
 
-            DVLOG(2) << "[PIP ASR] Ancestral Sequence reconstruction for Site (" << i << ") in Shrunk data ("
-                     << rootIndex << ")" << " is: " << allStates.at(i);
+            DVLOG(2) << "[PIP ASR] Ancestral state reconstruction for site (" << rootIndex << ") in Shrunk data  which is ("
+                     << i << ") in original data" << " for node "<< name << " is: " << allStates.at(i) << std::endl;
         }
 
         BasicSequence *seq = new BasicSequence(name, allStates, alphabet_);
 
         asc->addSequence(*seq);
-        DVLOG(2) << "[PIP ASR] Ancestral states for sequence number (node)" << nodeIId << "is" << seq;
+        DVLOG(2) << "[PIP ASR] Ancestral sequence for node number (" << nodeIId << ") is: " << seq->toString() << std::endl;
         delete seq;
     }
     DLOG(INFO)<< "[PIP ASR] Ancestral sequences were mapped to the original order with "<< asc->getNumberOfSites() << "sites.";
@@ -570,8 +567,8 @@ void PIPAncestralStateReconstruction::computeProbabilityProfileForAllSites(VVVdo
 
     }catch (Exception &e) {
         std::cout << "PIPAncestralStateReconstruction::computeProbabilityProfileForAllSites. Error while computing probability profile: " << std::endl;
-        throw Exception(  e.what());
         LOG(ERROR) << "[PIP ASR] Error, " << e.what();
+        throw Exception(  e.what());
     }
 }
 
