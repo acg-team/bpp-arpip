@@ -1,17 +1,17 @@
 analysis_name = DNA TEST GTR model
 alphabet=DNA
-input.sequence.file=../data/input/test_dna_sub_model/msa.fasta
+input.sequence.file=./data/input/test_dna_sub_model/msa.fasta
 input.sequence.sites_to_use=all
 init.tree=user
-input.tree.file=../data/input/test_dna_sub_model/tree.nwk
+input.tree.file=./data/input/test_dna_sub_model/tree.nwk
 model=PIP(model=T92(kappa=2,piA=0.26,piC=0.25,piG=0.24,piT=0.25),lambda=14.1421,mu=0.1414)
 opt.seed=1
 opt.likelihood=0
 opt.pip_param_estimate=0
 opt.combine_msa_asr=1
 rate_distribution=Constant
-output.msa.file=../data/output/test_dna_sub_model/msa.fasta
-output.tree.file=../data/output/test_dna_sub_model/tree.nwk
-output.ancestral.file=../data/output/test_dna_sub_model/anc.fasta
-output.node_rel.file=../data/output/test_dna_sub_model/node_rel.txt
-output.mlindelpoints.file=../data/output/test_dna_sub_model/mlindelpoints.txt
+output.msa.file=./data/output/test_dna_sub_model/msa.fasta
+output.tree.file=./data/output/test_dna_sub_model/tree.nwk
+output.ancestral.file=./data/output/test_dna_sub_model/anc.fasta
+output.node_rel.file=./data/output/test_dna_sub_model/node_rel.txt
+output.mlindelpoints.file=./data/output/test_dna_sub_model/mlindelpoints.txt
