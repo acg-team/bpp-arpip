@@ -20,8 +20,9 @@ ancestral value with indels (gap) according to the joint reconstruction in a man
 #### Output Maximum Likelihood Indel Points:
 
 The output is per site ordered based on the original MSA file. The format is as follow:
-
-    node#:{insertion/Deletion)          node#:X meaning deletion and node#:I meaning insertion.
+```
+    node#:{insertion/Deletion}          node#:X means deletion and node#:I means insertion.
+```
 For example: V2:X;V1:X;root:I; means insertion at "root" and multiple deletions at V2 and V1.  
 Please note that per site, we only have one insertion and zero or more deletion points.
    
