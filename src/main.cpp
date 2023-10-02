@@ -207,7 +207,7 @@ int main(int argc, char *argv[]) {
                                                                                        true, true);
 
         std::string modelStringName;
-        std::map<std::string, std::string> modelMap;
+        std::map<std::string, std::string> modelMap; //it is the PIP model, later we define a base model.
         bpp::KeyvalTools::parseProcedure(App_model_substitution, modelStringName, modelMap);
         bool App_model_indels = modelStringName == "PIP";
 
